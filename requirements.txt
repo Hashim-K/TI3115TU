@@ -1,0 +1,6 @@
+pytest
+pylint
+coverage
+pytest-cov
+decorators
+mock
