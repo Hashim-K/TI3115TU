@@ -1,5 +1,5 @@
 # Agenda 2021-09-13
- - [ ] Discuss project organization and structure
- - [ ] Discuss design proccess
- - [ ] Discuss technologies researched
- - [ ] Discuss weekly sprint
+ - [x] Discuss project organization and structure
+ - [x] Discuss design proccess
+ - [x] Discuss technologies researched
+ - [x] Discuss weekly sprint
