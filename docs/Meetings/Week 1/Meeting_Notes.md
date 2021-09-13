@@ -9,6 +9,9 @@
 
 - The scheduling algorithm itself will schedule on *priority*, *deadline* of and other critera (time of day, etc.). The events to be scheduled are kept in a list that is therefore sorted by these criteria. [Not defined: How we will select from this list after we have 'filtered' for the criteria when considering a block of unallocated time Will it just go top-down ?]
 
+### Organisational
+Sprint weeks are defined to begin on Monday and end on Friday. Weekends are not considered within our sprints.
+
 ### GUI [Extra]
 - PyQT5
 - Dash Python
