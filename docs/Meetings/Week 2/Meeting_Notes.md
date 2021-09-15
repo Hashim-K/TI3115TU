@@ -18,8 +18,27 @@ Sprint weeks are defined to begin on Monday and end on Friday. Weekends are not 
 - PySimpleGUI
 
 ---
-## This sprint (week 37)
+## This sprint (week 2)
 - Data structure of tasks
 - Framework for the GUI
 - Initial implementation of the Google Calendar
 - Familiarize everyone with Git
+
+
+---
+# Meeting Notes | 2021-09-15
+*by A. Eyong*
+
+## [TA Meeting Notes]
+### Addition on the Requirements
+Things that we require:
+- Nonfunctional requirements
+    - Measureable
+    - Python version
+    - Test Line Coverage
+
+### Sprint
+- Add sprint retrospective for last week
+- [On data structures] Maybe use MySQL and Delft's own thing
+
+---
