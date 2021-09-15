@@ -22,11 +22,12 @@ Make sure that the filename is `Retrospective.md`
 
 |Week|Scrum Master|Notary |
 |--|--|--|
-|1|Hashim|Achere|
-|2|Achere|Nina|
-|3|Nina|Teus|
-|4|Teus|Robin|
-|5|Robin|Hashim|
-|6|Hashim|Achere|
+|1|Robin|Hashim|
+|2|Hashim|Achere|
+|3|Achere|Nina|
+|4|Nina|Teus|
+|5|Teus|Robin|
+|6|Robin|Hashim|
+|7|Hashim|Achere|
 
 
