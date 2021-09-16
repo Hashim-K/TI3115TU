@@ -77,4 +77,4 @@
     
 -   The software should be user friendly
 
--   Well documentation of the project's architecture
+-   Good documentation of the project's architecture
