@@ -1,33 +1,40 @@
-## Requirements
-
+## Functional Requirements
 ### Must have
 
 -   Scheduling Algorithm
-    
--   create tasks, set min and max duration of sessions or number of sessions
-    
--   set start (wake) and end (sleep) times of days, standard and customizable per day
 
--   Functionality to import a schedule using a standard filetype
+	-   Create tasks, set min and max duration of sessions or number of sessions
     
--   Exporting the generated schedule
+	-   Set start (wake) and end (sleep) times of days, standard and customizable per day
+
+-   Functionality to import a schedule using the user’s Google account
     
--   Data is stored locally
+-   Exporting the generated schedule to the user’s Google Calendar
+    
+-   Storing and loading of schedule data using .json files
+    
+-   Python 3.9.7 application
+    
+-   Graphical User Interface that functions
+
+	-   Framework TBD (dash/kivy/pyqt5)
+    
+	-   The user can create tasks and set preferences for the schedule etc
     
 
 ### Should have
 
 -   Check off whether you have finished a task
     
--   GUI
+-   Graphical User Interface that looks nice and is user friendly
     
--   Data encryption
+-   Data Encryption: Safe storage of user data and credentials
     
 -   Set task deadlines
     
 -   Carry over incomplete tasks from previous week
     
--   assign tasks different categories (school, exercise, free time?, etc), with priorities, defined by the user
+-   Assign different categories (school, exercise, free time?, etc) too tasks, with priorities, defined by the user
     
 
 ### Could have
@@ -50,7 +57,9 @@
     
 -   Nice UI/Branding
     
--   achievements/statistics 
+-   Achievements/statistics :^)
+    
+-   premium subscription
     
 
 ### Will not have
@@ -60,3 +69,10 @@
 -   Drag and drop functionality of events that dynamically reschedules
     
 -   multitasking: overlapping tasks
+    
+
+## Non functional requirements 
+
+-   80% test coverage of back-end code
+    
+-   The software should be user friendly

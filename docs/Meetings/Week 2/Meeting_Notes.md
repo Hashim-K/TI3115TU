@@ -66,3 +66,26 @@ Things to add in the requirements:
     - GUI Front End Worker
     - Algorithm Back End Worker
     - Flex Worker
+- Setup Initial Wiki
+
+# Meeting Notes | 2021-09-16 | Week 2
+*by A. Eyong*
+## Group Meeting Notes
+### Division of Developer Tasks
+- Teus: Backend
+- Hashim: Backend
+- Nina: Flex
+- Robin: GUI
+- Achere: GUI
+### Requirements
+- Appended 'nonfunctional requirements' to the 'Requirements.md' file.
+### Schedule Class Design
+#### Design Notes
+- The data must be stored/retrievable such that the algorithm can work on an arbitrary interval.
+#### Attributes and Functions
+- Properties [week list(2D list, rows are the time chunks and columns are the days), ]
+- Methods [do_schedule]
+---
+## Before End of Week
+- 
+
