@@ -1,4 +1,4 @@
-﻿Week 1 sprint review
+Week 1 sprint review
 
 We formed our group.
 We set up our GitLab, and a Whatsapp group and Discord server for communication.
