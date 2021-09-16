@@ -14,12 +14,12 @@
     
 -   Data is stored locally
     
+-   GUI
+    
 
 ### Should have
 
 -   Check off whether you have finished a task
-    
--   GUI
     
 -   Data encryption
     
