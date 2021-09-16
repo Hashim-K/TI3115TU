@@ -87,5 +87,5 @@ Things to add in the requirements:
 - Methods [do_schedule]
 ---
 ## Before End of Week
-- 
+- GUI Workers pick a framework
 
