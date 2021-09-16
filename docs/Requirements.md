@@ -76,3 +76,5 @@
 -   80% test coverage of back-end code
     
 -   The software should be user friendly
+
+-   Well documentation of the project's architecture
