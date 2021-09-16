@@ -1,4 +1,4 @@
-# Meeting Notes | 2021-09-13
+# Meeting Notes | 2021-09-13 | Week 1
 *by A. Eyong*
 
 ### Calendar
@@ -26,7 +26,7 @@ Sprint weeks are defined to begin on Monday and end on Friday. Weekends are not 
 
 
 ---
-# Meeting Notes | 2021-09-15
+# Meeting Notes | 2021-09-15 | Week 2
 *by A. Eyong*
 
 ## TA Meeting Notes
