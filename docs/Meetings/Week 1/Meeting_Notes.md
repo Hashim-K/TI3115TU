@@ -29,9 +29,9 @@ Sprint weeks are defined to begin on Monday and end on Friday. Weekends are not 
 # Meeting Notes | 2021-09-15
 *by A. Eyong*
 
-## [TA Meeting Notes]
+## TA Meeting Notes
 ### Addition on the Requirements
-Things that we require:
+Things to add in the requirements:
 - Nonfunctional requirements
     - Measureable
     - Python version
@@ -39,6 +39,30 @@ Things that we require:
 
 ### Sprint
 - Add sprint retrospective for last week
-- [On data structures] Maybe use MySQL and Delft's own thing
+- [On data structures] Maybe use MySQL or Delft's own data management framework
 
 ---
+## Group Meeting Notes
+### Data Structures for events and schedule
+- Task and schedule data will be stored in .JSON files when either of them are created.
+
+### Event Class and Schedule Class Design
+
+#### **[Event Class]** 
+- Properties [eventID, name, description, total duration, priority, deadline, category, preferred time, plan on same day, *Sessions List of Dictionaries*]
+- Getters and setters
+- .json encoder and decoder
+
+#### **[Session Dictionary Entry]**
+- Properties [sessionID, duration]
+
+#### **[Schedule Class]**
+
+[not discussed]
+
+---
+## Before Next Meeting
+- Decide on what task each developer wants to take on, open positions are:
+    - GUI Front End Worker
+    - Algorithm Back End Worker
+    - Flex Worker
