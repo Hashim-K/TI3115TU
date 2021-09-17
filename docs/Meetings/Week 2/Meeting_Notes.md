@@ -89,3 +89,8 @@ Things to add in the requirements:
 ## Before End of Week
 - GUI Workers pick a framework
 
+# Meeting Notes | 2021-09-17 | Week 2
+### GUI
+- We picked PyQT5 for our GUI framework.
+
+
