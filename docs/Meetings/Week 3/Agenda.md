@@ -1,0 +1,11 @@
+# Agenda 2021-09-20
+- [ ] Final Discussion on Event and Schedule Class before initial implementation
+- [ ] Deciding software's name
+- [ ] Discuss feasibility of working prototype by end of week
+    - E.g. Google account login and processing of time chunks used by imported calendar.
+- [ ] Discuss weekly sprint
+    - OAuth Sign In
+    - Event and Schedule Classes and cross-functionality
+    - General UI Design (conceptual)
+    - Initial UI Implementation
+    - Merge
