@@ -1,4 +1,4 @@
-# Meeting Notes | 2021-09-13 | Week 1
+# Meeting Notes | 2021-09-13 | Week 2
 *by A. Eyong*
 
 ### Calendar
