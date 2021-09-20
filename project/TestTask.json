@@ -8,7 +8,7 @@
     "Deadline": "sunday",
     "Repeatable": "no",
     "Category": "school",
-    "Preffered time": "afternoon",
+    "Preferred": "afternoon",
     "Plan_on_same": "no",
     "Session": [
         {
@@ -34,7 +34,7 @@
     "Deadline": "monday",
     "Repeatable": "no",
     "Category": "school",
-    "Preffered time": "afternoon",
+    "Preferred": "afternoon",
     "Plan_on_same": "no",
     "Session": [
         {
