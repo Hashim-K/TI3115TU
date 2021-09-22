@@ -73,6 +73,6 @@
     
 -   Python 3.9.7 application
 
-- 	Framework PyQt5
+- 	GUI framework will be made with PyQt5
 
 -   Good documentation of the project's architecture
