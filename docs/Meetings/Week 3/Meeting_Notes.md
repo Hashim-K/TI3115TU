@@ -1,4 +1,4 @@
-﻿# Meeting Notes | 2021-09-20 | Week 3
+# Meeting Notes | 2021-09-20 | Week 3
 
 *By N.I.M. Oosterlaar*
 
@@ -100,7 +100,7 @@ When an appropriate spot is found, the tasks object will initialize the creation
  - Try merging task class with the gui next week
  - Pipeline needs to be fixed
 	 - snake_case
-	 - UPPER_case
+	 - UPPER_CASE
 	 - importation of modules
 	 - redefined-outer-name
 	 - enumerate
