@@ -1,31 +1,15 @@
-import sys
+import sys, general_window_gui, main_window_gui
 from PyQt5.QtWidgets import QApplication, QLabel, QPushButton, QVBoxLayout, QWidget, QFileDialog, QGridLayout, QLineEdit
 from PyQt5.QtGui import QIcon, QPixmap, QCursor
 from PyQt5 import QtGui, QtCore
 
-
-class GeneralWindow(QWidget):
-    '''General window skeleton; initializes window UI and adds it to passed window_list'''
-    def __init__(self, window_list, prefs):
-        super().__init__()
-
-        self.ls_w = window_list     # Store window list for ADD/REMOVE
-        self.ls_w.append(self)
-
-        self.prefs = prefs      # Load in prefs
-
-        self.init_ui()       # Initializes UI elements
-        self.show()         # Show Window
-
-    def init_ui(self):
-        pass
-    
-    def closeEvent(self, a0: QtGui.QCloseEvent) -> None:    # Upon closure
-        self.ls_w.remove(self)
-
-class LandingView(GeneralWindow):
+class LandingView(general_window_gui.GeneralWindow):
     def __init__(self, window_list, prefs):
         super().__init__(window_list, prefs)
+    
+    def launch(self):
+        main_window = main_window_gui.MainWindow(self.ls_w, self.prefs)
+        self.close()
     
     def init_ui(self):
         # DATA
@@ -37,7 +21,7 @@ class LandingView(GeneralWindow):
         icon = QIcon(self.prefs.images['img_logo_min'])
         self.setWindowIcon(icon)
         self.setWindowTitle("25/8")
-        self.setStyleSheet(Stylesheet.general_window)
+        self.setStyleSheet(self.prefs.style_sheets['general_window'])
         # Grid Init
         grid = QGridLayout()
 
@@ -58,22 +42,24 @@ class LandingView(GeneralWindow):
         self.msg.setAlignment(QtCore.Qt.AlignCenter)
         self.msg.setFixedHeight(30)
         self.msg.setWordWrap(True)
-        self.msg.setStyleSheet(Stylesheet.text_bubble_dark)
+        self.msg.setStyleSheet(self.prefs.style_sheets['text_bubble_dark'])
 
         grid.addWidget(self.msg, 0, 1, 1, 1)
 
         # Version Text
         v_text = QLabel()
         v_text.setText('v0.1')
-        v_text.setStyleSheet(Stylesheet.text_mute)
+        v_text.setStyleSheet(self.prefs.style_sheets['text_mute'])
         v_text.setAlignment(QtCore.Qt.AlignRight)
 
         grid.addWidget(v_text, 0, 0, 1, 1)
 
-        # Sign in Button
+        # Launch Button
         button = QPushButton('Launch')
         button.setCursor(QCursor(QtCore.Qt.PointingHandCursor)) # Set cursor to hand on mouseover
-        button.setStyleSheet(Stylesheet.priority_button)
+        button.setStyleSheet(self.prefs.style_sheets['button_priority'])
+
+        button.clicked.connect(self.launch)
 
         grid.addWidget(button, 2, 0, 1, 2)
 
@@ -82,7 +68,7 @@ class LandingView(GeneralWindow):
         # Close Button
         close_button = QPushButton('Exit')
         close_button.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
-        close_button.setStyleSheet(Stylesheet.exit_button)
+        close_button.setStyleSheet(self.prefs.style_sheets['button_exit'])
 
         close_button.clicked.connect(lambda:sys.exit())
 
@@ -91,57 +77,7 @@ class LandingView(GeneralWindow):
         # Help Button
         help_button = QPushButton('About')
         help_button.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
-        help_button.setStyleSheet(Stylesheet.low_priority_button)
+        help_button.setStyleSheet(self.prefs.style_sheets['button_low_priority'])
 
         grid.addWidget(help_button, 3, 1, 1, 1)
-
-
-
-class Stylesheet():
-    general_window = ("background: #303136;")
-    text = ("font-size: 13px; color: 'white';" +
-                    "border-radius: 10px;" +
-                    " padding: 10px 10px;")
-    text_mute = ("font-size: 13px; color: '#A0A0A0';" +
-                    "border-radius: 10px;" +
-                    " padding: 10px 10px;")
-    text_bubble = ("font-size: 13px; color: 'white';" +
-                    "background-color: '#363940'; border-radius: 10px;" +
-                    " padding: 10px 10px;")
-    text_bubble_dark = ("font-size: 13px; color: 'white';" +
-                    "background-color: '#27282C'; border-radius: 10px;" +
-                    " padding: 10px 10px;")
-    text_bubble_alert = ("font-size: 13px; color: 'white';" +
-                    "background-color: '#ff3643'; border-radius: 10px;" +
-                    " padding: 10px 10px;")
-    priority_button = (
-                    "*{border: 2px solid '#404EED';" + 
-                    "border-radius: 15px;" +
-                    "background-color: '#404EED';" + 
-                    "font-size: 13px;"
-                    "color : 'white';" +
-                    "padding: 5px 0px;" +
-                    "margin: 0px 0px;}" +
-                    "*:hover{background: '#4069ED';}"
-                    )
-    low_priority_button = (
-                    "*{border: 2px solid '#42464E';" + 
-                    "border-radius: 15px;" +
-                    "background-color: '#42464E';" + 
-                    "font-size: 13px;"
-                    "color : 'white';" +
-                    "padding: 5px 0px;" +
-                    "margin: 0px 0px;}" +
-                    "*:hover{background: '#4069ED'; color: 'white';}"
-                    )
-    exit_button = (
-                    "*{border: 2px solid '#42464E';" + 
-                    "border-radius: 15px;" +
-                    "background-color: '#42464E';" + 
-                    "font-size: 13px;" +
-                    "color : 'white';" +
-                    "padding: 5px 0px;" +
-                    "margin: 0px 0px;}" +
-                    "*:hover{background: '#db0000'; color: 'white';}"
-                    ) 
 

@@ -18,13 +18,10 @@ def on_startup():
     # Init landing GUI
     gui_landing = landing_gui.LandingView(window_list, prefs)
 
-def yehees():
-    pass
-
-
 # BODY
 app = QApplication(sys.argv)
 on_startup()                    # Do startup-things
+print('keepo')
 sys.exit(app.exec())    
 
 '''The event loop of the GUI is in the exit argument as that will make close

@@ -3,7 +3,8 @@ class Prefs():
 
     images = {
         'img_logo' : 'project/imagery/logo.png',
-        'img_logo_min' : 'project/imagery/logo_min.png'
+        'img_logo_min' : 'project/imagery/logo_min.png',
+        'bar_close' : 'project/imagery/bar_close.png'
     }
 
     # STYLE SHEET
