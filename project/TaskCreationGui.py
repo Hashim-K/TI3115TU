@@ -2,7 +2,7 @@ import sys
 
 from Task import Task
 from PyQt5.QtWidgets import *
-from PyQt5.QtCore import QRegExp
+from PyQt5.QtCore import QRegExp, Qt
 from PyQt5.QtGui import QRegExpValidator
 
 
@@ -21,6 +21,7 @@ class TaskCreationWindow(QWidget):
 
     def initUI(self):
         layout = QFormLayout()
+        layout.setSpacing(15)
 
         # Title
         self.title_field = QLineEdit(self)
@@ -29,11 +30,25 @@ class TaskCreationWindow(QWidget):
         # Deadline
         self.duedate_field = QLineEdit(self)
         layout.addRow("Due date", self.duedate_field)
+        # self.datepicker = QCalendarWidget(self)
+        # layout.addRow(self.datepicker)
 
         # Sessions
         self.numsessions_field = QLineEdit(self)
+        self.numsessions_field.setText("1")
         self.numsessions_field.setValidator(QRegExpValidator(QRegExp(r'[0-9]+')))
         layout.addRow("Number of sessions", self.numsessions_field)
+
+        self.duration_label = QLabel("5 minutes", self)
+
+        self.sessionduration_slider = QSlider(Qt.Horizontal, self)
+        self.sessionduration_slider.setMinimum(5)
+        self.sessionduration_slider.setMaximum(240)
+        self.sessionduration_slider.setSingleStep(5)
+        self.sessionduration_slider.valueChanged.connect(self.update_duration)
+
+        layout.addRow(QLabel("Session duration"), self.duration_label)
+        layout.addRow(self.sessionduration_slider)
 
         # Description
         self.description_field = QLineEdit(self)
@@ -81,16 +96,21 @@ class TaskCreationWindow(QWidget):
     def create_task(self):
         name = self.title_field.text()
         deadline = self.duedate_field.text()
-        num_sessions = int(self.numsessions_field.text())
+        num_sessions = self.numsessions_field.text()
+        num_sessions = int(num_sessions)
         description = self.description_field.text()
         priority = self.priority_dropdown.currentIndex()
         category = self.category_dropbox.currentText()
         onsameday = self.sameday_check.isChecked()
         preferredtime = self.preference_dropbox.currentText()
+        print("test")
 
         new_task = Task("TaskID", name, description, "total_duration", priority, deadline,
                         "repeatable", category, "preferred", onsameday, "sessions")
         print(new_task)
+
+    def update_duration(self, val):
+        self.duration_label.setText(str(val) + " minutes")
 
 
 # will maybe move stylesheet to other file
