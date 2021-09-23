@@ -73,3 +73,36 @@
  - Decide on the data structure of all our different task cases 
  - Fix OAuth
 
+# Meeting notes | 2021-09-23 | Week 3
+
+
+## Overview back end algorithm 
+
+
+The first step is importing the google calendar and using its data to create an event object from the event class and placing it in the schedule array.
+The event class has the following attributes: ID, label, colour, and the times and dates the event will occur.
+The gui will ask to fill in regular tasks and this information will also be processed into an event object and be allocated to the corresponding spot in the schedule array.
+Task objects will be created inside the task class with the input from the user interface. The task class contains all the attributes needed to find a spot in the schedule array.
+When an appropriate spot is found, the tasks object will initialize the creation of an event object and then stored to the schedule. This process will go on until every tasks has been allocated. 
+
+## Other decisions
+
+ - The task attribute sessions will be an integer decided by the user and a total_duration will be changed to duration and will represent the duration of every session, decided by a slider in the gui
+ - TaskID and evenID will be the same
+ - Task class needs a list of all the task objects 
+
+## To do list
+
+ - Creating a main file, which will refer to all the different python files of the programme
+ - A file will have to be made which installs all the needed modules for the software
+ - OAuth now expires after two weeks, need to think of a way to solve this
+ - Updating task class
+ - Try merging task class with the gui next week
+ - Pipeline needs to be fixed
+	 - snake_case
+	 - UPPER_case
+	 - importation of modules
+	 - redefined-outer-name
+	 - enumerate
+	
+
