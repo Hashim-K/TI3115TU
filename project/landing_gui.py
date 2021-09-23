@@ -4,38 +4,45 @@ from PyQt5.QtGui import QIcon, QPixmap, QCursor
 from PyQt5 import QtGui, QtCore
 
 
-class general_window(QWidget):
+class GeneralWindow(QWidget):
     '''General window skeleton; initializes window UI and adds it to passed window_list'''
-    def __init__(self, window_list):
+    def __init__(self, window_list, prefs):
         super().__init__()
-        self.ls_w = window_list
-        self.ls_w.append(self)
-        self.initUI()       # Initializes UI elements
 
-    def initUI(self):
+        self.ls_w = window_list     # Store window list for ADD/REMOVE
+        self.ls_w.append(self)
+
+        self.prefs = prefs      # Load in prefs
+
+        self.init_ui()       # Initializes UI elements
+        self.show()         # Show Window
+
+    def init_ui(self):
         pass
     
-    def closeEvent(self, a0: QtGui.QCloseEvent) -> None:
+    def closeEvent(self, a0: QtGui.QCloseEvent) -> None:    # Upon closure
         self.ls_w.remove(self)
 
-class landing_view(general_window):
-    def __init__(self, window_list):
-        super().__init__(window_list)
+class LandingView(GeneralWindow):
+    def __init__(self, window_list, prefs):
+        super().__init__(window_list, prefs)
     
-    def initUI(self):
+    def init_ui(self):
         # DATA
         msg_not_logged = 'offline mode'
         msg_logged = f'Welcome ##NAME##'
         # WINDOW
         self.setFixedSize(250, 500)
         # Window Style
+        icon = QIcon(self.prefs.images['img_logo_min'])
+        self.setWindowIcon(icon)
         self.setWindowTitle("25/8")
         self.setStyleSheet(Stylesheet.general_window)
         # Grid Init
         grid = QGridLayout()
 
         # Image
-        logo = QPixmap('project/logo.png')
+        logo = QPixmap(self.prefs.images['img_logo'])
         scale = 0.27
         logo = logo.scaled(scale * logo.width(), scale * logo.height(), transformMode=QtCore.Qt.SmoothTransformation)
         l_logo = QLabel()
@@ -137,10 +144,4 @@ class Stylesheet():
                     "margin: 0px 0px;}" +
                     "*:hover{background: '#db0000'; color: 'white';}"
                     ) 
-
-app = QApplication(sys.argv)
-ls = list()
-lv = landing_view(ls)
-lv.show()
-sys.exit(app.exec())
 

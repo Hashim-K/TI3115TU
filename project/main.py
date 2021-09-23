@@ -1,8 +1,34 @@
 # MAIN modules
-import sys
+import sys, s_p
 from PyQt5.QtWidgets import QApplication
 
+# GUI modules
+import landing_gui
+
 # MAIN attributes
+window_list = list()
+prefs = s_p.Prefs()
+
+google_credentials = None       # Lookup token
+
+# STARTUP functions
+def on_startup():
+    # Obtain Google account IF it is there
+
+    # Init landing GUI
+    gui_landing = landing_gui.LandingView(window_list, prefs)
+
+def yehees():
+    pass
 
 
-# 1) on_startup
+# BODY
+app = QApplication(sys.argv)
+on_startup()                    # Do startup-things
+sys.exit(app.exec())    
+
+'''The event loop of the GUI is in the exit argument as that will make close
+wait until ALL UI is closed.'''
+
+
+
