@@ -145,3 +145,6 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# A. Eyong personal
+proj_graphics.afdesign
