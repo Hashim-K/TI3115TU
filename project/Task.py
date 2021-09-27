@@ -1,40 +1,50 @@
 import json
+import os.path
+from datetime import datetime
 
 class Task:
+    def __init__(self, name, description, duration, priority, deadline,
+                 repeatable, category, preferred, plan_on_same, session):
+        self.name = name #string
+        self.description = description #string
+        self.duration = duration #int / datetime object
+        self.priority = priority #int
+        self.deadline = deadline #date (datetime object)
+        self.repeatable = repeatable #boolean
+        self.category = category #integer
+        self.preferred = preferred #string ??
+        self.plan_on_same = plan_on_same # boolean
+        self.session = session #int
+        self.taskID = 22
 
-    def __init__(self, TaskID, Name, Description, Total_Duration, Priority, Deadline,
-                 Repeatable, Category, Preferred, Plan_on_same, Session):
-        self.TaskID = TaskID
-        self.Name = Name
-        self.Description = Description
-        self.Total_Duration = Total_Duration
-        self.Priority = Priority
-        self.Deadline = Deadline
-        self.Repeatable = Repeatable
-        self.Category = Category
-        self.Preferred = Preferred
-        self.Plan_on_same = Plan_on_same
-        self.Session = Session
+    def __str__(self):
+        text_description = f"Task \"{self.name}\" ({self.taskID}): {self.description}.\n"\
+                            + f"Deadline: {self.deadline}, " \
+                            + f"number of sessions: {self.session}, session duration: {self.duration}"
+        return text_description
 
     def export_task(self, filename):
         entry = {
-            "TaskID": self.TaskID,
-            "Name": self.Name,
-            "Description": self.Description,
-            "Total_Duration": self.Total_Duration,
-            "Priority": self.Priority,
-            "Deadline": self.Deadline,
-            "Repeatable": self.Repeatable,
-            "Category": self.Category,
-            "Preferred": self.Preferred,
-            "Plan_on_same": self.Plan_on_same,
-            "Session": self.Session
+            "TaskID": self.taskID,
+            "Name": self.name,
+            "Description": self.description,
+            "Duration": self.duration,
+            "Priority": self.priority,
+            "Deadline": self.deadline.isoformat(),
+            "Repeatable": self.repeatable,
+            "Category": self.category,
+            "Preferred": self.preferred,
+            "Plan_on_same": self.plan_on_same,
+            "Session": self.session
         }
-        with open(filename, 'r') as file:
-            data = json.load(file)
+        if os.path.exists(filename):
+            with open(filename, 'r') as file:
+                data = json.load(file)
+        else:
+            data = []
         data.append(entry)
         with open(filename, 'w') as file:
-            json.dump(data, file)
+            json.dump(data, file, indent = 6)
 
 
 def import_task(filename):
@@ -42,13 +52,8 @@ def import_task(filename):
     with open(filename, 'r') as file:
         task_dict = json.load(file)
         for tasks in task_dict:
-            tasks_list.append(Task(tasks['TaskID'], tasks['Name'], tasks['Description'], tasks['Total_Duration'],
-                    tasks['Priority'], tasks['Deadline'], tasks['Repeatable'],
+            tasks_list.append(Task(tasks['Name'], tasks['Description'], tasks['Duration'],
+                    tasks['Priority'], datetime.fromisoformat(tasks['Deadline']), tasks['Repeatable'],
                     tasks['Category'], tasks['Preferred'], tasks['Plan_on_same'], tasks['Session']))
-    print(len(tasks_list))
+    return tasks_list
 
-task1 = Task('0002', 'Anime', 'Best show ever', 4, 0, 'Now', 'Yes', 'Free Time', 'No preference', 'No', 'test')
-
-task1.export_task('TestTask1.json')
-
-import_task('TestTask1.json')

@@ -13,6 +13,12 @@ class Prefs():
         'text' : ("font-size: 13px; color: 'white';" +
                     "border-radius: 10px;" +
                     " padding: 10px 10px;"),
+        'text_tight' : ("font-size: 13px; color: 'white';" +
+                    "border-radius: 10px;" +
+                    " padding: 0px 0px;"),
+        'text_title' : ("font-size: 16px; color: 'white';" +
+                    "border-radius: 10px;" +
+                    " padding: 0px 0px;"),
         'text_mute' : ("font-size: 13px; color: '#A0A0A0';" +
                     "border-radius: 10px;" +
                     " padding: 10px 10px;"),
