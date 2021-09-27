@@ -79,6 +79,10 @@ class TaskCreationWindow(QWidget):
         self.sameday_check = QCheckBox(self)
         layout.addRow("Allow multiple sessions on the same day?", self.sameday_check)
 
+        # Repeat weekly
+        self.repeat_check = QCheckBox(self)
+        layout.addRow("Repeat this task weekly?", self.repeat_check)
+
         # Cancel button
         self.cancel_button = QPushButton("Cancel")
         self.cancel_button.setStyleSheet(Stylesheet.grey_button)
@@ -95,18 +99,20 @@ class TaskCreationWindow(QWidget):
 
     def create_task(self):
         name = self.title_field.text()
+        description = self.description_field.text()
         deadline = self.duedate_field.text()
         num_sessions = self.numsessions_field.text()
         num_sessions = int(num_sessions)
-        description = self.description_field.text()
+        session_duration = self.sessionduration_slider.value()
         priority = self.priority_dropdown.currentIndex()
         category = self.category_dropbox.currentText()
         onsameday = self.sameday_check.isChecked()
+        repeat = self.repeat_check.isChecked()
         preferredtime = self.preference_dropbox.currentText()
         print("test")
 
-        new_task = Task("TaskID", name, description, "total_duration", priority, deadline,
-                        "repeatable", category, "preferred", onsameday, "sessions")
+        new_task = Task(name, description, session_duration, priority, deadline,
+                        repeat, category, preferredtime, onsameday, num_sessions)
         print(new_task)
 
     def update_duration(self, val):
