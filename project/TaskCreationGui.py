@@ -13,7 +13,7 @@ class TaskCreationWindow(QWidget):
 
         self.setWindowTitle("Create new task")
         self.setStyleSheet("color: 'white';" +
-                        "font-size: 16px;" +
+                        "font-size: 13px;" +
                         "background-color: #303136;")
 
         self.initUI()
