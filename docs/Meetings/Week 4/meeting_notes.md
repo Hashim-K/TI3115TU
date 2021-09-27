@@ -2,7 +2,7 @@
 *By T. Vercoelen*
 
 ## Sprint Planning
-This week we aim to connect the google agenda and implement a first version of the GUI.
+This week we aim to connect the google agenda, implement a first version of the GUI and start work on the planning algorithm.
 
 
 ### Back End
