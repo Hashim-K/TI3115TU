@@ -2,7 +2,7 @@ import sys
 
 from Task import Task
 from PyQt5.QtWidgets import *
-from PyQt5.QtCore import QRegExp, Qt
+from PyQt5.QtCore import QRegExp, Qt, QDate
 from PyQt5.QtGui import QRegExpValidator
 
 
@@ -29,10 +29,9 @@ class TaskCreationWindow(QWidget):
         self.title_field.setMaxLength(30)
 
         # Deadline
-        self.duedate_field = QLineEdit(self)
-        layout.addRow("Due date", self.duedate_field)
-        # self.datepicker = QCalendarWidget(self)
-        # layout.addRow(self.datepicker)
+        self.datepicker = QDateEdit(calendarPopup=True)
+        self.datepicker.setMinimumDate(QDate.currentDate())
+        layout.addRow("Deadline", self.datepicker)
 
         # Sessions
         self.numsessions_field = QLineEdit(self)
@@ -43,9 +42,8 @@ class TaskCreationWindow(QWidget):
         self.duration_label = QLabel("5 minutes", self)
 
         self.sessionduration_slider = QSlider(Qt.Horizontal, self)
-        self.sessionduration_slider.setMinimum(5)
-        self.sessionduration_slider.setMaximum(240)
-        self.sessionduration_slider.setSingleStep(5)
+        self.sessionduration_slider.setMinimum(1)
+        self.sessionduration_slider.setMaximum(48)
         self.sessionduration_slider.valueChanged.connect(self.update_duration)
 
         layout.addRow(QLabel("Session duration"), self.duration_label)
@@ -56,6 +54,9 @@ class TaskCreationWindow(QWidget):
         self.description_field.setMaxLength(200)
         layout.addRow(QLabel("Description"))
         layout.addRow(self.description_field)
+        # self.description_field = QTextEdit(self)
+        # layout.addRow(QLabel("Description"))
+        # layout.addRow(self.description_field)
 
         # Priority
         self.priority_dropdown = QComboBox(self)
@@ -99,13 +100,18 @@ class TaskCreationWindow(QWidget):
 
         self.setLayout(layout)
 
+    def update_duration(self, val):
+        self.duration_label.setText(str(5*val) + " minutes")
+
     def create_task(self):
         name = self.title_field.text()
         description = self.description_field.text()
-        deadline = self.duedate_field.text()
+        deadline = self.datepicker.date()
+        deadline = deadline.toPyDate()
         num_sessions = self.numsessions_field.text()
         num_sessions = int(num_sessions)
         session_duration = self.sessionduration_slider.value()
+        session_duration = 5*int(session_duration)
         priority = self.priority_dropdown.currentIndex()
         category = self.category_dropbox.currentText()
         onsameday = self.sameday_check.isChecked()
@@ -118,8 +124,7 @@ class TaskCreationWindow(QWidget):
 
         Task.export_task(new_task, "save_file.json")
 
-    def update_duration(self, val):
-        self.duration_label.setText(str(val) + " minutes")
+        # then close task creation GUI
 
 
 # will maybe move stylesheet to other file
