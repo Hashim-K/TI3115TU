@@ -1,4 +1,4 @@
-# Meeting Notes | 2021-09-20 | Week 3
+﻿# Meeting Notes | 2021-09-20 | Week 3
 
 *By N.I.M. Oosterlaar*
 

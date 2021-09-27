@@ -33,6 +33,7 @@ def Add2Schedule(task):
             block = [[time2[0], 0], time2]
             blocks.append(block)
 
+
     for block in blocks:
         for slot in range(block[0][1], block[1][1]):
             Schedule[block[0][0]][slot] = task.ID
@@ -148,6 +149,7 @@ for day in days:
 for Routine in Routines:
     Add2Schedule(Routine)
 
+
 FreeBlocks = EmptySlots()
 
 
@@ -157,4 +159,4 @@ for FreeBlock in FreeBlocks:
     FreeTime.Occurences.append(FreeBlock)
 Add2Schedule(FreeTime)
 
-Display()
+#Display()

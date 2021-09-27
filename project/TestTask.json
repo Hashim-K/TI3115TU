@@ -1,49 +1,54 @@
-    [
+[
       {
-    "TaskID": "0000",    
-    "Name": "Study for exam",
-    "Description": "...",
-    "Total_Duration": "6",
-    "Priority": 1,
-    "Deadline": "sunday",
-    "Repeatable": "no",
-    "Category": "school",
-    "Preferred": "afternoon",
-    "Plan_on_same": "no",
-    "Session": [
-        {
-        "sessionid": "0",
-        "duration": 2    
-        },
-        {
-        "sessionid": "1",
-        "duration": 2    
-        },
-        {
-        "sessionid": "2",
-        "duration": 2    
-        }
-        ]
-     },
-     {
-    "TaskID": "0001",    
-    "Name": "Study for hw",
-    "Description": "...",
-    "Total_Duration": "4",
-    "Priority": 2,
-    "Deadline": "monday",
-    "Repeatable": "no",
-    "Category": "school",
-    "Preferred": "afternoon",
-    "Plan_on_same": "no",
-    "Session": [
-        {
-        "sessionid": "0",
-        "duration": 2    
-        },
-        {
-        "sessionid": "1",
-        "duration": 2    
-        }
-        ]
-     }]
+            "TaskID": "0000",
+            "Name": "Study for exam",
+            "Description": "...",
+            "Duration": "6",
+            "Priority": 1,
+            "Deadline": "sunday",
+            "Repeatable": "no",
+            "Category": "school",
+            "Preferred": "afternoon",
+            "Plan_on_same": "no",
+            "Session": 3
+      },
+      {
+            "TaskID": "0001",
+            "Name": "Study for hw",
+            "Description": "...",
+            "Duration": "4",
+            "Priority": 2,
+            "Deadline": "monday",
+            "Repeatable": "no",
+            "Category": "school",
+            "Preferred": "afternoon",
+            "Plan_on_same": "no",
+            "Session": 2
+      },
+      {
+            "TaskID": 5,
+            "Name": "Anime",
+            "Description": "Finally finish moriarty",
+            "Duration": 5,
+            "Priority": 3,
+            "Deadline": "Now",
+            "Repeatable": true,
+            "Category": 4,
+            "Preferred": "Evening",
+            "Plan_on_same": true,
+            "Session": 7
+      },
+      {
+            "TaskID": 6,
+            "Name": "Exam",
+            "Description": "Studying intro to python",
+            "Duration": 6,
+            "Priority": 1,
+            "Deadline": "Next week",
+            "Repeatable": false,
+            "Category": 2,
+            "Preferred": "Afternoon",
+            "Plan_on_same": false,
+            "Session": 5
+      }
+]
