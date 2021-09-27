@@ -1,6 +1,7 @@
 import json
 from Schedule import Routines
 import os.path
+from datetime import datetime
 
 class Task:
 
@@ -34,7 +35,7 @@ class Task:
             "Description": self.description,
             "Duration": self.duration,
             "Priority": self.priority,
-            "Deadline": self.deadline,
+            "Deadline": self.deadline.isoformat(),
             "Repeatable": self.repeatable,
             "Category": self.category,
             "Preferred": self.preferred,
@@ -57,9 +58,8 @@ def import_task(filename):
         task_dict = json.load(file)
         for tasks in task_dict:
             tasks_list.append(Task(tasks['Name'], tasks['Description'], tasks['Duration'],
-                    tasks['Priority'], tasks['Deadline'], tasks['Repeatable'],
+                    tasks['Priority'], datetime.fromisoformat(tasks['Deadline']), tasks['Repeatable'],
                     tasks['Category'], tasks['Preferred'], tasks['Plan_on_same'], tasks['Session']))
     return tasks_list
 
-
-
+print(import_task('save_file.json')[0])
