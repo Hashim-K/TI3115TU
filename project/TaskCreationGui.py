@@ -26,6 +26,7 @@ class TaskCreationWindow(QWidget):
         # Title
         self.title_field = QLineEdit(self)
         layout.addRow("Title", self.title_field)
+        self.title_field.setMaxLength(30)
 
         # Deadline
         self.duedate_field = QLineEdit(self)
@@ -52,6 +53,7 @@ class TaskCreationWindow(QWidget):
 
         # Description
         self.description_field = QLineEdit(self)
+        self.description_field.setMaxLength(200)
         layout.addRow(QLabel("Description"))
         layout.addRow(self.description_field)
 
@@ -109,11 +111,12 @@ class TaskCreationWindow(QWidget):
         onsameday = self.sameday_check.isChecked()
         repeat = self.repeat_check.isChecked()
         preferredtime = self.preference_dropbox.currentText()
-        print("test")
 
         new_task = Task(name, description, session_duration, priority, deadline,
                         repeat, category, preferredtime, onsameday, num_sessions)
         print(new_task)
+
+        Task.export_task(new_task, "save_file.json")
 
     def update_duration(self, val):
         self.duration_label.setText(str(val) + " minutes")
