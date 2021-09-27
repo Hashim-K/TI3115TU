@@ -19,6 +19,9 @@ class Prefs():
         'text_bubble' : ("font-size: 13px; color: 'white';" +
                     "background-color: '#363940'; border-radius: 10px;" +
                     " padding: 10px 10px;"),
+        'text_bubble_title' : ("font-size: 16px; color: 'white';" +
+                    "background-color: '#27282C'; border-radius: 10px;" +
+                    " padding: 10px 10px;"),
         'text_bubble_alert' : ("font-size: 13px; color: 'white';" +
                     "background-color: '#ff3643'; border-radius: 10px;" +
                     " padding: 10px 10px;"),
@@ -54,6 +57,27 @@ class Prefs():
                     "padding: 5px 0px;" +
                     "margin: 0px 0px;}" +
                     "*:hover{background: '#db0000'; color: 'white';}"
-                    ) 
+                    ),
+        # Burger menu buttons
+        'button_prio_burger' : (
+                    "*{border: 2px solid '#404EED';" + 
+                    "border-radius: 15px;" +
+                    "background-color: '#404EED';" + 
+                    "font-size: 13px;"
+                    "color : 'white';" +
+                    "padding: 5px 25px;" +
+                    "margin: 0px 0px;}" +
+                    "*:hover{background: '#4069ED';}"
+                    ),
+        'button_low_prio_burger' : (
+                    "*{border: 2px solid '#42464E';" + 
+                    "border-radius: 15px;" +
+                    "background-color: '#42464E';" + 
+                    "font-size: 13px;"
+                    "color : 'white';" +
+                    "padding: 5px 25px;" +
+                    "margin: 0px 0px;}" +
+                    "*:hover{background: '#4069ED';}"
+                    )
     }
 
