@@ -2,7 +2,7 @@ import sys
 
 from Task import Task
 from PyQt5.QtWidgets import *
-from PyQt5.QtCore import QRegExp, Qt
+from PyQt5.QtCore import QRegExp, Qt, QDate
 from PyQt5.QtGui import QRegExpValidator
 
 
@@ -26,12 +26,12 @@ class TaskCreationWindow(QWidget):
         # Title
         self.title_field = QLineEdit(self)
         layout.addRow("Title", self.title_field)
+        self.title_field.setMaxLength(30)
 
         # Deadline
-        self.duedate_field = QLineEdit(self)
-        layout.addRow("Due date", self.duedate_field)
-        # self.datepicker = QCalendarWidget(self)
-        # layout.addRow(self.datepicker)
+        self.datepicker = QDateEdit(calendarPopup=True)
+        self.datepicker.setMinimumDate(QDate.currentDate())
+        layout.addRow("Deadline", self.datepicker)
 
         # Sessions
         self.numsessions_field = QLineEdit(self)
@@ -42,9 +42,8 @@ class TaskCreationWindow(QWidget):
         self.duration_label = QLabel("5 minutes", self)
 
         self.sessionduration_slider = QSlider(Qt.Horizontal, self)
-        self.sessionduration_slider.setMinimum(5)
-        self.sessionduration_slider.setMaximum(240)
-        self.sessionduration_slider.setSingleStep(5)
+        self.sessionduration_slider.setMinimum(1)
+        self.sessionduration_slider.setMaximum(48)
         self.sessionduration_slider.valueChanged.connect(self.update_duration)
 
         layout.addRow(QLabel("Session duration"), self.duration_label)
@@ -52,8 +51,12 @@ class TaskCreationWindow(QWidget):
 
         # Description
         self.description_field = QLineEdit(self)
+        self.description_field.setMaxLength(200)
         layout.addRow(QLabel("Description"))
         layout.addRow(self.description_field)
+        # self.description_field = QTextEdit(self)
+        # layout.addRow(QLabel("Description"))
+        # layout.addRow(self.description_field)
 
         # Priority
         self.priority_dropdown = QComboBox(self)
@@ -79,6 +82,10 @@ class TaskCreationWindow(QWidget):
         self.sameday_check = QCheckBox(self)
         layout.addRow("Allow multiple sessions on the same day?", self.sameday_check)
 
+        # Repeat weekly
+        self.repeat_check = QCheckBox(self)
+        layout.addRow("Repeat this task weekly?", self.repeat_check)
+
         # Cancel button
         self.cancel_button = QPushButton("Cancel")
         self.cancel_button.setStyleSheet(Stylesheet.grey_button)
@@ -93,24 +100,31 @@ class TaskCreationWindow(QWidget):
 
         self.setLayout(layout)
 
+    def update_duration(self, val):
+        self.duration_label.setText(str(5*val) + " minutes")
+
     def create_task(self):
         name = self.title_field.text()
-        deadline = self.duedate_field.text()
+        description = self.description_field.text()
+        deadline = self.datepicker.date()
+        deadline = deadline.toPyDate()
         num_sessions = self.numsessions_field.text()
         num_sessions = int(num_sessions)
-        description = self.description_field.text()
+        session_duration = self.sessionduration_slider.value()
+        session_duration = 5*int(session_duration)
         priority = self.priority_dropdown.currentIndex()
         category = self.category_dropbox.currentText()
         onsameday = self.sameday_check.isChecked()
+        repeat = self.repeat_check.isChecked()
         preferredtime = self.preference_dropbox.currentText()
-        print("test")
 
-        new_task = Task("TaskID", name, description, "total_duration", priority, deadline,
-                        "repeatable", category, "preferred", onsameday, "sessions")
+        new_task = Task(name, description, session_duration, priority, deadline,
+                        repeat, category, preferredtime, onsameday, num_sessions)
         print(new_task)
 
-    def update_duration(self, val):
-        self.duration_label.setText(str(val) + " minutes")
+        Task.export_task(new_task, "save_file.json")
+
+        # then close task creation GUI
 
 
 # will maybe move stylesheet to other file

@@ -21,6 +21,11 @@ class Task:
         Task.highest_id += 1
         self.taskID = Task.highest_id #calculated by programme
 
+    def __str__(self):
+        text_description = f"Task \"{self.name}\" ({self.taskID}): {self.description}.\n"\
+                            + f"Deadline: {self.deadline}, " \
+                            + f"number of sessions: {self.session}, session duration: {self.duration}"
+        return text_description
 
     def export_task(self, filename):
         entry = {
