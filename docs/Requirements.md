@@ -13,11 +13,7 @@
     
 -   Storing and loading of schedule data using .json files
     
--   Python 3.9.7 application
-    
 -   Graphical User Interface that functions
-
-	-   Framework TBD (dash/kivy/pyqt5)
     
 	-   The user can create tasks and set preferences for the schedule etc
     
@@ -75,6 +71,8 @@
 
 -   80% test coverage of back-end code
     
--   The software should be user friendly
+-   Python 3.9.7 application
+
+- 	GUI framework will be made with PyQt5
 
 -   Good documentation of the project's architecture

@@ -18,6 +18,7 @@ def Add2Schedule(event):
             block = [[time2[0], 0], time2]
             blocks.append(block)
 
+
     for block in blocks:
         for slot in range(block[0][1], block[1][1]):
             slot_id = int(schedule_array[block[0][0]][slot])
