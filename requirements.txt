@@ -6,6 +6,6 @@ decorators
 mock
 numpy
 matplotlib
-googleapiclient
+google-api-python-client
 google_auth_oauthlib
 PyQt5
