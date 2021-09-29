@@ -1,9 +1,10 @@
 # MAIN modules
+from gui.general_window_gui import GeneralWindow
 import sys, s_p
 from PyQt5.QtWidgets import QApplication
 
 # GUI modules
-import landing_gui
+import gui.landing_window_gui
 
 # MAIN attributes
 window_list = list()
@@ -16,7 +17,7 @@ def on_startup():
     # Obtain Google account IF it is there
 
     # Init landing GUI
-    gui_landing = landing_gui.LandingView(window_list, prefs)
+    GeneralWindow.pre_init(window_list, prefs, gui.landing_window_gui.LandingView)
 
 # BODY
 app = QApplication(sys.argv)

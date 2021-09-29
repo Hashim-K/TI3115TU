@@ -1,4 +1,5 @@
-import sys, general_window_gui, main_window_gui
+import sys
+from gui import general_window_gui, main_window_gui
 from PyQt5.QtWidgets import QApplication, QLabel, QPushButton, QVBoxLayout, QWidget, QFileDialog, QGridLayout, QLineEdit
 from PyQt5.QtGui import QIcon, QPixmap, QCursor
 from PyQt5 import QtGui, QtCore
@@ -8,7 +9,8 @@ class LandingView(general_window_gui.GeneralWindow):
         super().__init__(window_list, prefs)
     
     def launch(self):
-        main_window = main_window_gui.MainWindow(self.ls_w, self.prefs)
+        # main_window = main_window_gui.MainWindow(self.ls_w, self.prefs)
+        general_window_gui.GeneralWindow.pre_init(self.ls_w, self.prefs, main_window_gui.MainView)
         self.close()
     
     def init_ui(self):

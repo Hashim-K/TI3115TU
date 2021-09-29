@@ -84,6 +84,7 @@ class Prefs():
                     "padding: 5px 25px;" +
                     "margin: 0px 0px;}" +
                     "*:hover{background: '#4069ED';}"
-                    )
+                    ),
+                    
     }
 

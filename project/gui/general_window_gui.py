@@ -21,3 +21,11 @@ class GeneralWindow(QWidget):
     
     def closeEvent(self, a0: QtGui.QCloseEvent) -> None:    # Upon closure
         self.ls_w.remove(self)
+
+    '''Pre_init takes care of whether the windowtype already exists on screen.'''
+    @staticmethod
+    def pre_init(window_list, prefs, window_type):
+        for window in window_list:
+            if isinstance(window, window_type):
+                return None
+        new_window = window_type(window_list, prefs)
