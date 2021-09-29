@@ -1,4 +1,10 @@
 import random
+import numpy as np
+
+
+# Creates an array.
+def CreateArray(number_of_columns, number_of_rows):
+    return np.zeros(shape=(number_of_columns, number_of_rows)) - 1
 
 
 # Converts a date to the format used by the schedule.
@@ -12,8 +18,12 @@ def DayAndSlot(datetime, day_zero, time_interval):
     day = DaysSince2020(date) - DaysSince2020(day_zero)
     slot = round(
         (int(datetime.split(',')[1].split(':')[0]) * 60 + int(datetime.split(',')[1].split(':')[1])) / time_interval)
-
     return [day, slot]
+
+
+# Converts a time to a slot.
+def Slot(time, time_interval):
+    return round((int(time.split(':')[0]) * 60 + int(time.split(':')[1])) / time_interval)
 
 
 # Calculates the amount of days passed since 1-1-2000.
@@ -86,8 +96,7 @@ def DateFormat(date):
 
 # Shuffles a list of colors for the google events to use.
 def GetColors():
-    color_list = ['#0072B5', '#F5DF4D', '#9BB7D4', '#E9897E', '#A0DAA9', '#00A170', '#926AA6', '#D2386C']
-    random.shuffle(color_list)
+    color_list = ['#DAF0C2', '#B0DC7A', '#7FBD32', '#649528', '#477114', '#CBBA01', '#B6A702', '#A39600', '#8A7C00']
     return color_list
 
 
