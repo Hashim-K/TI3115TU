@@ -9,5 +9,3 @@ matplotlib
 google-api-python-client
 google_auth_oauthlib
 PyQt5
-PyQt5.QtWidgets
-PyQt5.QtGui

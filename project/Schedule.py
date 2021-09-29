@@ -2,7 +2,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 import GoogleImport
-from General import *
+from General import GetColors, DayAndSlot, Slot
+from General import CreateXTicks, DateFormat, XDaysLater, CreateArray
 
 
 def Add2Schedule(event):
