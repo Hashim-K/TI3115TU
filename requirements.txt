@@ -4,3 +4,8 @@ coverage
 pytest-cov
 decorators
 mock
+numpy
+matplotlib
+googleapiclient
+google_auth_oauthlib
+PyQt5
