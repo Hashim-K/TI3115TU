@@ -1,7 +1,7 @@
 import sys, Task
 from gui import general_window_gui, task_list
 from PyQt5.QtWidgets import QApplication, QGroupBox, QHBoxLayout, QLabel, QListWidget, QListWidgetItem, QScrollArea, QAction, QMainWindow, QPushButton, QStackedLayout, QStackedWidget, QToolBar, QVBoxLayout, QWidget, QFileDialog, QGridLayout, QLineEdit
-from PyQt5.QtGui import QColor, QIcon, QPixmap, QCursor
+from PyQt5.QtGui import QColor, QIcon, QPixmap, QCursor, QFont
 from PyQt5 import QtGui, QtCore
 
 # TO DELETE
@@ -55,10 +55,33 @@ class MainView(general_window_gui.GeneralWindow):
         # Layout
         layout = QVBoxLayout()
 
-        # Title Text
-        text = QLabel()
-        text.setText('Task <u>View</u>')
-        text.setStyleSheet(self.prefs.style_sheets['text_bubble_title'])
+        # Top Block
+        top_block_widget = QWidget()
+        top_block_widget.setStyleSheet(self.prefs.style_sheets['text_bubble_title'])
+
+        ## Title
+        title = QLabel('Task View')
+        title.setMargin(5)
+        title.setStyleSheet(self.prefs.style_sheets['text_title'])
+
+        ## New Task Button
+        new_task_button = QPushButton('New')
+        new_task_button.setStyleSheet(self.prefs.style_sheets['button_priority_rect'])
+        new_task_button.setFixedWidth(75)
+
+        ## Clear Button
+        clear_button = QPushButton('Clear')
+        clear_button.setStyleSheet(self.prefs.style_sheets['button_exit_rect'])
+        clear_button.setFixedWidth(75) 
+
+        ### Layout
+        tbw_layout = QHBoxLayout()
+        tbw_layout.addWidget(title)
+        tbw_layout.addStretch(1)
+        tbw_layout.addWidget(clear_button)
+        tbw_layout.addWidget(new_task_button)
+
+        top_block_widget.setLayout(tbw_layout)
 
         # List
         list_widget = task_list.TaskList()
@@ -110,7 +133,7 @@ class MainView(general_window_gui.GeneralWindow):
         #
 
         # Add Layouts
-        layout.addWidget(text)
+        layout.addWidget(top_block_widget)
         layout.addWidget(list_widget)
         self.stack_events.setLayout(layout)
     

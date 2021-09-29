@@ -64,19 +64,20 @@ class TaskListItem(QListWidgetItem):
 
         ### Lower (buttons)
         button_view = QPushButton('View')
-        button_view.setStyleSheet(self.prefs.style_sheets['button_priority'])
+        button_view.setStyleSheet(self.prefs.style_sheets['button_priority_rect'])
         button_view.setFixedWidth(100)
 
         button_edit = QPushButton('Edit')
-        button_edit.setStyleSheet(self.prefs.style_sheets['button_low_priority'])
+        button_edit.setStyleSheet(self.prefs.style_sheets['button_low_priority_rect'])
         button_edit.setFixedWidth(100)
 
         button_delete = QPushButton('Delete')
-        button_delete.setStyleSheet(self.prefs.style_sheets['button_exit'])
+        button_delete.setStyleSheet(self.prefs.style_sheets['button_exit_rect'])
         button_delete.setFixedWidth(100)
 
-        layout_sub.addStretch(1)
+        # layout_sub.addStretch(1)
         layout_sub.addWidget(button_view)
+        layout_sub.addStretch(1)
         layout_sub.addWidget(button_edit)
         layout_sub.addWidget(button_delete)
 
