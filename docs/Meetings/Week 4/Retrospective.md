@@ -1,4 +1,4 @@
-﻿# Week 4 sprint retrospective
+# Week 4 sprint retrospective
 
 ## What went well?
 
@@ -18,7 +18,8 @@
 
  - OAuth implementation is finished
  - Google calendar events can now be imported and stored and visualised by our software
- - Started on coming up with a plan to implement our sorting algorithm, still needs to be worked out further
+ - Designed the scheduling algorithm
+ - Finished stage 1 of the scheduling algorithm
 
 **Front end**
 
