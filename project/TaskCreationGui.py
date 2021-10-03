@@ -1,6 +1,7 @@
 import sys
 
 from Task import Task
+from gui.general_window_gui import GeneralWindow
 from PyQt5.QtWidgets import QWidget, QFormLayout, QLineEdit, QDateEdit
 from PyQt5.QtWidgets import QLabel, QSlider, QComboBox, QCheckBox
 from PyQt5.QtWidgets import QPushButton, QApplication
@@ -8,9 +9,9 @@ from PyQt5.QtCore import QRegExp, Qt, QDate
 from PyQt5.QtGui import QRegExpValidator
 
 
-class TaskCreationWindow(QWidget):
+class TaskCreationWindow(GeneralWindow):
 
-    def __init__(self):
+    def __init__(self, window_list, prefs):
         super().__init__()
 
         self.setWindowTitle("Create new task")
@@ -18,10 +19,10 @@ class TaskCreationWindow(QWidget):
                         "font-size: 13px;" +
                         "background-color: #303136;")
 
-        self.initUI()
+        self.init_ui()
         self.show()
 
-    def initUI(self):
+    def init_ui(self):
         layout = QFormLayout()
         layout.setSpacing(15)
 
