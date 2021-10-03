@@ -4,7 +4,7 @@ from Task import Task
 from gui.general_window_gui import GeneralWindow
 from PyQt5.QtWidgets import QWidget, QFormLayout, QLineEdit, QDateEdit
 from PyQt5.QtWidgets import QLabel, QSlider, QComboBox, QCheckBox
-from PyQt5.QtWidgets import QPushButton, QApplication
+from PyQt5.QtWidgets import QPushButton, QApplication, QStyleFactory
 from PyQt5.QtCore import QRegExp, Qt, QDate
 from PyQt5.QtGui import QRegExpValidator
 
@@ -19,23 +19,28 @@ class TaskCreationWindow(GeneralWindow):
         self.setWindowTitle("Create new task")
         self.setStyleSheet("color: 'white';" +
                         "font-size: 13px;" +
-                        "background-color: #303136;")
+                        "background-color: #303136;"
+                        )
 
+        # Layout
         layout = QFormLayout()
         layout.setSpacing(15)
 
         # Title
         self.title_field = QLineEdit(self)
+        self.title_field.setStyleSheet(self.prefs.style_sheets['fill_line'])
         layout.addRow("Title", self.title_field)
         self.title_field.setMaxLength(30)
 
         # Deadline
         self.datepicker = QDateEdit(calendarPopup=True)
+        # self.datepicker.setStyleSheet("padding: 5px 10px;") > Breaks UI
         self.datepicker.setMinimumDate(QDate.currentDate())
         layout.addRow("Deadline", self.datepicker)
 
         # Sessions
         self.numsessions_field = QLineEdit(self)
+        self.numsessions_field.setStyleSheet(self.prefs.style_sheets['fill_line'])
         self.numsessions_field.setText("1")
         self.numsessions_field.setValidator(QRegExpValidator(QRegExp(r'[0-9]+')))
         layout.addRow("Number of sessions", self.numsessions_field)
@@ -52,6 +57,7 @@ class TaskCreationWindow(GeneralWindow):
 
         # Description
         self.description_field = QLineEdit(self)
+        self.description_field.setStyleSheet(self.prefs.style_sheets['fill_line'])
         self.description_field.setMaxLength(200)
         layout.addRow(QLabel("Description"))
         layout.addRow(self.description_field)
@@ -61,18 +67,21 @@ class TaskCreationWindow(GeneralWindow):
 
         # Priority
         self.priority_dropdown = QComboBox(self)
+        self.priority_dropdown.setStyleSheet("padding: 5px 10px;")
         self.priority_dropdown.addItems([
             "None", "1 (highest)", "2", "3", "4", "5 (lowest)"])
         layout.addRow("Priority", self.priority_dropdown)
 
         # Category
         self.category_dropbox = QComboBox(self)
+        self.category_dropbox.setStyleSheet("padding: 5px 10px;")
         categories = ["category 1", "category 2"]
         self.category_dropbox.addItems(categories)
         layout.addRow("Category", self.category_dropbox)
 
         # Preference
         self.preference_dropbox = QComboBox(self)
+        self.preference_dropbox.setStyleSheet("padding: 5px 10px;")
         pref_times = ["Morning (8:00-12:00)",
                       "Afternoon (12:00-16:00)", "Evening (16:00-20:00)",
                       "Night (20:00-23:59)", "Ungodly hours (0:00-8:00)"]
@@ -105,6 +114,7 @@ class TaskCreationWindow(GeneralWindow):
         self.duration_label.setText(str(5*val) + " minutes")
 
     def create_task(self):
+        # Creat Task
         name = self.title_field.text()
         description = self.description_field.text()
         deadline = self.datepicker.date()
@@ -126,6 +136,7 @@ class TaskCreationWindow(GeneralWindow):
         Task.export_task(new_task, "save_file.json")
 
         # then close task creation GUI
+        self.close()
 
 
 # will maybe move stylesheet to other file

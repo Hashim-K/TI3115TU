@@ -10,6 +10,7 @@ class Prefs():
     # STYLE SHEET
     style_sheets = {
         'general_window' : ("background: #303136;"),
+        # Text
         'text' : ("font-size: 13px; color: 'white';" +
                     "border-radius: 10px;" +
                     " padding: 10px 10px;"),
@@ -34,6 +35,13 @@ class Prefs():
         'text_bubble_dark' : ("font-size: 13px; color: 'white';" +
                     "background-color: '#27282C'; border-radius: 10px;" +
                     " padding: 10px 10px;"),
+        # LineEdit
+        'fill_line' : ("*{font-size: 13px; color: 'white';" +
+                    "background-color: '#363940'; border-radius: 10px;" +
+                    "border: 2px solid '#222429';" + 
+                    " padding: 5px 10px;}" + 
+                    "*:focus{border: 2px solid '#404EED';}"),       
+        # Buttons
         'button_priority' : (
                     "*{border: 2px solid '#404EED';" + 
                     "border-radius: 15px;" +
