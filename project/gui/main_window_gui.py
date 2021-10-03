@@ -112,26 +112,6 @@ class MainView(general_window_gui.GeneralWindow):
             list_widget.addItem(tli)
             list_widget.setItemWidget(tli, tliw)
 
-        # task_task_list_item = TaskListItem(sample_task, self.prefs)
-        # task_task_list_item.setSizeHint(QtCore.QSize(200,75))
-
-        # ttli_widget = task_task_list_item.generate_widget()
-
-        # list_widget.addItem(task_task_list_item)
-        # list_widget.setItemWidget(task_task_list_item, ttli_widget)
-
-        # callcards = ['Echo', 'Beta', 'Alpha', 'Delta', 'Gamma']
-
-        # for i in range(len(callcards)):
-        #     object = QListWidgetItem(callcards[i])
-        #     object.setSizeHint(QtCore.QSize(200, 75))
-        #     widgeet = self.getWidget(callcards[i])
-
-
-        #     list_widget.addItem(object)
-        #     list_widget.setItemWidget(object, widgeet)
-        #
-
         # Add Layouts
         layout.addWidget(top_block_widget)
         layout.addWidget(list_widget)
