@@ -85,32 +85,6 @@ class MainView(general_window_gui.GeneralWindow):
 
         # List
         list_widget = task_list.TaskList()
-        # SAMPLES TO DELETE
-        sample_task = Task.Task('Meeting',
-         'Long Meeting', 25, 2, 27, False, 'Work', 'No', False, 2)
-
-        for i in range(25):
-            name = ''.join(random.choices(string.ascii_uppercase + string.digits, k=7))
-            desc = ''.join(random.choices(string.ascii_uppercase + string.digits, k=25))
-            dur = random.randint(2, 24)
-            prio = random.randint(0, 7)
-            deadline = random.randint(0, 5)
-            repeat = False
-            cat_len = random.randint(5,9)
-            category = ''.join(random.choices(string.ascii_uppercase + string.digits, k=cat_len))
-            pref = ''
-            plan_same = False
-            sess = random.randint(0, 5)
-
-            s_task = Task.Task(name, desc, dur, prio, deadline, repeat, category, pref
-            , plan_same, sess)
-
-            tli = task_list.TaskListItem(s_task, self.prefs)
-            tli.setSizeHint(QtCore.QSize(200, 75))
-
-            tliw = tli.generate_widget()
-            list_widget.addItem(tli)
-            list_widget.setItemWidget(tli, tliw)
 
         # Add Layouts
         layout.addWidget(top_block_widget)
