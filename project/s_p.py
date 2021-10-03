@@ -2,9 +2,9 @@ class Prefs():
     # IMAGES
 
     images = {
-        'img_logo' : 'project/imagery/logo.png',
-        'img_logo_min' : 'project/imagery/logo_min.png',
-        'bar_close' : 'project/imagery/bar_close.png'
+        'img_logo' : 'imagery/logo.png',
+        'img_logo_min' : 'imagery/logo_min.png',
+        'bar_close' : 'imagery/bar_close.png'
     }
 
     # STYLE SHEET

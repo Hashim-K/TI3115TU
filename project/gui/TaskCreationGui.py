@@ -12,17 +12,15 @@ from PyQt5.QtGui import QRegExpValidator
 class TaskCreationWindow(GeneralWindow):
 
     def __init__(self, window_list, prefs):
-        super().__init__()
+        super().__init__(window_list, prefs)
 
+    def init_ui(self):
+        # Window Styling
         self.setWindowTitle("Create new task")
         self.setStyleSheet("color: 'white';" +
                         "font-size: 13px;" +
                         "background-color: #303136;")
 
-        self.init_ui()
-        self.show()
-
-    def init_ui(self):
         layout = QFormLayout()
         layout.setSpacing(15)
 
@@ -150,10 +148,10 @@ class Stylesheet():
                             "*:hover{background: 'db0000'; color: 'white';}")
 
 # Below code is just for testing
-def window():
-    app = QApplication(sys.argv)
-    win = TaskCreationWindow()
+# def window():
+#     app = QApplication(sys.argv)
+#     win = TaskCreationWindow([], '')
 
-    sys.exit(app.exec())
+#     sys.exit(app.exec())
 
-window()
+# window()

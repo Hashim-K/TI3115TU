@@ -1,5 +1,5 @@
 import sys, Task
-from gui import general_window_gui, task_list
+from gui import general_window_gui, task_list, TaskCreationGui
 from PyQt5.QtWidgets import QApplication, QGroupBox, QHBoxLayout, QLabel, QListWidget, QListWidgetItem, QScrollArea, QAction, QMainWindow, QPushButton, QStackedLayout, QStackedWidget, QToolBar, QVBoxLayout, QWidget, QFileDialog, QGridLayout, QLineEdit
 from PyQt5.QtGui import QColor, QIcon, QPixmap, QCursor, QFont
 from PyQt5 import QtGui, QtCore
@@ -69,6 +69,8 @@ class MainView(general_window_gui.GeneralWindow):
         new_task_button.setStyleSheet(self.prefs.style_sheets['button_priority_rect'])
         new_task_button.setFixedWidth(75)
 
+        new_task_button.clicked.connect(self.new_task)
+
         ## Clear Button
         clear_button = QPushButton('Clear')
         clear_button.setStyleSheet(self.prefs.style_sheets['button_exit_rect'])
@@ -117,6 +119,11 @@ class MainView(general_window_gui.GeneralWindow):
         layout.addStretch()
 
         self.context.setLayout(layout)
+
+    # New Task Window
+    def new_task(self):
+        general_window_gui.GeneralWindow.pre_init(self.ls_w, self.prefs, TaskCreationGui.TaskCreationWindow)
+
     
     # Stack Changer
     def display(self, i):
