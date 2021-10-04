@@ -1,21 +1,38 @@
 from PyQt5.QtWidgets import QListWidget, QListWidgetItem, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton
+from PyQt5 import QtCore
 
 
 class TaskList(QListWidget):
-    def __init__(self):
+    def __init__(self, window_list, prefs):
         super().__init__()
+        # Store windows and prefs
+        self.prefs = prefs
+        self.ls_w = window_list     # For reloading windows
 
         # Initial settings
         self.setSpacing(5)
         self.setStyleSheet("border: 2px")
         self.setSortingEnabled(True)
         # self.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
+    
+    def load_task_list(self, tasks):
+        '''Generates list items from tasks.'''
+        for task in tasks:
+            task_list_item = TaskListItem(task, self.ls_w, self.prefs)
+            task_list_item_widget = task_list_item.generate_widget()
+
+            self.addItem(task_list_item)
+            self.setItemWidget(task_list_item, task_list_item_widget)
 
 class TaskListItem(QListWidgetItem):
-    def __init__(self, task, prefs):
+    def __init__(self, task, window_list, prefs):
         super().__init__()
         self.task = task
         self.prefs = prefs
+        self.ls_w = window_list
+
+        # UI
+        self.setSizeHint(QtCore.QSize(200,75))  # Size hint for Items
 
     def generate_widget(self):
         # Get relevant values

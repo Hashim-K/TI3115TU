@@ -19,6 +19,9 @@ class GeneralWindow(QWidget):
     def init_ui(self):
         pass
     
+    def catch_event(self, event_name):
+        pass
+    
     def closeEvent(self, a0: QtGui.QCloseEvent) -> None:    # Upon closure
         self.ls_w.remove(self)
 
@@ -29,3 +32,8 @@ class GeneralWindow(QWidget):
             if isinstance(window, window_type):
                 return None
         new_window = window_type(window_list, prefs)
+    
+    @staticmethod
+    def raise_event(window_list, event_name):
+        for window in window_list:
+            window.catch_event(event_name)

@@ -133,7 +133,9 @@ class TaskCreationWindow(GeneralWindow):
                         repeat, category, preferredtime, onsameday, num_sessions)
         print(new_task)
 
+        # Export Task to Save File
         Task.export_task(new_task, "save_file.json")
+        GeneralWindow.raise_event(self.ls_w, 'reload_tasks')
 
         # then close task creation GUI
         self.close()

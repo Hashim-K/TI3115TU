@@ -7,6 +7,12 @@ class Prefs():
         'bar_close' : 'imagery/bar_close.png'
     }
 
+    # SAVING DIRECTORIES
+
+    directory = {
+        'tasks' : ''
+    }
+
     # STYLE SHEET
     style_sheets = {
         'general_window' : ("background: #303136;"),

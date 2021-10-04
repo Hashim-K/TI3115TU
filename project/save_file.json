@@ -37,18 +37,5 @@
             "Preferred": "Evening (16:00-20:00)",
             "Plan_on_same": true,
             "Session": 1
-      },
-      {
-            "TaskID": 2,
-            "Name": "Comb Horse",
-            "Description": "The horse has to be combed. ",
-            "Duration": 15,
-            "Priority": 3,
-            "Deadline": "2021-10-03",
-            "Repeatable": false,
-            "Category": "category 2",
-            "Preferred": "Afternoon (12:00-16:00)",
-            "Plan_on_same": false,
-            "Session": 1
       }
 ]

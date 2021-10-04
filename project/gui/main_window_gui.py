@@ -86,11 +86,14 @@ class MainView(general_window_gui.GeneralWindow):
         top_block_widget.setLayout(tbw_layout)
 
         # List
-        list_widget = task_list.TaskList()
+        self.list_widget = task_list.TaskList(self.ls_w ,self.prefs)
+
+        ## Populate List
+        self.populate_list()
 
         # Add Layouts
         layout.addWidget(top_block_widget)
-        layout.addWidget(list_widget)
+        layout.addWidget(self.list_widget)
         self.stack_events.setLayout(layout)
     
     def stack_schedule_ui(self):
@@ -120,12 +123,24 @@ class MainView(general_window_gui.GeneralWindow):
 
         self.context.setLayout(layout)
 
+    # Task List Populator
+    def populate_list(self):
+        # Flush list
+        self.list_widget.clear()
+        # Repopulate
+        tasks = Task.import_task('save_file.json')
+        self.list_widget.load_task_list(tasks)
+
     # New Task Window
     def new_task(self):
         general_window_gui.GeneralWindow.pre_init(self.ls_w, self.prefs, TaskCreationGui.TaskCreationWindow)
-
     
     # Stack Changer
     def display(self, i):
         self.stack.setCurrentIndex(i)
+    
+    # EVENTS
+    def catch_event(self, event_name):
+        if event_name == 'reload_tasks':
+            self.populate_list()
 

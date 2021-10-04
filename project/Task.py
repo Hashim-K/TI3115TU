@@ -50,7 +50,6 @@ class Task:
         with open(filename, 'w') as file:
             json.dump(data, file, indent = 6)
 
-
 def import_task(filename):
     tasks_list = []
     with open(filename, 'r') as file:
