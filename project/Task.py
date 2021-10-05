@@ -64,3 +64,15 @@ def import_task(filename):
     return tasks_list
 
 
+def delete_task(filename, taskID):
+    with open(filename, 'r') as file:
+        task_dict = json.load(file)
+    for i in range(len(task_dict)):
+        if task_dict[i]['TaskID'] == taskID:
+            del task_dict[i]
+            print(task_dict)
+            break
+    with open(filename, 'w') as file:
+        json.dump(task_dict, file, indent = 6)
+
+
