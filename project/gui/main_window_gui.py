@@ -38,7 +38,7 @@ class MainView(general_window_gui.GeneralWindow):
         self.stack_schedule = QWidget()
 
             # Init widgets in stack
-        self.stack_events_ui()
+        self.stack_tasks_ui()
         self.stack_schedule_ui()
             # Put widgets ins tack
         self.stack = QStackedWidget()
@@ -51,7 +51,8 @@ class MainView(general_window_gui.GeneralWindow):
         self.setLayout(layout)
 
     # UI GENERATORS
-    def stack_events_ui(self):
+    ## Task View
+    def stack_tasks_ui(self):
         # Layout
         layout = QVBoxLayout()
 
