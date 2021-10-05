@@ -1,11 +1,12 @@
 import json
-from Schedule import Events
+#from Schedule import Events
 import os.path
 from datetime import datetime
 
 class Task:
 
-    highest_id = Events[-1].ID
+    #highest_id = Events[-1].ID
+    highest_id = 6
 
     def __init__(self, name, description, duration, priority, deadline,
                  repeatable, category, preferred, plan_on_same, session):
@@ -62,4 +63,4 @@ def import_task(filename):
                     tasks['Category'], tasks['Preferred'], tasks['Plan_on_same'], tasks['Session']))
     return tasks_list
 
-print(import_task('save_file.json')[0])
+
