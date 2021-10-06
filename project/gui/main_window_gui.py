@@ -1,6 +1,6 @@
 import sys, Task
 from gui import general_window_gui, task_list, TaskCreationGui
-from PyQt5.QtWidgets import QApplication, QGroupBox, QHBoxLayout, QLabel, QListWidget, QListWidgetItem, QScrollArea, QAction, QMainWindow, QPushButton, QStackedLayout, QStackedWidget, QToolBar, QVBoxLayout, QWidget, QFileDialog, QGridLayout, QLineEdit
+from PyQt5.QtWidgets import QApplication, QGroupBox, QHBoxLayout, QLabel, QListWidget, QListWidgetItem, QScrollArea, QAction, QMainWindow, QPushButton, QStackedLayout, QStackedWidget, QToolBar, QVBoxLayout, QWidget, QFileDialog, QGridLayout, QLineEdit, QFrame
 from PyQt5.QtGui import QColor, QIcon, QPixmap, QCursor, QFont
 from PyQt5 import QtGui, QtCore
 
@@ -36,14 +36,17 @@ class MainView(general_window_gui.GeneralWindow):
         # Stack of Widgets on RIGHT
         self.stack_events = QWidget()
         self.stack_schedule = QWidget()
+        self.stack_preferences = QWidget()
 
             # Init widgets in stack
         self.stack_tasks_ui()
         self.stack_schedule_ui()
+        self.stack_preferences_ui()
             # Put widgets ins tack
         self.stack = QStackedWidget()
         self.stack.addWidget(self.stack_events)
         self.stack.addWidget(self.stack_schedule)
+        self.stack.addWidget(self.stack_preferences)
             # Add widgets to layout
         layout.addWidget(self.context)  # Context menu on left
         layout.addWidget(self.stack)    # Right side (current widget in stack)
@@ -106,20 +109,52 @@ class MainView(general_window_gui.GeneralWindow):
 
         layout.addWidget(text)
         self.stack_schedule.setLayout(layout)
+
+    def stack_preferences_ui(self):
+        layout = QVBoxLayout()
+        
+        text = QLabel()
+        text.setText('Preferences View')
+        text.setStyleSheet(self.prefs.style_sheets['text_bubble_dark'])
+
+        layout.addWidget(text)
+        self.stack_preferences.setLayout(layout)
     
     def text_ui(self):
         layout = QVBoxLayout()
+
+        # HLine
+        line = QFrame()
+        line.setFrameShape(QFrame.HLine)
+        line.setStyleSheet("color: '#42464E'")
+
+        line2 = QFrame()
+        line2.setFrameShape(QFrame.HLine)
+        line2.setStyleSheet("color: '#42464E'")
         
+        # Event Button
         self.event_button = QPushButton('Tasks')
         self.event_button.setStyleSheet(self.prefs.style_sheets['button_prio_burger'])
         self.event_button.clicked.connect(lambda:self.display(0))
+        self.event_button.setFixedWidth(100)
 
+        # Schedule Button
         self.schedule_button = QPushButton('Schedule')
         self.schedule_button.setStyleSheet(self.prefs.style_sheets['button_prio_burger'])
         self.schedule_button.clicked.connect(lambda:self.display(1))
+        self.schedule_button.setFixedWidth(100)
+
+        # Preferences Button
+        self.prefs_button = QPushButton('Preferences')
+        self.prefs_button.setStyleSheet(self.prefs.style_sheets['button_prio_burger'])
+        self.prefs_button.clicked.connect(lambda:self.display(2))
+        self.prefs_button.setFixedWidth(100)
 
         layout.addWidget(self.event_button)
+        layout.addWidget(line)
         layout.addWidget(self.schedule_button)
+        layout.addWidget(line2)
+        layout.addWidget(self.prefs_button)
         layout.addStretch()
 
         self.context.setLayout(layout)

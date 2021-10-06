@@ -110,20 +110,20 @@ class Prefs():
                     ),
         # Burger menu buttons
         'button_prio_burger' : (
-                    "*{border: 2px solid '#404EED';" + 
-                    "border-radius: 15px;" +
-                    "background-color: '#404EED';" + 
-                    "font-size: 13px;"
+                    "*{border-radius: 2px;" +
+                    "font-size: 14px;"
                     "color : 'white';" +
-                    "padding: 5px 25px;" +
+                    "padding: 10px 5px;" +
                     "margin: 0px 0px;}" +
-                    "*:hover{background: '#4069ED';}"
+                    "*:hover{background: '#363940';" +
+                    "border-radius: 5px;" +
+                    "border: 2px solid '#42464E';}" 
                     ),
         'button_low_prio_burger' : (
                     "*{border: 2px solid '#42464E';" + 
                     "border-radius: 15px;" +
                     "background-color: '#42464E';" + 
-                    "font-size: 13px;"
+                    "font-size: 16px;"
                     "color : 'white';" +
                     "padding: 5px 25px;" +
                     "margin: 0px 0px;}" +

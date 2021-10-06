@@ -50,18 +50,5 @@
             "Preferred": "Evening (16:00-20:00)",
             "Plan_on_same": false,
             "Session": 1
-      },
-      {
-            "TaskID": 6,
-            "Name": "Wash Cat",
-            "Description": "The cat is dirty and needs a good washing.",
-            "Duration": 55,
-            "Priority": 1,
-            "Deadline": "2021-10-06",
-            "Repeatable": false,
-            "Category": "category 2",
-            "Preferred": "Evening (16:00-20:00)",
-            "Plan_on_same": false,
-            "Session": 1
       }
 ]
