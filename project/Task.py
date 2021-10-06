@@ -47,14 +47,18 @@ class Task:
             "Plan_on_same": self.plan_on_same,
             "Session": self.session
         }
-        if os.path.exists(filename):
-            with open(filename, 'r') as file:
-                data = json.load(file)
-        else:
+        if not os.path.exists(filename):
             data = []
+        else:
+            if os.stat(filename).st_size == 0:
+                os.remove(filename)
+                data = []
+            else:
+                with open(filename, 'r') as file:
+                    data = json.load(file)
         data.append(entry)
         with open(filename, 'w') as file:
-            json.dump(data, file, indent = 6)
+            json.dump(data, file, indent=6)
 
 
 def import_task(filename):

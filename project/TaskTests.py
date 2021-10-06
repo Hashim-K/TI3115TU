@@ -54,7 +54,14 @@ class MyTestCase(unittest.TestCase):
         task.export_task('FileForTestingOne.json')
         self.assertTrue(filecmp.cmp('FileForTestingOne.json', 'FileForExportTesting.json', shallow=False))
 
-
+    def test_empty_file(self):
+        file = open("empty.json", "w")
+        file.close()
+        task = Task("Title", "Description", 5, 0, date(2021, 10, 8), False, "category 1", "Morning (8:00-12:00)", True,
+                    1)
+        task.taskID = 1
+        task.export_task("empty.json")
+        self.assertTrue(filecmp.cmp('FileForTestingOne.json', "empty.json", shallow=False))
 
 
 if __name__ == '__main__':
