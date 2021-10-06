@@ -1,4 +1,4 @@
-import sys
+import sys, getpass
 from gui import general_window_gui, main_window_gui
 from PyQt5.QtWidgets import QApplication, QLabel, QPushButton, QVBoxLayout, QWidget, QFileDialog, QGridLayout, QLineEdit
 from PyQt5.QtGui import QIcon, QPixmap, QCursor
@@ -15,8 +15,8 @@ class LandingView(general_window_gui.GeneralWindow):
     
     def init_ui(self):
         # DATA
-        msg_not_logged = 'offline mode'
-        msg_logged = f'Welcome ##NAME##'
+        username = getpass.getuser()
+        msg_hi = f'Welcome {username}'
         # WINDOW
         self.setFixedSize(250, 500)
         # Window Style
@@ -40,7 +40,7 @@ class LandingView(general_window_gui.GeneralWindow):
 
         # Msg Bubble
         self.msg = QLabel()
-        self.msg.setText(msg_not_logged)                # ADD LOGGED CHECK
+        self.msg.setText(msg_hi)                # ADD LOGGED CHECK
         self.msg.setAlignment(QtCore.Qt.AlignCenter)
         self.msg.setFixedHeight(30)
         self.msg.setWordWrap(True)
