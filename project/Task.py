@@ -1,14 +1,18 @@
 import json
 #from Schedule import Events
 import os.path
+from dataclasses import dataclass
 from datetime import datetime
 
+
+# @dataclass
 class Task:
-
-    #highest_id = Events[-1].ID
+    name: str
+    # highest_id = Events[-1].ID
     highest_id = 6
+    # edit id thingy
 
-    def __init__(self, name, description, duration, priority, deadline,
+    def __init__(self, name: str, description, duration, priority, deadline,
                  repeatable, category, preferred, plan_on_same, session):
         self.name = name #string
         self.description = description #string
@@ -70,7 +74,6 @@ def delete_task(filename, taskID):
     for i in range(len(task_dict)):
         if task_dict[i]['TaskID'] == taskID:
             del task_dict[i]
-            print(task_dict)
             break
     with open(filename, 'w') as file:
         json.dump(task_dict, file, indent = 6)
