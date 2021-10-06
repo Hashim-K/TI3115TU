@@ -1,6 +1,6 @@
 # MAIN modules
 from gui.general_window_gui import GeneralWindow
-import sys, s_p
+import sys, palette
 from PyQt5.QtWidgets import QApplication
 
 # GUI modules
@@ -8,7 +8,7 @@ import gui.landing_window_gui
 
 # MAIN attributes
 window_list = list()
-prefs = s_p.Prefs()
+prefs = palette.Prefs()
 
 google_credentials = None       # Lookup token
 
