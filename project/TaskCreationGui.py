@@ -1,6 +1,6 @@
 import sys
 
-from Task import Task
+from project.BackEnd.Task import Task
 from PyQt5.QtWidgets import QWidget, QFormLayout, QLineEdit, QDateEdit
 from PyQt5.QtWidgets import QLabel, QSlider, QComboBox, QCheckBox
 from PyQt5.QtWidgets import QPushButton, QApplication
