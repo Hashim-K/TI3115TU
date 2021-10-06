@@ -1,6 +1,5 @@
 import unittest
-from Task import Task
-from Task import import_task
+from Task import Task, import_task, delete_task
 import filecmp
 from datetime import date, datetime
 import os
@@ -26,6 +25,7 @@ class MyTestCase(unittest.TestCase):
 
     def test_export(self):
         task = Task("Title", "Description", 5, 0, date(2021, 10, 8), False, "category 1", "Morning (8:00-12:00)", True, 1)
+        task.taskID = 1
         if os.path.exists('FileForExportTesting.json'):
             os.remove('FileForExportTesting.json')
         task.export_task('FileForExportTesting.json')
@@ -43,6 +43,16 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(task.session, import_task('FileForTestingOne.json')[0].session)
         self.assertEqual(task.deadline, import_task('FileForTestingOne.json')[0].deadline)
         self.assertEqual(task.repeatable, import_task('FileForTestingOne.json')[0].repeatable)
+
+    def test_delete_and_export(self):
+        delete_task('FileForTestingOne.json', 1)
+        with open('FileForTestingOne.json') as file:
+            self.assertEqual('[]', file.read())
+        task = Task("Title", "Description", 5, 0, date(2021, 10, 8), False, "category 1", "Morning (8:00-12:00)", True,
+                    1)
+        task.taskID = 1
+        task.export_task('FileForTestingOne.json')
+        self.assertTrue(filecmp.cmp('FileForTestingOne.json', 'FileForExportTesting.json', shallow=False))
 
 
 

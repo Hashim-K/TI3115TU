@@ -7,7 +7,7 @@ from datetime import datetime
 
 # @dataclass
 class Task:
-    name: str
+
     # highest_id = Events[-1].ID
     highest_id = 6
     # edit id thingy
