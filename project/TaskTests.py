@@ -20,3 +20,5 @@ class MyTestCase(unittest.TestCase):
 if __name__ == '__main__':
     unittest.main()
 
+Task "Title" (7): Description.
+Deadline: 2021-10-08, number of sessions: 1, session duration: 5

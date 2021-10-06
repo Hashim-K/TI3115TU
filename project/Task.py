@@ -12,20 +12,20 @@ class Task:
     highest_id = 6
     # edit id thingy
 
-    def __init__(self, name: str, description, duration, priority, deadline,
-                 repeatable, category, preferred, plan_on_same, session):
-        self.name = name #string
-        self.description = description #string
-        self.duration = duration #int / datetime object
-        self.priority = priority #int
-        self.deadline = deadline #date (datetime object)
-        self.repeatable = repeatable #boolean
-        self.category = category #integer
-        self.preferred = preferred #string ??
-        self.plan_on_same = plan_on_same # boolean
-        self.session = session #int
+    def __init__(self, name: str, description: str, duration: int, priority: int, deadline: str,
+                 repeatable: bool, category: str, preferred: str, plan_on_same: bool, session: int):
+        self.name = name
+        self.description = description
+        self.duration = duration
+        self.priority = priority
+        self.deadline = deadline
+        self.repeatable = repeatable
+        self.category = category
+        self.preferred = preferred
+        self.plan_on_same = plan_on_same
+        self.session = session
         Task.highest_id += 1
-        self.taskID = Task.highest_id #calculated by programme
+        self.taskID = Task.highest_id
 
     def __str__(self):
         text_description = f"Task \"{self.name}\" ({self.taskID}): {self.description}.\n"\
