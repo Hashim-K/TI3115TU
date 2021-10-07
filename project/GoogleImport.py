@@ -45,18 +45,13 @@ def DoStuff(Monday, Sunday):
     return event_names
 
 
-# This too.
-def PrettyEvents(events):
+# Coordinates the stuff above.
+def Import(monday, X):
+    sunday = str(XDaysLater(monday, X - 1))
     event_lst = []
+    events = DoStuff(monday, sunday)
     di_events = events.items()
     for event, inner in di_events:
         event_lst.append([f'{event}', inner[0].strftime('%d-%m-%Y,%H:%M'), inner[1].strftime('%d-%m-%Y,%H:%M')])
     return event_lst
 
-
-# Coordinates the stuff above.
-def Import(monday, X):
-    sunday = str(XDaysLater(monday, X - 1))
-
-    event_names = DoStuff(monday, sunday)
-    return PrettyEvents(event_names)

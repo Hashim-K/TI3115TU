@@ -13,23 +13,25 @@ def Add2Schedule(event):
             block = [time1, time2]
             blocks.append(block)
         else:
-            block = [time1, [time1[0], round(24 * 60 / time_interval)]]
+            block = [time1, [time1[0], round(24 * 60 / presets.time_interval)]]
             blocks.append(block)
             block = [[time2[0], 0], time2]
             blocks.append(block)
 
     for block in blocks:
         for slot in range(block[0][1], block[1][1]):
-            slot_id = int(schedule_array[block[0][0]][slot])
+            slot_id = int(Schedule.schedule[block[0][0]][slot])
             if slot_id == -1:
-                schedule_array[block[0][0]][slot] = event.ID
+                Schedule.schedule[block[0][0]][slot] = event.ID
             else:
-                overlap_array[block[0][0]][slot] = event.ID
+                Schedule.overlap[block[0][0]][slot] = event.ID
 
 
 def ImportGoogleEvents():
-    google_events = GoogleImport.Import(day_zero, number_of_days)
-    colors = GetColors()
+    day_zero = presets.day_zero
+    time_interval = presets.time_interval
+    google_events = GoogleImport.Import(day_zero, presets.number_of_days)
+    colors = ['#DAF0C2', '#B0DC7A', '#7FBD32', '#649528', '#477114', '#CBBA01', '#B6A702', '#A39600', '#8A7C00']
     color_id = 0
     for event in google_events:
         label = str(event[0])
@@ -39,12 +41,20 @@ def ImportGoogleEvents():
         color_id = color_id + 1
 
 
-def SleepEvent():
-    for day in range(len(schedule_array)):
+def DeleteEvent(index):
+    events.pop(index)
+    for event in events[index:]:
+        event.ID = event.ID - 1
+
+
+def RoutineEvents():
+    time_interval = presets.time_interval
+    number_of_slots = len(Schedule.schedule[0])
+    for day in range(len(Schedule.schedule)):
         end_day = day
-        end_slot = Slot(alarm_time, time_interval)
+        end_slot = Slot(presets.alarm_time, time_interval)
         start_day = day
-        start_slot = Slot(alarm_time, time_interval) - Slot(length_sleep, time_interval)
+        start_slot = Slot(presets.alarm_time, time_interval) - Slot(presets.length_sleep, time_interval)
         if start_slot < 0:
             if day == 0:
                 start_slot = 0
@@ -53,18 +63,28 @@ def SleepEvent():
                 start_slot = start_slot + number_of_slots
         Sleep.Occurrences.append([[start_day, start_slot], [end_day, end_slot]])
         MorningRoutine.Occurrences.append(
-            [[end_day, end_slot], [end_day, end_slot + Slot(length_morning_routine, time_interval)]])
+            [[end_day, end_slot], [end_day, end_slot + Slot(presets.length_morning_routine, time_interval)]])
+        start_lunch = Slot(presets.lunch_time, time_interval)
+        end_lunch = Slot(presets.lunch_time, time_interval) + Slot(presets.length_lunch, time_interval)
+        Lunch.Occurrences.append([[end_day, start_lunch], [end_day, end_lunch]])
+        start_dinner = Slot(presets.dinner_time, time_interval)
+        end_dinner = Slot(presets.dinner_time, time_interval) + Slot(presets.length_dinner, time_interval)
+        Dinner.Occurrences.append([[end_day, start_dinner], [end_day, end_dinner]])
 
 
 def AppendEvents():
-    for event in Events:
+    for event in events:
         Add2Schedule(event)
 
 
 def Display():
+    day_zero = presets.day_zero
+    number_of_days = len(Schedule.schedule)
     xticks = CreateXTicks(day_zero, number_of_days)
     yticks = ['0:00', '1:00', '2:00', '3:00', '4:00', '5:00', '6:00', '7:00', '8:00', '9:00', '10:00', '11:00', '12:00',
               '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00']
+    number_of_days = len(Schedule.schedule)
+    number_of_slots = len(Schedule.schedule[0])
     axes = plt.gca()
     axes.set_xlim([0, number_of_days])
     axes.set_ylim([0, number_of_slots])
@@ -73,20 +93,20 @@ def Display():
     plt.yticks(np.arange(0, number_of_slots, step=number_of_slots / 24), yticks)
     plt.title('Schedule for ' + DateFormat(day_zero) + ' till ' + DateFormat(XDaysLater(day_zero, number_of_days - 1)))
 
-    for j in range(len(schedule_array)):
-        for k in range(len(schedule_array[j])):
-            id = int(schedule_array[j][k])
+    for j in range(len(Schedule.schedule)):
+        for k in range(len(Schedule.schedule[j])):
+            id = int(Schedule.schedule[j][k])
             if id >= 0:
-                rect = mpatches.Rectangle((j, k), 1, 1, facecolor=Colors[id])
+                rect = mpatches.Rectangle((j, k), 1, 1, facecolor=events[id].Colour)
                 plt.gca().add_patch(rect)
-            overlap_id = int(overlap_array[j][k])
+            overlap_id = int(Schedule.overlap[j][k])
             if overlap_id >= 0:
-                rect = mpatches.Rectangle((j, k), 0.5, 1, facecolor=Colors[overlap_id])
+                rect = mpatches.Rectangle((j, k), 0.5, 1, facecolor=events[overlap_id].Colour)
                 plt.gca().add_patch(rect)
 
     legend_elements = []
-    for id in range(len(Events)):
-        legend_elements.append(mpatches.Patch(facecolor=Colors[id], label=Labels[id]))
+    for id in range(len(events)):
+        legend_elements.append(mpatches.Patch(facecolor=events[id].Colour, label=events[id].Label))
     axes.legend(handles=legend_elements, bbox_to_anchor=(1.01, 1.0), loc='upper left')
     plt.grid(axis='x', color='black')
     plt.grid(axis='y', color='black', linewidth=0.5, alpha=0.25)
@@ -96,99 +116,99 @@ def Display():
 
 
 def ResolveOverlap():
-    choice = 0
+    number_of_days = len(Schedule.schedule)
+    number_of_slots = len(Schedule.schedule[0])
     is_overlap = False
     identified_overlaps = []
     for day in range(number_of_days):
         for slot in range(number_of_slots):
-            event1_id = int(overlap_array[day][slot])
+            event1_id = int(Schedule.overlap[day][slot])
             if event1_id >= 0:
                 is_overlap = True
-                event2_id = int(schedule_array[day][slot])
+                event2_id = int(Schedule.schedule[day][slot])
                 print_message = True
                 for overlap in identified_overlaps:
-                    if event1_id == overlap[0] and event2_id == overlap[1] and (
-                            day == overlap[2] or day - 1 == overlap[2]):
+                    if event1_id == overlap[0] and event2_id == overlap[1] and day == overlap[2]:
                         print_message = False
-                        ExecuteChoice(choice, day, slot, event1_id, event2_id)
                 if print_message:
-                    print('It seems like ' + str(Labels[event1_id])
-                          + ' overlaps with ' + str(Labels[event2_id])
-                          + ' on ' + DateFormat(XDaysLater(day_zero, day)) + '.')
+                    print('It seems like ' + str(events[event1_id].Label)
+                          + ' overlaps with ' + str(events[event2_id].Label)
+                          + ' on ' + DateFormat(XDaysLater(presets.day_zero, day)) + '.')
                     identified_overlaps.append([event1_id, event2_id, day])
-                    print('[1] Prioritize ' + str(Labels[event1_id]) + '.')
-                    print('[2] Prioritize ' + str(Labels[event2_id]) + '.')
-                    print('[3] Alter times for ' + str(Labels[event2_id]) + '.')
-                    choice = int(input())
-                    ExecuteChoice(choice, day, slot, event1_id, event2_id)
     return is_overlap
 
 
-def ExecuteChoice(choice, day, slot, event1_id, event2_id):
-    if choice == 1:
-        schedule_array[day][slot] = event1_id
-        overlap_array[day][slot] = -1
-    elif choice == 2:
-        schedule_array[day][slot] = event2_id
-        overlap_array[day][slot] = -1
-
-
 # Event Class
-Events = []
-Colors = []
-Labels = []
+events = []
 
 
 class Event:
     def __init__(self, Label, Color, Occurrences):
         self.Label = Label
         self.Occurrences = Occurrences
-        Events.append(self)
-        Labels.append(Label)
-        Colors.append(Color)
-        self.ID = Events.index(self)
+        self.Colour = Color
+        events.append(self)
+        self.ID = events.index(self)
+
+
+class PreSets:
+    def __init__(self, day_zero, number_of_days, time_interval, alarm_time, length_sleep, length_morning_routine,
+                 lunch_time, length_lunch, dinner_time, length_dinner):
+        self.day_zero = day_zero
+        self.number_of_days = number_of_days
+        self.time_interval = time_interval
+        self.alarm_time = alarm_time
+        self.length_sleep = length_sleep
+        self.length_morning_routine = length_morning_routine
+        self.lunch_time = lunch_time
+        self.length_lunch = length_lunch
+        self.dinner_time = dinner_time
+        self.length_dinner = length_dinner
+
+
+class GetArrays:
+    def __init__(self):
+        self.schedule = np.zeros(shape=(presets.number_of_days, round(24 * 60 / presets.time_interval))) - 1
+        self.overlap = np.zeros(shape=(presets.number_of_days, round(24 * 60 / presets.time_interval))) - 1
+
+
+# Objects
 
 
 Sleep = Event('Sleep', '#546fa8', [])
 MorningRoutine = Event('Morning Routine', '#8399c9', [])
+Lunch = Event('Lunch', '#e8b048', [])
+Dinner = Event('Dinner', '#ba8420', [])
 
-# Main
-day_zero = '2021-09-17'  # The first day shown in the schedule.
-number_of_days = 10  # The amount of days shown in the schedule.
-time_interval = 5  # The bin width of the timeslots.
-number_of_slots = round(24 * 60 / time_interval)  # The number of timeslots in a day.
-
-alarm_time = '07:00:00'
-length_sleep = '08:00:00'
-length_morning_routine = '0:40:00'
-
-ImportGoogleEvents()  # Imports the events from the google calendar.
-schedule_array = CreateArray(number_of_days, number_of_slots)  # Creates the empty schedule.
-overlap_array = CreateArray(number_of_days, number_of_slots)
-SleepEvent()  # Adds sleep and morning routine to the calendar
-AppendEvents()  # Appends the events to the schedule.
-Display()  # Displays the schedule.
-while 1 + 1 == 2:
-    overlapping = ResolveOverlap()
-    if not overlapping:
-        break
-Display()
+presets = PreSets('2021-09-17', 7, 5, '07:30:00', '08:00:00', '00:40:00',
+                  '12:30:00', '00:45:00', '18:30:00', '01:15:00')
 
 
-# Stuff that might be useful later.
-'''
-Dinner = Event('Dinner', '#86c452', [[[0, 222], [0, 230]],
-                                     [[1, 217], [1, 226]],
-                                     [[2, 221], [2, 233]],
-                                     [[3, 219], [3, 226]],
-                                     [[4, 222], [4, 229]],
-                                     [[5, 223], [5, 231]],
-                                     [[6, 222], [6, 230]]])
-FreeTime = Event('Free Time', '#e6f0e9', [])
+def SetSchedule():
+    global Schedule
+    Schedule = GetArrays()
 
-FreeBlocks = EmptySlots(Schedule,number_of_slots)
 
-for FreeBlock in FreeBlocks:
-    FreeTime.Occurences.append(FreeBlock)
-Add2Schedule(FreeTime,time_interval)
-'''
+def SetUp():
+    SetSchedule()
+    #ImportGoogleEvents()  # Blocked for till the google import works again.
+    RoutineEvents()
+    AppendEvents()
+    Display()
+    ResolveOverlap()
+
+
+def Adjust():
+    SetSchedule()
+    AppendEvents()
+    Display()
+    ResolveOverlap()
+
+
+SetUp()
+DeleteEvent(0)
+Adjust()
+
+EmptySlots(Schedule.schedule)
+
+
