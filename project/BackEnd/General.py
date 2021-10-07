@@ -6,7 +6,7 @@ import numpy as np
 The start and end times for an activity imported from the google calendar are in the form of '2021-10-06,17:21:00', 
 while they need to be in the form of [day, slot] for the program to make an Event class object for them. 
 This function uses the following inputs: 
-datetime (the date and time in the form '2021-10-06,17:21:00'), day_zero (the first day of the week) 
+datetime (the date and time in the form '06-10-2021,17:21:00'), day_zero (the first day of the week) 
 and time_interval (the length of a time slot). 
 It's output is the index of the day and slot in the schedule ([day, slot]).'''
 
