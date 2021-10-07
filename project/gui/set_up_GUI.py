@@ -125,13 +125,14 @@ class SetUpWindow(GeneralWindow):
 
         # TimeList
         self.t_list = times_list.TimeList(self.ls_w, self.prefs)
+        for x in range(0,20):
+            self.t_list.make_item(f'Sleeping {x}', '20.00', '24.00')
+
+        layout2.addWidget(self.t_list)
 
         self.set_times_layout.setLayout(layout2)
         #self.Stack.setCurrentIndex(1)
-
-    def make_times_item(self, name, start_time, end_time):
-        
-
+    
 
 class TimeItem(QListWidgetItem):
     def __init__(self, task, window_list, prefs):
@@ -141,7 +142,7 @@ class TimeItem(QListWidgetItem):
         self.ls_w = window_list
 
         # UI
-        self.setSizeHint(QSize(200,75))  # Size hint for Items
+        self.setSizeHint(QSize(200,100))  # Size hint for Items
         pass
 
 
