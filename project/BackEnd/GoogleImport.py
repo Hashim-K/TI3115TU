@@ -2,14 +2,14 @@ from googleapiclient.discovery import build  # Allowing for doing API calls
 from google_auth_oauthlib.flow import InstalledAppFlow  # Flow to setup OAuthLib (permission screen)
 import pickle  # For Credentials Saving
 import datetime
-from General import *
+from project.BackEnd.General import *
 
 
 # Does stuff needed for importing google events.
 def DoStuff(Monday, Sunday):
     # %% CONNECT WITH GOOGLE ACCOUNT
     our_scopes = ['https://www.googleapis.com/auth/calendar']  # Defined what we can access in user's acc
-    flow = InstalledAppFlow.from_client_secrets_file('client_secret.json', scopes=our_scopes)
+    flow = InstalledAppFlow.from_client_secrets_file('../client_secret.json', scopes=our_scopes)
     try:
         credentials = flow.run_local_server()
     except Exception:
@@ -17,10 +17,10 @@ def DoStuff(Monday, Sunday):
     else:
         print('\nSuccessfully Authenticated')
 
-    pickle.dump(credentials, open('token.pkl', 'wb'))  # SAVE with pickle
+    pickle.dump(credentials, open('../token.pkl', 'wb'))  # SAVE with pickle
 
     # %% SYNC
-    credentials = pickle.load(open('token.pkl', 'rb'))  # LOAD with pickle
+    credentials = pickle.load(open('../token.pkl', 'rb'))  # LOAD with pickle
 
     service = build('calendar', 'v3', credentials=credentials)  # Build API
 

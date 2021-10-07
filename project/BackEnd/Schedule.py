@@ -1,8 +1,7 @@
-import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
-import GoogleImport
-from General import *
+from project.BackEnd import GoogleImport
+from project.BackEnd.General import *
 
 
 def Add2Schedule(event):
