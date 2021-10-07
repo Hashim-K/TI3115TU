@@ -32,7 +32,7 @@ class Prefs():
                     " padding: 10px 10px;"),
         'text_bubble' : ("font-size: 13px; color: 'white';" +
                     "background-color: '#363940'; border-radius: 10px;" +
-                    " padding: 10px 10px;"),
+                    " padding: 15px 15px;"),
         'text_bubble_title' : ("font-size: 16px; color: 'white';" +
                     "background-color: '#27282C'; border-radius: 10px;" +
                     " padding: 10px 10px;"),

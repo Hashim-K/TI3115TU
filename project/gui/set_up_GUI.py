@@ -106,6 +106,18 @@ class SetUpWindow(GeneralWindow):
 
         layout1.addWidget(logo_label)
 
+        # Description
+        desc_text = (
+            "Importing a Google calendar will allow for the scheduling " +
+            "algorithm to take already scheduled events into account " +
+            "when scheduling tasks."
+        )
+        desc = QLabel(desc_text)
+        desc.setWordWrap(True)
+        desc.setStyleSheet(palette.Prefs.style_sheets['text_bubble'])
+
+        layout1.addWidget(desc)
+
         # Login Button
         self.login_button = QPushButton("Log in")
         self.login_button.setStyleSheet(palette.Prefs.style_sheets['button_priority_rect'])
