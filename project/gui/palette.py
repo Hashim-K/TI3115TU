@@ -4,6 +4,7 @@ class Prefs():
     images = {
         'img_logo' : 'imagery/logo.png',
         'img_logo_min' : 'imagery/logo_min.png',
+        'img_g_logo' : 'imagery/google_logo.png',
         'bar_close' : 'imagery/bar_close.png'
     }
 
