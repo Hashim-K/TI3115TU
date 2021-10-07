@@ -86,7 +86,7 @@ class SetUpWindow(GeneralWindow):
                 self.next_button.setText('Skip')
                 self.prev_button.hide()
 
-
+    # stack 1
     def google_ui(self):
         layout1 = QVBoxLayout()
 
@@ -115,16 +115,18 @@ class SetUpWindow(GeneralWindow):
         # layout1.addStretch(1)
         self.google_layout.setLayout(layout1)
 
+    # stack 2
     def set_times_ui(self):
         layout2 = QVBoxLayout()
 
         # Prompt
         question2_text = QLabel("Which times would you like to set as unavailable?")
-        question2_text.setStyleSheet(palette.Prefs.style_sheets['text_title'])
+        question2_text.setStyleSheet(palette.Prefs.style_sheets['text_title'] + 'margin-bottom: 10px')
         layout2.addWidget(question2_text)
 
         # TimeList
         self.t_list = times_list.TimeList(self.ls_w, self.prefs)
+
         for x in range(0,20):
             self.t_list.make_item(f'Sleeping {x}', '20.00', '24.00')
 
@@ -132,20 +134,8 @@ class SetUpWindow(GeneralWindow):
 
         self.set_times_layout.setLayout(layout2)
         #self.Stack.setCurrentIndex(1)
-    
 
-class TimeItem(QListWidgetItem):
-    def __init__(self, task, window_list, prefs):
-        super().__init__()
-        self.task = task
-        self.prefs = prefs
-        self.ls_w = window_list
-
-        # UI
-        self.setSizeHint(QSize(200,100))  # Size hint for Items
-        pass
-
-
+# For testing [TO DELETE]
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     win = SetUpWindow([], '')
