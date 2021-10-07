@@ -2,10 +2,10 @@ import sys
 
 import palette
 from gui.general_window_gui import GeneralWindow
-from PyQt5.QtWidgets import QWidget, QFormLayout, QLineEdit, QDateEdit, QVBoxLayout, QStackedWidget
-from PyQt5.QtWidgets import QLabel, QSlider, QComboBox, QCheckBox
-from PyQt5.QtWidgets import QPushButton, QApplication, QStyleFactory
-from PyQt5.QtCore import QRegExp, Qt, QDate
+from PyQt5.QtWidgets import QWidget, QFormLayout, QLineEdit, QDateEdit, QVBoxLayout,\
+    QStackedWidget, QListWidgetItem, QLabel, QSlider, QComboBox, QCheckBox, QPushButton,\
+    QApplication, QStyleFactory
+from PyQt5.QtCore import QRegExp, Qt, QDate, QSize
 from PyQt5.QtGui import QRegExpValidator
 
 class SetUpWindow(GeneralWindow):
@@ -18,16 +18,19 @@ class SetUpWindow(GeneralWindow):
         layout = QVBoxLayout()
         self.setStyleSheet(palette.Prefs.style_sheets["general_window"])
 
+        # create stack items
         self.google_layout = QWidget()
         self.set_times_layout = QWidget()
 
+        # initialize first page of stack
         self.google_ui()
-        # self.set_times_ui()
 
+        # create stack and add items
         self.Stack = QStackedWidget()
         self.Stack.addWidget(self.google_layout)
         self.Stack.addWidget(self.set_times_layout)
 
+        # add stack to layout
         layout.addWidget(self.Stack)
         self.setLayout(layout)
 
@@ -63,6 +66,16 @@ class SetUpWindow(GeneralWindow):
         self.Stack.setCurrentIndex(1)
 
 
+class TimeItem(QListWidgetItem):
+    def __init__(self, task, window_list, prefs):
+        super().__init__()
+        self.task = task
+        self.prefs = prefs
+        self.ls_w = window_list
+
+        # UI
+        self.setSizeHint(QSize(200,75))  # Size hint for Items
+        pass
 
 
 if __name__ == "__main__":

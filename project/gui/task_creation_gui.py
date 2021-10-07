@@ -82,7 +82,7 @@ class TaskCreationWindow(GeneralWindow):
         # Preference
         self.preference_dropbox = QComboBox(self)
         self.preference_dropbox.setStyleSheet("padding: 5px 10px;")
-        pref_times = ["Morning (8:00-12:00)",
+        pref_times = ["None", "Morning (8:00-12:00)",
                       "Afternoon (12:00-16:00)", "Evening (16:00-20:00)",
                       "Night (20:00-23:59)", "Ungodly hours (0:00-8:00)"]
         self.preference_dropbox.addItems(pref_times)
