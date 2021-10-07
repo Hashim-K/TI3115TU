@@ -1,14 +1,11 @@
-import random
-import numpy as np
-
 # Day and slot from date and time.
-'''This function is used when importing events from the google calendar. (See ImportGoogleEvents() in Schedule)
-The start and end times for an activity imported from the google calendar are in the form of '2021-10-06,17:21:00', 
-while they need to be in the form of [day, slot] for the program to make an Event class object for them. 
-This function uses the following inputs: 
-datetime (the date and time in the form '2021-10-06,17:21:00'), day_zero (the first day of the week) 
-and time_interval (the length of a time slot). 
-It's output is the index of the day and slot in the schedule ([day, slot]).'''
+"""This function is used when importing events from the google calendar. (See ImportGoogleEvents() in Schedule)
+The start and end times for an activity imported from the google calendar are in the form of '2021-10-06,17:21:00',
+while they need to be in the form of [day, slot] for the program to make an Event class object for them.
+This function uses the following inputs:
+datetime (the date and time in the form '2021-10-06,17:21:00'), day_zero (the first day of the week)
+and time_interval (the length of a time slot).
+It's output is the index of the day and slot in the schedule ([day, slot])."""
 
 
 def DayAndSlot(datetime, day_zero, time_interval):
@@ -47,7 +44,13 @@ def Slot(time, time_interval):
 
 
 def Slot2Time(slot, time_interval):
-    return f'{int(slot * time_interval / 60)}:{int(slot * time_interval % 60)}:00'
+    hour = int(slot * time_interval / 60)
+    minute = int(slot * time_interval % 60)
+    if hour < 10:
+        hour = '0' + str(hour)
+    if minute < 10:
+        minute = '0' + str(minute)
+    return f'{hour}:{minute}:00'
 
 
 # Check if year is leap year
@@ -160,11 +163,12 @@ def DateFormat(date):
     return months[month - 1] + ' ' + day
 
 
+'''
 # Creates a list of ticks for x-axis of the schedule plot.
-'''This function creates the ticks for the x-axis (the days representing the columns) for the displaying the schedule. 
+This function creates the ticks for the x-axis (the days representing the columns) for the displaying the schedule. 
 It is used in the Display() function in Schedule. Its inputs are day_zero (the first day in the schedule in the form
 'year-month-day') and number_of_days (the number of days in the schedule). Its output is a list of ticks for each of 
-the columns in the displayed schedule.'''
+the columns in the displayed schedule.
 
 
 def CreateXTicks(day_zero, number_of_days):
@@ -183,9 +187,9 @@ def CreateXTicks(day_zero, number_of_days):
 
 
 # Identifies blocks of empty slots in the schedule.
-'''This function checks which slots in the schedule are empty. It is used by the algorithm to determine in what time
+This function checks which slots in the schedule are empty. It is used by the algorithm to determine in what time
  slot it can place task events. Its input is schedule array and its output is a list of the blocks of free spaces in
- the form [[[begin_day][begin_slot],[end_day][end_slot]], ... ]'''
+ the form [[[begin_day][begin_slot],[end_day][end_slot]], ... ]
 
 
 def EmptySlots(schedule_array):
@@ -212,3 +216,4 @@ def EmptySlots(schedule_array):
         while len(free_block) > 2:
             free_block.pop(1)
     return free_blocks
+'''

@@ -54,4 +54,3 @@ def Import(monday, X):
     for event, inner in di_events:
         event_lst.append([f'{event}', inner[0].strftime('%d-%m-%Y,%H:%M'), inner[1].strftime('%d-%m-%Y,%H:%M')])
     return event_lst
-
