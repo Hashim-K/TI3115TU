@@ -51,4 +51,4 @@ task1 = Task('0002', 'Anime', 'Best show ever', 4, 0, 'Now', 'Yes', 'Free Time',
 
 task1.export_task('TestTask1.json')
 
-import_task('TestTask1.json')
+import_task('../TestTask1.json')
