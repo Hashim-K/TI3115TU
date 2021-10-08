@@ -66,6 +66,17 @@ def AppendEvents():
                     schedule.overlap[block[0][0]][slot] = event.ID
 
 
+# Block index
+def BlockIndex(blocks, day, slot):
+    for block in blocks:
+        if block[0][0] == block[1][0]:
+            if block[0][0] == day and block[0][1] <= slot <= block[1][1]:
+                return blocks.index(block)
+        else:
+            if block[0][0] == day and block[0][1] <= slot or (block[1][0] == day and block[1][1] >= slot):
+                return blocks.index(block)
+
+
 # This bit goes through all slots in the schedule.overlap array to check whether overlap occurs. It returns
 # True or False based on whether there is overlap or not.
 def ResolveOverlap():
@@ -84,8 +95,10 @@ def ResolveOverlap():
                     if event1_id == overlap[0] and event2_id == overlap[1] and day == overlap[2]:
                         print_message = False
                 if print_message:
-                    print(f"It seems like '{events[event1_id].Label}' overlaps with '{events[event2_id].Label}'on "
-                          f"{DateFormat(XDaysLater(presets.day_zero, day))}")
+                    index = BlockIndex(events[event2_id].Occurrences, day, slot)
+                    print(f"It seems like '{events[event1_id].Label}' overlaps with '{events[event2_id].Label}' on "
+                          f"{DateFormat(XDaysLater(presets.day_zero, day))}. "
+                          f"[Event={events[event2_id].ID}, Occurrence={index}]\n")
                     identified_overlaps.append([event1_id, event2_id, day])
     return is_overlap
 
@@ -100,8 +113,8 @@ def DeleteEvent(index):
 # This function displays the schedule plot. It can be modified to return a .jpg file which could be used by the GUI.
 def Display():
     day_zero = presets.day_zero
-    number_of_days = len(schedule.schedule)
-    number_of_slots = len(schedule.schedule[0])
+    number_of_days = schedule.number_of_days
+    number_of_slots = schedule.number_of_slots
     days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
     date = [int(day_zero.split('-')[2]), int(day_zero.split('-')[1]), int(day_zero.split('-')[0])]
     day = CheckWhatDay(date)
@@ -118,10 +131,10 @@ def Display():
     axes.invert_yaxis()
     plt.xticks(np.arange(number_of_days), xticks, rotation=30)
     plt.yticks(np.arange(0, number_of_slots, step=number_of_slots / 24), yticks)
-    plt.title('Schedule for ' + DateFormat(day_zero) + ' till ' + DateFormat(XDaysLater(day_zero, number_of_days - 1)))
+    plt.title(f'Schedule for {DateFormat(day_zero)} till {DateFormat(XDaysLater(day_zero, number_of_days - 1))}')
 
-    for j in range(len(schedule.schedule)):
-        for k in range(len(schedule.schedule[j])):
+    for j in range(number_of_days):
+        for k in range(number_of_slots):
             id = int(schedule.schedule[j][k])
             if id >= 0:
                 rect = patches.Rectangle((j, k), 1, 1, facecolor=events[id].Colour)
@@ -140,6 +153,21 @@ def Display():
     plt.tight_layout()
 
     plt.show()
+
+
+def PrintBlockInfo(blocks):
+    print(f'index   start_date   start_time  end_date     end_time    duration')
+    for block in blocks:
+        prefix = ''
+        if blocks.index(block) < 10:
+            prefix = '0'
+        print(f' [{prefix}{blocks.index(block)}]'
+              f'   {XDaysLater(presets.day_zero, block[0][0])}'
+              f'    {Slot2Time(block[0][1], presets.time_interval)} '
+              f'   {XDaysLater(presets.day_zero, block[1][0])}'
+              f'    {Slot2Time(block[1][1], presets.time_interval)}'
+              f'    {TimeBetween(block, presets.time_interval)}')
+    print()
 
 
 # This bit checks for empty slot in the schedule. It returns a list of the blocks of empty slots.
@@ -172,37 +200,26 @@ class Event:
         self.ID = events.index(self)
 
     def PrintOccurrences(self):
-        print(f'Occurrences for {self.Label}:\n'
-              f'index   start_date   start_time   end_date     end_time')
-        for Occurrence in self.Occurrences:
-            print(f'  [{self.Occurrences.index(Occurrence)}]'
-                  f'   {XDaysLater(presets.day_zero, Occurrence[0][0])}'
-                  f'    {Slot2Time(Occurrence[0][1], presets.time_interval)} '
-                  f'    {XDaysLater(presets.day_zero, Occurrence[1][0])}'
-                  f'    {Slot2Time(Occurrence[1][1], presets.time_interval)}')
-        print()
+        print(f'Occurrences for {self.Label}')
+        PrintBlockInfo(self.Occurrences)
 
-    def ChangeOccurrence(self, index, start_time=0, duration=0, end_time=0, day_add=0):
-        change = True
-        if start_time == 0:
-            if not duration == 0:
-                start_slot = Slot(end_time, presets.time_interval) - Slot(duration, presets.time_interval)
-            else:
-                change = False
-        else:
-            start_slot = Slot(start_time, presets.time_interval)
-        if duration == 0:
-            if not start_time == 0:
-                duration = Slot(end_time, presets.time_interval) - Slot(start_time, presets.time_interval)
-            else:
-                change = False
-        else:
+    def EditOccurrence(self, index, start_time=0, end_time=0, duration=0, add_day=0):
+        start_day = self.Occurrences[index][0][0] + add_day
+        if duration != 0:
             duration = Slot(duration, presets.time_interval)
-        start_day = self.Occurrences[index][0][0] + day_add
-        if change:
-            self.Occurrences[index] = StartAndEnd(start_day, start_slot, duration)
-            if self.ID == 0 and presets.morning_routine:
-                routines.SetMorningRoutine()
+        else:
+            duration = Slot(end_time, presets.time_interval) - Slot(start_time, presets.time_interval)
+            if duration < 0:
+                duration = schedule.number_of_slots + duration
+        if start_time != 0:
+            start_slot = Slot(start_time, presets.time_interval)
+        else:
+            start_slot = Slot(end_time, presets.time_interval) - duration
+            if start_slot < 0:
+                start_slot = schedule.number_of_slots + start_slot
+        self.Occurrences[index] = StartAndEnd(start_day, start_slot, duration)
+        if self.ID == 0 and presets.morning_routine:
+            routines.SetMorningRoutine()
 
 
 class Routines:
@@ -260,7 +277,7 @@ class Routines:
 
 class Presets:
     def __init__(self):
-        self.day_zero = '2021-09-17'
+        self.day_zero = '2021-09-12'
         self.number_of_days = 7
         self.time_interval = 5
         self.alarm_time = '07:30:00'
@@ -274,6 +291,7 @@ class Presets:
         self.morning_routine = True
         self.lunch = True
         self.dinner = True
+        self.import_google = True
 
     def PrintPresets(self):
         print(f"day_zero = '{self.day_zero}'\n"
@@ -289,7 +307,8 @@ class Presets:
               f"sleep = {self.sleep}\n"
               f"morning_routine = {self.morning_routine}\n"
               f"lunch = {self.lunch}\n"
-              f"dinner = {self.dinner}\n")
+              f"dinner = {self.dinner}\n"
+              f"import_google = {self.import_google}\n")
 
 
 class Main:
@@ -306,7 +325,8 @@ class Main:
 
     def SetUp(self):
         self.EmptyArrays()
-        # ImportGoogleEvents()
+        if presets.import_google:
+            ImportGoogleEvents()
         routines.SetAll()
         AppendEvents()
         ResolveOverlap()
@@ -320,11 +340,18 @@ class Main:
         else:
             print('Schedule needs to be set up first.')
 
-    def Finalize(self):
+    def ReturnEmpty(self):
         if self.first:
             print('Schedule needs to be set up first.')
         else:
             return EmptySlots()
+
+    def PrintEmpty(self):
+        if self.first:
+            print('Schedule needs to be set up first.')
+        else:
+            print('Empty blocks:')
+            PrintBlockInfo(EmptySlots())
 
 
 # Events, presets and the schedule instance.

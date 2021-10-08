@@ -1,9 +1,9 @@
 # Day and slot from date and time.
 """This function is used when importing events from the google calendar. (See ImportGoogleEvents() in Schedule)
-The start and end times for an activity imported from the google calendar are in the form of '2021-10-06,17:21:00',
+The start and end times for an activity imported from the google calendar are in the form of '06-10-2021,17:21:00',
 while they need to be in the form of [day, slot] for the program to make an Event class object for them.
 This function uses the following inputs:
-datetime (the date and time in the form '2021-10-06,17:21:00'), day_zero (the first day of the week)
+datetime (the date and time in the form '06-10-2021,17:21:00'), day_zero (the first day of the week)
 and time_interval (the length of a time slot).
 It's output is the index of the day and slot in the schedule ([day, slot])."""
 
@@ -163,57 +163,17 @@ def DateFormat(date):
     return months[month - 1] + ' ' + day
 
 
-'''
-# Creates a list of ticks for x-axis of the schedule plot.
-This function creates the ticks for the x-axis (the days representing the columns) for the displaying the schedule. 
-It is used in the Display() function in Schedule. Its inputs are day_zero (the first day in the schedule in the form
-'year-month-day') and number_of_days (the number of days in the schedule). Its output is a list of ticks for each of 
-the columns in the displayed schedule.
+def TimeBetween(block, time_interval):
+    start_day = block[0][0]
+    start_time = block[0][1]
+    end_day = block[1][0]
+    end_time = block[1][1]
+    minutes = (end_day - start_day) * 24*60 + (end_time - start_time)*time_interval
+    hours = 0
+    while minutes >= 60:
+        hours = hours + 1
+        minutes = minutes - 60
+    if minutes < 10:
+        minutes = f'0{minutes}'
+    return f'{hours}:{minutes}:00'
 
-
-def CreateXTicks(day_zero, number_of_days):
-    days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
-    # This bit creates a list from the day_zero in the form of [day-month-year].
-    date = [int(day_zero.split('-')[2]), int(day_zero.split('-')[1]), int(day_zero.split('-')[0])]
-    # This bit checks on what day of the week day_zero is.
-    day = CheckWhatDay(date)
-    # This bit creates a list of the ticks and appends the names of all the days present in the schedule to it.
-    tick_list = []
-    for i in range(number_of_days):
-        if day + i > 6:
-            day = day - 7
-        tick_list.append(days[day + i])
-    return tick_list
-
-
-# Identifies blocks of empty slots in the schedule.
-This function checks which slots in the schedule are empty. It is used by the algorithm to determine in what time
- slot it can place task events. Its input is schedule array and its output is a list of the blocks of free spaces in
- the form [[[begin_day][begin_slot],[end_day][end_slot]], ... ]
-
-
-def EmptySlots(schedule_array):
-    number_of_slots = len(schedule_array[0])
-    free_blocks = []
-    free_block = []
-    # This bit cycles through every slot in the schedule.
-    for day in range(len(schedule_array)):
-        for slot in range(len(schedule_array[day])):
-            # This bit checks if a slot is empty.
-            if schedule_array[day][slot] == -1:
-                free_block.append([day, slot])
-            else:
-                # This bit checks if there are any slots appended to free_block or if there are any slots appended to
-                # free_block and if the slot is the last slot of the day. If True, the slot is appended to free_block,
-                # free_block is appended to free_blocks and free_block is set to an empty list.
-                if len(free_block) > 0 or (len(free_block) > 0 and slot == number_of_slots - 1):
-                    free_block.append([day, slot])
-                    free_blocks.append(free_block)
-                    free_block = []
-    # This bit removes the slots in between the first and the last slot for each block of free slots so only the start
-    # slot and the end slot remain.
-    for free_block in free_blocks:
-        while len(free_block) > 2:
-            free_block.pop(1)
-    return free_blocks
-'''

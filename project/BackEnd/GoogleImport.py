@@ -15,7 +15,7 @@ def DoStuff(Monday, Sunday):
     except Exception:
         print('Failed')
     else:
-        print('\nSuccessfully Authenticated')
+        print('\nSuccessfully Authenticated\n')
 
     pickle.dump(credentials, open('../token.pkl', 'wb'))  # SAVE with pickle
 
