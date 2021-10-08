@@ -1,4 +1,3 @@
-
 # Meeting Notes | 2021-10-4 | Week 5
 *By R.E.M. Liu*
 ## Sprint planning
@@ -7,6 +6,7 @@
 - We need to work on the documentation of the code, so that it can be used in the report.
 	- We listed which parts needed documentation: the GUI, the schedule set up, tasks, the scheduling algorithm
 	- Each person will write the documentation for the code that they wrote, while one person writes the chapter on the requirements.
+
 **Back end**
 - Another goal for this week is to do more testing, but it has been decided to leave that mostly for the latter half of the week.
 - Further coding has been put on hold.
@@ -32,15 +32,19 @@
  - Hashim is still working on the algorithm
 # Meeting notes | 2021-10-08 | Week 5
 *By R.E.M. Liu*
-## Overview schedule set up
+
+**Overview schedule set up**
 - Teus demonstrated how his code worked, so that it is clear to everyone and the front-end can integrate it into the UI.
 - There was discussion about the implementation, because the code did provide all the needed functionalities, but it was written in a somewhat "static" way. We had mentioned before that global variable were a concern, and he did make those part of classes to eliminate those. But some of the methods could be abstracted so that general 'events' can be created. In the end we proposed that no drastic changes were necessary, but Hashim will go over the code with Teus so that the the code may be made more "dynamic" and to facilitate integration with the UI.
-## GUI demonstration
+
+**GUI demonstration**
 - Achere and Robin demonstrated the new part of the GUI, where users will be able to connect their google account and set the unavailable times.
 - Hashim mentioned that if one wants to rescale images, it is better to do it before importing it in python.
-## Algorithm
+
+**Algorithm**
 - Hashim gave a quick update on the algorithm and let the group know that the expected inputs are 1. the free time slots in the schedule and 2. all of the tasks from the JSON file.
-## Other decisions
+
+**Other decisions**
  - We planned to hand in the draft report. At the moment it is lacking some content, such as the chapter on the software development process, but we thought to write it later and receive feedback on what we have so far. Hashim will still add his part and then submit it.
 ## To do list
  - We will merge the currently open front-end and back-end branches before the next sprint planning.
