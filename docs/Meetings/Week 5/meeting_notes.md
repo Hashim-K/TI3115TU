@@ -1,4 +1,3 @@
-
 4-10-2021
 
 ## Sprint planning
@@ -11,6 +10,7 @@
 
 
 6-10-2021
+
 TA meeting
 - give a recap of what we're doing
 - we can still write more comments on **merge requests**
@@ -24,6 +24,7 @@ our meeting
 - google authorize problem, socket does not close on exit
 
 8-10-2021
+
 update on progress
 - review Teus' code
 	- discussion whether refactoring (abstraction) is necessary
