@@ -28,6 +28,7 @@ class SetUpWindow(GeneralWindow):
         # create stack items
         self.google_layout = QWidget()
         self.set_times_layout = QWidget()
+        self.algo_layout = QWidget()
 
         # initialize first page of stack
         self.google_ui()
@@ -122,6 +123,7 @@ class SetUpWindow(GeneralWindow):
         self.login_button = QPushButton("Log in")
         self.login_button.setStyleSheet(palette.Prefs.style_sheets['button_priority_rect'])
         self.login_button.setFixedWidth(125)
+
         layout1.addWidget(self.login_button, alignment=Qt.AlignCenter)
 
         # layout1.addStretch(1)
