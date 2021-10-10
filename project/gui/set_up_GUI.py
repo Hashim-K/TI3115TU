@@ -1,4 +1,4 @@
-import sys
+import sys ,os
 
 import palette, times_list
 from general_window_gui import GeneralWindow
@@ -7,6 +7,9 @@ from PyQt5.QtWidgets import QHBoxLayout, QWidget, QFormLayout, QLineEdit, QDateE
     QApplication, QStyleFactory
 from PyQt5.QtCore import QRegExp, Qt, QDate, QSize
 from PyQt5.QtGui import QRegExpValidator, QPixmap
+
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))    # Allows imports from parent
+import Schedule
 
 class SetUpWindow(GeneralWindow):
 
@@ -28,16 +31,18 @@ class SetUpWindow(GeneralWindow):
         # create stack items
         self.google_layout = QWidget()
         self.set_times_layout = QWidget()
-        self.algo_layout = QWidget()
+        self.run_algo_layout = QWidget()
 
         # initialize first page of stack
         self.google_ui()
         self.set_times_ui()
+        self.run_algo_ui()
 
         # create stack and add items
         self.Stack = QStackedWidget()
         self.Stack.addWidget(self.google_layout)
         self.Stack.addWidget(self.set_times_layout)
+        self.Stack.addWidget(self.run_algo_layout)
 
         # Bottom Block
         bottom_block = QWidget()
@@ -81,11 +86,20 @@ class SetUpWindow(GeneralWindow):
                 self.Stack.setCurrentIndex(1)
                 self.next_button.setText('Next')
                 self.prev_button.show()
-        else:
+            if idx == 1:
+                self.Stack.setCurrentIndex(2)
+                self.next_button.setStyleSheet(palette.Prefs.style_sheets['button_priority_rect'])
+                self.next_button.setText('Run')
+        else:   # Previous button
             if idx == 1:
                 self.Stack.setCurrentIndex(0)
                 self.next_button.setText('Skip')
                 self.prev_button.hide()
+            if idx == 2:
+                self.Stack.setCurrentIndex(1)
+                self.next_button.setStyleSheet(palette.Prefs.style_sheets['button_low_priority_rect'])
+                self.next_button.setText('Next')
+
 
     # stack 1
     def google_ui(self):
@@ -123,6 +137,7 @@ class SetUpWindow(GeneralWindow):
         self.login_button = QPushButton("Log in")
         self.login_button.setStyleSheet(palette.Prefs.style_sheets['button_priority_rect'])
         self.login_button.setFixedWidth(125)
+        self.login_button.clicked.connect(Schedule.ImportGoogleEvents)
 
         layout1.addWidget(self.login_button, alignment=Qt.AlignCenter)
 
@@ -136,7 +151,7 @@ class SetUpWindow(GeneralWindow):
         # Prompt
         question2_text = QLabel("Which times would you like to set as unavailable?")
         question2_text.setStyleSheet(palette.Prefs.style_sheets['text_title'] + 'margin-bottom: 10px')
-        layout2.addWidget(question2_text)
+        layout2.addWidget(question2_text, alignment=Qt.AlignCenter)
 
         # TimeList
         self.t_list = times_list.TimeList(self.ls_w, self.prefs)
@@ -148,6 +163,42 @@ class SetUpWindow(GeneralWindow):
 
         self.set_times_layout.setLayout(layout2)
         #self.Stack.setCurrentIndex(1)
+    
+    # stack 3 | Algorithm Run
+    def run_algo_ui(self):
+        layout3 = QVBoxLayout()
+        layout3.addStretch(1)
+
+        # Prompt
+        prompt_text = QLabel("Click 'run' to schedule")
+        prompt_text.setStyleSheet(palette.Prefs.style_sheets['text_title'] + 'margin-bottom: 10px')
+        layout3.addWidget(prompt_text, alignment=Qt.AlignCenter)
+
+        # Icon
+        algo_img = QPixmap(self.prefs.images['algo_icon'])
+        scale = 0.35
+        algo_img = algo_img.scaled(scale * algo_img.width(), scale * algo_img.height(), transformMode=Qt.SmoothTransformation)
+        logo_label = QLabel()
+        logo_label.setPixmap(algo_img)
+        logo_label.setAlignment(Qt.AlignCenter)
+        logo_label.setStyleSheet('margin-bottom: 30px; margin-top: 30px')
+
+        layout3.addWidget(logo_label)
+
+        # Text Block
+        desc_text = (
+            "During runtime of the algorithm 25/8 becomes unresponsive " +
+            "momentarily." +
+            ""
+        )
+        desc = QLabel(desc_text)
+        desc.setWordWrap(True)
+        desc.setStyleSheet(palette.Prefs.style_sheets['text_bubble'])
+
+        layout3.addWidget(desc)
+        layout3.addStretch(1)
+
+        self.run_algo_layout.setLayout(layout3)
 
 # For testing [TO DELETE]
 if __name__ == "__main__":
