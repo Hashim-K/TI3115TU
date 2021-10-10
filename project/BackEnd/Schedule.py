@@ -164,17 +164,7 @@ alarm_time = '07:00:00'
 length_sleep = '08:00:00'
 length_morning_routine = '0:40:00'
 
-ImportGoogleEvents()  # Imports the events from the google calendar.
-schedule_array = CreateArray(number_of_days, number_of_slots)  # Creates the empty schedule.
-overlap_array = CreateArray(number_of_days, number_of_slots)
-SleepEvent()  # Adds sleep and morning routine to the calendar
-AppendEvents()  # Appends the events to the schedule.
-Display()  # Displays the schedule.
-while 1 + 1 == 2:
-    overlapping = ResolveOverlap()
-    if not overlapping:
-        break
-Display()
+
 
 
 # Stuff that might be useful later.
@@ -193,4 +183,23 @@ FreeBlocks = EmptySlots(Schedule,number_of_slots)
 for FreeBlock in FreeBlocks:
     FreeTime.Occurences.append(FreeBlock)
 Add2Schedule(FreeTime,time_interval)
+
+
+
 '''
+
+def run_schedule():
+    ImportGoogleEvents()  # Imports the events from the google calendar.
+    schedule_array = CreateArray(number_of_days, number_of_slots)  # Creates the empty schedule.
+    overlap_array = CreateArray(number_of_days, number_of_slots)
+    SleepEvent()  # Adds sleep and morning routine to the calendar
+    AppendEvents()  # Appends the events to the schedule.
+    Display()  # Displays the schedule.
+    while 1 + 1 == 2:
+        overlapping = ResolveOverlap()
+        if not overlapping:
+            break
+    Display()
+
+if __name__ == '__main__':
+    run_schedule()
