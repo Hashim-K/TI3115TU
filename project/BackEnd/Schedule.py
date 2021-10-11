@@ -36,8 +36,8 @@ def StartAndEnd(day, start_slot, duration):
     if start_day < 0:
         start_day = 0
         start_slot = 0
-    if end_day >= schedule.number_of_days:
-        end_day = schedule.number_of_days - 1
+    if end_day >= presets.number_of_days:
+        end_day = presets.number_of_days - 1
         end_slot = schedule.number_of_slots
     return [[start_day, start_slot], [end_day, end_slot]]
 
@@ -80,7 +80,7 @@ def BlockIndex(blocks, day, slot):
 # This bit goes through all slots in the schedule.overlap array to check whether overlap occurs. It returns
 # True or False based on whether there is overlap or not.
 def ResolveOverlap():
-    number_of_days = len(schedule.schedule)
+    number_of_days = presets.number_of_days
     number_of_slots = len(schedule.schedule[0])
     is_overlap = False
     identified_overlaps = []
@@ -111,9 +111,9 @@ def DeleteEvent(index):
 
 
 # This function displays the schedule plot. It can be modified to return a .jpg file which could be used by the GUI.
-def Display():
+def Display_():
     day_zero = presets.day_zero
-    number_of_days = schedule.number_of_days
+    number_of_days = presets.number_of_days
     number_of_slots = schedule.number_of_slots
     days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
     date = [int(day_zero.split('-')[2]), int(day_zero.split('-')[1]), int(day_zero.split('-')[0])]
@@ -125,34 +125,43 @@ def Display():
         xticks.append(days[day + i])
     yticks = ['0:00', '1:00', '2:00', '3:00', '4:00', '5:00', '6:00', '7:00', '8:00', '9:00', '10:00', '11:00', '12:00',
               '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00']
+    fig, ax = plt.subplots(figsize=(display.width, display.height), facecolor=display.background_color)
+
+    ax.spines[:].set_color(display.face_color)
+    ax.tick_params(colors=display.background_color)
+
     axes = plt.gca()
+    axes.set_facecolor(display.face_color)
     axes.set_xlim([0, number_of_days])
     axes.set_ylim([0, number_of_slots])
     axes.invert_yaxis()
-    plt.xticks(np.arange(number_of_days), xticks, rotation=30)
-    plt.yticks(np.arange(0, number_of_slots, step=number_of_slots / 24), yticks)
-    plt.title(f'Schedule for {DateFormat(day_zero)} till {DateFormat(XDaysLater(day_zero, number_of_days - 1))}')
+    plt.xticks(np.arange(number_of_days), xticks, ha="left", color=display.text_color)
+    plt.yticks(np.arange(0, number_of_slots, step=number_of_slots / 24), yticks, color=display.text_color)
+    plt.title(f'Schedule for {DateFormat(day_zero)} till {DateFormat(XDaysLater(day_zero, number_of_days - 1))}',
+              color=display.text_color)
 
     for j in range(number_of_days):
         for k in range(number_of_slots):
             id = int(schedule.schedule[j][k])
+            whitespace = j + 0.05
             if id >= 0:
-                rect = patches.Rectangle((j, k), 1, 1, facecolor=events[id].Colour)
+                rect = patches.Rectangle((whitespace, k), 0.91, 1, facecolor=events[id].Color)
                 plt.gca().add_patch(rect)
             overlap_id = int(schedule.overlap[j][k])
             if overlap_id >= 0:
-                rect = patches.Rectangle((j, k), 0.5, 1, facecolor=events[overlap_id].Colour)
+                rect = patches.Rectangle((whitespace, k), 0.5, 1, facecolor=events[overlap_id].Color)
                 plt.gca().add_patch(rect)
 
     legend_elements = []
     for id in range(len(events)):
-        legend_elements.append(patches.Patch(facecolor=events[id].Colour, label=events[id].Label))
-    axes.legend(handles=legend_elements, bbox_to_anchor=(1.01, 1.0), loc='upper left')
-    plt.grid(axis='x', color='black')
-    plt.grid(axis='y', color='black', linewidth=0.5, alpha=0.25)
+        legend_elements.append(patches.Patch(facecolor=events[id].Color, label=events[id].Label))
+    legend = axes.legend(handles=legend_elements, bbox_to_anchor=(1.01, 1.0), loc='upper left', frameon=False)
+    plt.setp(legend.get_texts(), color=display.text_color)
+    plt.grid(axis='x', color=display.text_color, linewidth=0.5, alpha=0.25, linestyle='dotted')
+    plt.grid(axis='y', color=display.text_color, linewidth=0.5, alpha=0.25, linestyle='dotted')
     plt.tight_layout()
 
-    plt.show()
+    plt.savefig('schedule.jpg')
 
 
 def PrintBlockInfo(blocks):
@@ -175,7 +184,7 @@ def EmptySlots():
     number_of_slots = schedule.number_of_slots
     free_blocks = []
     free_block = []
-    for day in range(schedule.number_of_days):
+    for day in range(presets.number_of_days):
         for slot in range(schedule.number_of_slots):
             if schedule.schedule[day][slot] == -1:
                 free_block.append([day, slot])
@@ -190,12 +199,17 @@ def EmptySlots():
     return free_blocks
 
 
+def AddOccurrence(id, day, start_time, duration):
+    events[id].Occurrences.append(StartAndEnd(day, Slot(start_time, presets.time_interval),
+                                              Slot(duration, presets.time_interval)))
+
+
 # Classes
 class Event:
     def __init__(self, Label, Color, Occurrences):
         self.Label = Label
         self.Occurrences = Occurrences
-        self.Colour = Color
+        self.Color = Color
         events.append(self)
         self.ID = events.index(self)
 
@@ -220,6 +234,20 @@ class Event:
         self.Occurrences[index] = StartAndEnd(start_day, start_slot, duration)
         if self.ID == 0 and presets.morning_routine:
             routines.SetMorningRoutine()
+
+
+class Display:
+    def __init__(self):
+        self.width = 10
+        self.height = 5
+        self.text_color = 'black'
+        self.background_color = 'white'
+        self.face_color = 'white'
+
+    def DarkMode(self):
+        self.text_color = 'white'
+        self.background_color = '#303136'
+        self.face_color = '#363940'
 
 
 class Routines:
@@ -249,7 +277,7 @@ class Routines:
 
     def SetSleep(self):
         self.sleep.Occurrences = []
-        for day in range(schedule.number_of_days + 1):
+        for day in range(presets.number_of_days + 1):
             duration = Slot(presets.length_sleep, presets.time_interval)
             start_slot = Slot(presets.alarm_time, presets.time_interval) - duration
             self.sleep.Occurrences.append(StartAndEnd(day, start_slot, duration))
@@ -262,14 +290,14 @@ class Routines:
 
     def SetLunch(self):
         self.lunch.Occurrences = []
-        for day in range(schedule.number_of_days):
+        for day in range(presets.number_of_days):
             start_slot = Slot(presets.lunch_time, presets.time_interval)
             duration = Slot(presets.length_lunch, presets.time_interval)
             self.lunch.Occurrences.append(StartAndEnd(day, start_slot, duration))
 
     def SetDinner(self):
         self.dinner.Occurrences = []
-        for day in range(schedule.number_of_days):
+        for day in range(presets.number_of_days):
             start_slot = Slot(presets.dinner_time, presets.time_interval)
             duration = Slot(presets.length_dinner, presets.time_interval)
             self.dinner.Occurrences.append(StartAndEnd(day, start_slot, duration))
@@ -316,7 +344,6 @@ class Main:
         self.first = True
         self.schedule = []
         self.overlap = []
-        self.number_of_days = presets.number_of_days
         self.number_of_slots = round(24 * 60 / presets.time_interval)
 
     def EmptyArrays(self):
@@ -357,5 +384,6 @@ class Main:
 # Events, presets and the schedule instance.
 events = []
 presets = Presets()
+display = Display()
 routines = Routines()
 schedule = Main()
