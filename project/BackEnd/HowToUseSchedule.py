@@ -7,7 +7,7 @@ import Schedule
 # To set the value for a preset use 'Schedule.presets.preset = value'.
 Schedule.presets.import_google = False
 
-preview = True
+preview = False
 
 if preview:
     Schedule.presets.sleep = False
