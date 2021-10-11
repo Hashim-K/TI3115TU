@@ -1,12 +1,14 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
-import GoogleImport
-from General import *
 
 
 # This function initializes the stuff in GoogleImport and gets a list of the google events. Then for each event in
 # the list, it assigns a color and creates an event class object.
+from project.BackEnd import GoogleImport
+from project.BackEnd.General import DayAndSlot, DateFormat, XDaysLater, CheckWhatDay, Slot2Time, TimeBetween, Slot
+
+
 def ImportGoogleEvents():
     day_zero = presets.day_zero
     time_interval = presets.time_interval

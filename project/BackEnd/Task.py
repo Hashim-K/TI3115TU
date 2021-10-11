@@ -1,14 +1,17 @@
 import json
-from Schedule import Events
+
 import os.path
 from dataclasses import dataclass
 from datetime import datetime
 
 
 # @dataclass
+from project.BackEnd import Schedule
+
+
 class Task:
 
-    highest_id = Events[-1].ID
+    highest_id = Schedule.events[-1].ID
 
     def __init__(self, name: str, description: str, duration: int, priority: int, deadline: str,
                  repeatable: bool, category: str, preferred: str, plan_on_same: bool, session: int, filename: str):

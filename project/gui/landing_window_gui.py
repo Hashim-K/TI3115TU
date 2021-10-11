@@ -1,8 +1,11 @@
 import sys, getpass
-from gui import general_window_gui, main_window_gui
+
 from PyQt5.QtWidgets import QApplication, QLabel, QPushButton, QVBoxLayout, QWidget, QFileDialog, QGridLayout, QLineEdit
 from PyQt5.QtGui import QIcon, QPixmap, QCursor
 from PyQt5 import QtGui, QtCore
+
+from project.gui import general_window_gui, main_window_gui
+
 
 class LandingView(general_window_gui.GeneralWindow):
     def __init__(self, window_list, prefs):

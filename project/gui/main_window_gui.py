@@ -1,5 +1,5 @@
 import sys
-from gui import general_window_gui, task_list, task_creation_gui
+
 from PyQt5.QtWidgets import QApplication, QGroupBox, QHBoxLayout, QLabel, QListWidget, QListWidgetItem, QScrollArea, QAction, QMainWindow, QPushButton, QStackedLayout, QStackedWidget, QToolBar, QVBoxLayout, QWidget, QFileDialog, QGridLayout, QLineEdit, QFrame
 from PyQt5.QtGui import QColor, QIcon, QPixmap, QCursor, QFont
 from PyQt5 import QtGui, QtCore
@@ -8,6 +8,7 @@ from PyQt5 import QtGui, QtCore
 import string, random
 
 from project.BackEnd import Task
+from project.gui import general_window_gui, task_list, task_creation_gui
 
 
 class MainView(general_window_gui.GeneralWindow):

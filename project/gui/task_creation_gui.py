@@ -1,5 +1,5 @@
 import sys
-from gui.general_window_gui import GeneralWindow
+
 from PyQt5.QtWidgets import QWidget, QFormLayout, QLineEdit, QDateEdit
 from PyQt5.QtWidgets import QLabel, QSlider, QComboBox, QCheckBox
 from PyQt5.QtWidgets import QPushButton, QApplication, QStyleFactory
@@ -7,6 +7,7 @@ from PyQt5.QtCore import QRegExp, Qt, QDate
 from PyQt5.QtGui import QRegExpValidator
 
 from project.BackEnd import Task
+from project.gui.general_window_gui import GeneralWindow
 
 
 class TaskCreationWindow(GeneralWindow):
