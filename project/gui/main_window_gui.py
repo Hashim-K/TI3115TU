@@ -1,4 +1,4 @@
-import sys, Task
+import sys
 from gui import general_window_gui, task_list, task_creation_gui
 from PyQt5.QtWidgets import QApplication, QGroupBox, QHBoxLayout, QLabel, QListWidget, QListWidgetItem, QScrollArea, QAction, QMainWindow, QPushButton, QStackedLayout, QStackedWidget, QToolBar, QVBoxLayout, QWidget, QFileDialog, QGridLayout, QLineEdit, QFrame
 from PyQt5.QtGui import QColor, QIcon, QPixmap, QCursor, QFont
@@ -6,6 +6,9 @@ from PyQt5 import QtGui, QtCore
 
 # TO DELETE
 import string, random
+
+from project.BackEnd import Task
+
 
 class MainView(general_window_gui.GeneralWindow):
     def __init__(self, window_list, prefs):
