@@ -8,8 +8,10 @@ from PyQt5.QtWidgets import QHBoxLayout, QWidget, QFormLayout, QLineEdit, QDateE
 from PyQt5.QtCore import QRegExp, Qt, QDate, QSize
 from PyQt5.QtGui import QRegExpValidator, QPixmap
 
+from project.BackEnd import Schedule
+
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))    # Allows imports from parent
-import Schedule
+
 
 class SetUpWindow(GeneralWindow):
 
