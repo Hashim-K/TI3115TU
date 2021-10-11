@@ -2,12 +2,12 @@ class Prefs():
     # IMAGES
 
     images = {
-        'img_logo' : 'imagery/logo.png',
-        'img_logo_min' : 'imagery/logo_min.png',
-        'img_g_logo' : 'imagery/google_logo.png',
-        'bar_close' : 'imagery/bar_close.png',
+        'img_logo' : 'gui/media/logo.png',
+        'img_logo_min' : 'media/logo_min.png',
+        'img_g_logo' : 'media/google_logo.png',
+        'bar_close' : 'media/bar_close.png',
         # FROM flaticon
-        'algo_icon' : 'imagery/algo_icon.png'   # @ Linector
+        'algo_icon' : 'media/algo_icon.png'   # @ Linector
     }
 
     # SAVING DIRECTORIES

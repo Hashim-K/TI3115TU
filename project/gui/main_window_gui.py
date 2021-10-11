@@ -168,8 +168,11 @@ class MainView(general_window_gui.GeneralWindow):
         # Flush list
         self.list_widget.clear()
         # Repopulate
-        tasks = Task.import_task('save_file.json')
-        self.list_widget.load_task_list(tasks)
+        try:
+            tasks = Task.import_task('save_file.json')
+            self.list_widget.load_task_list(tasks)
+        except FileNotFoundError:
+            print("json doesn't exist.")
 
     # New Task Window
     def new_task(self):

@@ -6,7 +6,6 @@ from PyQt5 import QtGui, QtCore
 
 from project.gui import general_window_gui, main_window_gui
 
-
 class LandingView(general_window_gui.GeneralWindow):
     def __init__(self, window_list, prefs):
         super().__init__(window_list, prefs)
