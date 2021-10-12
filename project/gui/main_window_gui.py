@@ -157,14 +157,14 @@ class MainView(general_window_gui.GeneralWindow):
         self.schedule_button.setFixedWidth(100)
 
         # Set Routines Button
-        self.import_button = QPushButton('Routines')
-        self.import_button.setStyleSheet(self.prefs.style_sheets['button_prio_burger'])
-        self.import_button.setFixedWidth(100)
-
-        # Preferences (Google etc.)
-        self.routines_button = QPushButton('Preferences')
+        self.routines_button = QPushButton('Routines')
         self.routines_button.setStyleSheet(self.prefs.style_sheets['button_prio_burger'])
         self.routines_button.setFixedWidth(100)
+
+        # Preferences (Google etc.)
+        self.preferences_button = QPushButton('Preferences')
+        self.preferences_button.setStyleSheet(self.prefs.style_sheets['button_prio_burger'])
+        self.preferences_button.setFixedWidth(100)
 
         # Generate schedule button
         self.generate_button = QPushButton('Generate\nschedule')
