@@ -1,9 +1,7 @@
 import json
-
 import os.path
-from dataclasses import dataclass
 from datetime import datetime
-
+from dataclasses import dataclass
 
 # @dataclass
 from project.BackEnd import Schedule
@@ -70,21 +68,28 @@ class Task:
 
 def import_task(filename):
     tasks_list = []
-    with open(filename, 'r') as file:
-        task_dict = json.load(file)
-        for tasks in task_dict:
-            tasks_list.append(Task(tasks['Name'], tasks['Description'], tasks['Duration'],
-                    tasks['Priority'], datetime.fromisoformat(tasks['Deadline']), tasks['Repeatable'],
-                    tasks['Category'], tasks['Preferred'], tasks['Plan_on_same'], tasks['Session'], filename))
+    try:
+        with open(filename, 'r') as file:
+            task_dict = json.load(file)
+            for tasks in task_dict:
+                tasks_list.append(Task(tasks['Name'], tasks['Description'], tasks['Duration'],
+                        tasks['Priority'], datetime.fromisoformat(tasks['Deadline']), tasks['Repeatable'],
+                        tasks['Category'], tasks['Preferred'], tasks['Plan_on_same'], tasks['Session'], filename))
+    except FileNotFoundError:
+        print('File does not exist')
     return tasks_list
 
 
 def delete_task(filename, taskID):
-    with open(filename, 'r') as file:
-        task_dict = json.load(file)
-    for i in range(len(task_dict)):
-        if task_dict[i]['TaskID'] == taskID:
-            del task_dict[i]
-            break
-    with open(filename, 'w') as file:
-        json.dump(task_dict, file, indent = 6)
+    try:
+        with open(filename, 'r') as file:
+            task_dict = json.load(file)
+        for i in range(len(task_dict)):
+            if task_dict[i]['TaskID'] == taskID:
+                del task_dict[i]
+                break
+        with open(filename, 'w') as file:
+            json.dump(task_dict, file, indent = 6)
+    except FileNotFoundError:
+        print('File does not exist')
+
