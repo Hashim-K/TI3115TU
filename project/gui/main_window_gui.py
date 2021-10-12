@@ -63,7 +63,7 @@ class MainView(general_window_gui.GeneralWindow):
         # Layout
         layout = QVBoxLayout()
 
-        # Top Block
+        ## Top Block
         top_block_widget = QWidget()
         top_block_widget.setStyleSheet(self.prefs.style_sheets['text_bubble_title'])
 
@@ -82,7 +82,7 @@ class MainView(general_window_gui.GeneralWindow):
         ## Clear Button
         clear_button = QPushButton('Clear')
         clear_button.setStyleSheet(self.prefs.style_sheets['button_exit_rect'])
-        clear_button.setFixedWidth(75) 
+        clear_button.setFixedWidth(75)
 
         ### Layout
         tbw_layout = QHBoxLayout()
@@ -103,7 +103,8 @@ class MainView(general_window_gui.GeneralWindow):
         layout.addWidget(top_block_widget)
         layout.addWidget(self.list_widget)
         self.stack_events.setLayout(layout)
-    
+
+    ## Schedule View
     def stack_schedule_ui(self):
         layout = QVBoxLayout()
         
@@ -114,16 +115,33 @@ class MainView(general_window_gui.GeneralWindow):
         layout.addWidget(text)
         self.stack_schedule.setLayout(layout)
 
+    ## Preferences View
     def stack_preferences_ui(self):
         layout = QVBoxLayout()
         
-        text = QLabel()
-        text.setText('Preferences View')
-        text.setStyleSheet(self.prefs.style_sheets['text_bubble_dark'])
+        ## Top Block
+        top_block_widget = QWidget()
+        top_block_widget.setStyleSheet(self.prefs.style_sheets['text_bubble_title'])
 
-        layout.addWidget(text)
+        ## Title
+        title = QLabel('Preferences')
+        title.setMargin(5)
+        title.setStyleSheet(self.prefs.style_sheets['text_title'])
+
+        # Layout in Box
+        tbw_layout = QHBoxLayout()
+        tbw_layout.addWidget(title)
+        tbw_layout.addStretch(1)
+
+        top_block_widget.setLayout(tbw_layout)
+
+        # Main Layout
+        layout.addWidget(top_block_widget)
+        layout.addStretch(1)
+
         self.stack_preferences.setLayout(layout)
-    
+
+    ## Sidebar
     def text_ui(self):
         layout = QVBoxLayout()
 
@@ -164,6 +182,7 @@ class MainView(general_window_gui.GeneralWindow):
         # Preferences (Google etc.)
         self.preferences_button = QPushButton('Preferences')
         self.preferences_button.setStyleSheet(self.prefs.style_sheets['button_prio_burger'])
+        self.preferences_button.clicked.connect(lambda:self.display(2))
         self.preferences_button.setFixedWidth(100)
 
         # Generate schedule button
@@ -175,9 +194,9 @@ class MainView(general_window_gui.GeneralWindow):
         layout.addWidget(line)
         layout.addWidget(self.schedule_button)
         layout.addWidget(line2)
-        layout.addWidget(self.import_button)
-        layout.addWidget(line3)
         layout.addWidget(self.routines_button)
+        layout.addWidget(line3)
+        layout.addWidget(self.preferences_button)
         layout.addWidget(line4)
         layout.addStretch()
         layout.addWidget(self.generate_button)
@@ -196,6 +215,7 @@ class MainView(general_window_gui.GeneralWindow):
             print("json doesn't exist.")
 
     # New Task Window
+    @staticmethod
     def new_task(self):
         general_window_gui.GeneralWindow.pre_init(self.ls_w, self.prefs, task_creation_gui.TaskCreationWindow)
     
@@ -207,4 +227,54 @@ class MainView(general_window_gui.GeneralWindow):
     def catch_event(self, event_name):
         if event_name == 'reload_tasks':
             self.populate_list()
+
+
+class TopBlockWidget(QWidget):  # COULD be TESTED [not done]
+    """
+    Responsible for generation of topblockwidgets. These widgets are the headers
+    of the various views within the main window.
+    """
+    def __init__(self, title, button_count, button_titles, button_functions, prefs):
+        super().__init__()
+        # Warnings
+        if button_count > 2:
+            print('Button count larger than 2, clamped to 2.')
+        if not (button_count == len(button_titles) == len(button_functions)):
+            print('Not enough button relatives.')
+
+        # Layout
+        block_layout = QHBoxLayout()
+        self.setStyleSheet(prefs.style_sheets['text_bubble_title'])
+
+        # Title
+        block_title = QLabel(title)
+        block_title.setMargin(5)
+        block_title.setStyleSheet(prefs.style_sheets['text_title'])
+        block_layout.addWidget(block_title)
+
+        block_layout.addStretch(1)  # Stretch before buttons
+
+        # Button-Count sensitive action
+        if button_count == 0:
+            pass
+        if button_count >= 1:
+            # Button 1
+            button_one = QPushButton(button_titles[0])
+            button_one.setStyleSheet(prefs.style_sheets['button_priority_rect'])
+            button_one.setFixedWidth(75)
+
+            # button_one.clicked.connect(lambda:button_functions[0])
+
+            block_layout.addWidget(button_one)
+        if button_count >= 2:
+            # Button 2:
+            button_two = QPushButton(button_titles[1])
+            button_two.setStyleSheet(prefs.style_sheets['button_low_priority_rect'])
+            button_two.setFixedWidth(75)
+
+            # button_two.clicked.connect(lambda:button_functions[1])
+
+            block_layout.addWidget(button_two)
+
+        self.setLayout(block_layout)    # Set layout to layout
 
