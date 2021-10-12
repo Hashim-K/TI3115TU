@@ -135,6 +135,14 @@ class MainView(general_window_gui.GeneralWindow):
         line2 = QFrame()
         line2.setFrameShape(QFrame.HLine)
         line2.setStyleSheet("color: '#42464E'")
+
+        line3 = QFrame()
+        line3.setFrameShape(QFrame.HLine)
+        line3.setStyleSheet("color: '#42464E'")
+
+        line4 = QFrame()
+        line4.setFrameShape(QFrame.HLine)
+        line4.setStyleSheet("color: '#42464E'")
         
         # Event Button
         self.event_button = QPushButton('Tasks')
@@ -148,18 +156,31 @@ class MainView(general_window_gui.GeneralWindow):
         self.schedule_button.clicked.connect(lambda:self.display(1))
         self.schedule_button.setFixedWidth(100)
 
-        # Preferences Button
-        self.prefs_button = QPushButton('Preferences')
-        self.prefs_button.setStyleSheet(self.prefs.style_sheets['button_prio_burger'])
-        self.prefs_button.clicked.connect(lambda:self.display(2))
-        self.prefs_button.setFixedWidth(100)
+        # Import from Google button
+        self.import_button = QPushButton('Import\nfrom\nGoogle')
+        self.import_button.setStyleSheet(self.prefs.style_sheets['button_prio_burger'])
+        self.import_button.setFixedWidth(100)
+
+        # Set routines button
+        self.routines_button = QPushButton('Set\nroutines')
+        self.routines_button.setStyleSheet(self.prefs.style_sheets['button_prio_burger'])
+        self.routines_button.setFixedWidth(100)
+
+        # Generate schedule button
+        self.generate_button = QPushButton('Generate\nschedule')
+        self.generate_button.setStyleSheet(self.prefs.style_sheets['button_priority_rect'])
+        self.generate_button.setFixedWidth(100)
 
         layout.addWidget(self.event_button)
         layout.addWidget(line)
         layout.addWidget(self.schedule_button)
         layout.addWidget(line2)
-        layout.addWidget(self.prefs_button)
+        layout.addWidget(self.import_button)
+        layout.addWidget(line3)
+        layout.addWidget(self.routines_button)
+        layout.addWidget(line4)
         layout.addStretch()
+        layout.addWidget(self.generate_button)
 
         self.context.setLayout(layout)
 

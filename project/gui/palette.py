@@ -3,7 +3,7 @@ class Prefs():
 
     images = {
         'img_logo' : 'gui/media/logo.png',
-        'img_logo_min' : 'media/logo_min.png',
+        'img_logo_min' : 'gui/media/logo_min.png',
         'img_g_logo' : 'media/google_logo.png',
         'bar_close' : 'media/bar_close.png',
         # FROM flaticon
