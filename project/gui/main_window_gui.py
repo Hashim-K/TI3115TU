@@ -135,8 +135,50 @@ class MainView(general_window_gui.GeneralWindow):
 
         top_block_widget.setLayout(tbw_layout)
 
+        ## Body
+        body_layout = QGridLayout()
+        body_layout.setColumnStretch(0, 1)
+        body_layout.setColumnStretch(1, 1)
+
+        # Google Box
+        google_box = QGroupBox('Import Calendar')
+        google_box.setStyleSheet(self.prefs.style_sheets['std_gbox'])
+
+        ## Google Box Layout
+        gb_layout = QVBoxLayout()
+
+        ### Prompt
+        prompt_text = "A Google Calendar may be imported " \
+                      "using the login button below. " \
+                      "This action grants 25/8 full access " \
+                      "to read and write from and to the user's " \
+                      "Google Calendar."
+        prompt = QLabel(prompt_text)
+        prompt.setWordWrap(True)
+        prompt.setStyleSheet(self.prefs.style_sheets['text'])
+
+        gb_layout.addWidget(prompt)
+
+        ### Button
+        button = QPushButton('Import')
+        button.setFixedWidth(75)
+        button.setStyleSheet(self.prefs.style_sheets['button_priority_rect'])
+
+        gb_layout.addWidget(button, alignment=QtCore.Qt.AlignCenter)
+
+        google_box.setLayout(gb_layout)
+
+        body_layout.addWidget(google_box, 0, 1, 1, 1)
+
+        # Settings Box
+        settings_box = QGroupBox('Settings')
+        settings_box.setStyleSheet(self.prefs.style_sheets['std_gbox'])
+
+        body_layout.addWidget(settings_box, 0, 0, 1, 1)
+
         # Main Layout
-        layout.addWidget(top_block_widget)
+        layout.addWidget(top_block_widget, alignment=QtCore.Qt.AlignTop)    # Stick to top
+        layout.addLayout(body_layout)
         layout.addStretch(1)
 
         self.stack_preferences.setLayout(layout)

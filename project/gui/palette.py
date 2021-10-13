@@ -132,6 +132,10 @@ class Prefs():
                     "margin: 0px 0px;}" +
                     "*:hover{background: '#4069ED';}"
                     ),
-                    
+        # GroupBoxes
+        'std_gbox' : (
+            "*:title{color : 'white';}"
+            # "*{border : 2px solid 'black';}"
+        )
     }
 
