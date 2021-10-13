@@ -148,11 +148,9 @@ class MainView(general_window_gui.GeneralWindow):
         gb_layout = QVBoxLayout()
 
         ### Prompt
-        prompt_text = "A Google Calendar may be imported " \
-                      "using the login button below. " \
-                      "This action grants 25/8 full access " \
-                      "to read and write from and to the user's " \
-                      "Google Calendar."
+        prompt_text = "By carrying out an import from a Google Calendar, " \
+                      "the user grants 25/8 full access to read " \
+                      "and write to the user's calendar."
         prompt = QLabel(prompt_text)
         prompt.setWordWrap(True)
         prompt.setStyleSheet(self.prefs.style_sheets['text'])
@@ -164,7 +162,7 @@ class MainView(general_window_gui.GeneralWindow):
         button.setFixedWidth(75)
         button.setStyleSheet(self.prefs.style_sheets['button_priority_rect'])
 
-        gb_layout.addWidget(button, alignment=QtCore.Qt.AlignCenter)
+        gb_layout.addWidget(button, alignment=QtCore.Qt.AlignRight)
 
         google_box.setLayout(gb_layout)
 
