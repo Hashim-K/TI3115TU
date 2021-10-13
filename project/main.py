@@ -1,6 +1,7 @@
 # MAIN modules
 from gui.general_window_gui import GeneralWindow
-import sys, gui.palette
+import sys
+import gui.palette
 from PyQt5.QtWidgets import QApplication
 
 # GUI modules

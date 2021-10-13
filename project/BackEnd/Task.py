@@ -10,8 +10,11 @@ from project.BackEnd import Schedule
 
 
 class Task:
+    try:
+        highest_id =Schedule.events[-1].ID
+    except IndexError:
+        highest_id = 0
 
-    highest_id = Schedule.events[-1].ID
 
     def __init__(self, taskID: int, name: str, description: str, duration: int, priority: int, deadline: str,
                  repeatable: bool, category: str, preferred: str, plan_on_same: bool, session: int, filename: str):

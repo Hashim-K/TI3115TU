@@ -1,9 +1,12 @@
+import json
+
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
-import GoogleImport
-from General import *
-import json
+from project.BackEnd import GoogleImport
+from project.BackEnd.General import DayAndSlot, DateFormat, XDaysLater, CheckWhatDay, Slot2Time, TimeBetween, Slot
+
+
 
 
 # This function initializes the stuff in GoogleImport and gets a list of the google events. Then for each event in
@@ -315,7 +318,7 @@ def SetMorningRoutine():
 
 class Presets:
     def __init__(self):
-        with open('presets.json', 'r') as openfile:
+        with open('backend/presets.json', 'r') as openfile:
             preset_dictionary = json.load(openfile)
             self.day_zero = preset_dictionary['day_zero']
             self.number_of_days = preset_dictionary['number_of_days']
