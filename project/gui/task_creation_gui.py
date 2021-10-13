@@ -68,7 +68,7 @@ class TaskCreationWindow(GeneralWindow):
 
         # Priority
         self.priority_dropdown = QComboBox(self)
-        self.priority_dropdown.setStyleSheet("padding: 5px 10px; border-radius: 5px; overflow: hidden")
+        self.priority_dropdown.setStyleSheet("padding: 5px 10px;")
         self.priority_dropdown.addItems([
             "None", "1 (highest)", "2", "3", "4", "5 (lowest)"])
         layout.addRow("Priority", self.priority_dropdown)
