@@ -1,0 +1,1 @@
+{"day_zero": "2021-09-12", "number_of_days": 7, "time_interval": 5, "alarm_time": "07:30:00", "length_sleep": "08:00:00", "length_morning_routine": "00:40:00", "lunch_time": "12:30:00", "length_lunch": "0:45", "dinner_time": "18:30:00", "length_dinner": "01:15:00", "sleep": true, "morning_routine": true, "lunch": true, "dinner": true, "import_google": false, "dark_mode": true}

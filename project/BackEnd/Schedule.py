@@ -1,14 +1,13 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
+import GoogleImport
+from General import *
+import json
 
 
 # This function initializes the stuff in GoogleImport and gets a list of the google events. Then for each event in
 # the list, it assigns a color and creates an event class object.
-from project.BackEnd import GoogleImport
-from project.BackEnd.General import DayAndSlot, DateFormat, XDaysLater, CheckWhatDay, Slot2Time, TimeBetween, Slot
-
-
 def ImportGoogleEvents():
     day_zero = presets.day_zero
     time_interval = presets.time_interval
@@ -113,7 +112,11 @@ def DeleteEvent(index):
 
 
 # This function displays the schedule plot. It can be modified to return a .jpg file which could be used by the GUI.
-def Display_():
+def SaveImage():
+    if presets.dark_mode:
+        display.DarkMode()
+    else:
+        display.LightMode()
     day_zero = presets.day_zero
     number_of_days = presets.number_of_days
     number_of_slots = schedule.number_of_slots
@@ -181,6 +184,11 @@ def PrintBlockInfo(blocks):
     print()
 
 
+def PrintEmpty():
+    print('Empty blocks:')
+    PrintBlockInfo(EmptySlots())
+
+
 # This bit checks for empty slot in the schedule. It returns a list of the blocks of empty slots.
 def EmptySlots():
     number_of_slots = schedule.number_of_slots
@@ -201,9 +209,34 @@ def EmptySlots():
     return free_blocks
 
 
+def ClearEvents():
+    with open('events.json', 'w') as file:
+        file.write('')
+
+
+def GetEvents():
+    with open('events.json', 'r') as open_file:
+        events_dict = json.load(open_file)
+        for event in events_dict:
+            Event(event['Label'], event['Color'], event['Occurrences'])
+
+
+def StoreEvents():
+    ClearEvents()
+    events_dict = []
+    for event in events:
+        events_dict.append({'Label': event.Label,
+                            'Color': event.Color,
+                            'Occurrences': event.Occurrences})
+    with open('events.json', 'w') as out_file:
+        out_file.write(json.dumps(events_dict, indent=4))
+
+
 def AddOccurrence(id, day, start_time, duration):
     events[id].Occurrences.append(StartAndEnd(day, Slot(start_time, presets.time_interval),
                                               Slot(duration, presets.time_interval)))
+    if id == 0:
+        SetMorningRoutine()
 
 
 # Classes
@@ -214,6 +247,7 @@ class Event:
         self.Color = Color
         events.append(self)
         self.ID = events.index(self)
+        id_dict[Label] = self.ID
 
     def PrintOccurrences(self):
         print(f'Occurrences for {self.Label}')
@@ -235,13 +269,13 @@ class Event:
                 start_slot = schedule.number_of_slots + start_slot
         self.Occurrences[index] = StartAndEnd(start_day, start_slot, duration)
         if self.ID == 0 and presets.morning_routine:
-            routines.SetMorningRoutine()
+            SetMorningRoutine()
 
 
 class Display:
     def __init__(self):
         self.width = 10
-        self.height = 5
+        self.height = 6
         self.text_color = 'black'
         self.background_color = 'white'
         self.face_color = 'white'
@@ -251,77 +285,54 @@ class Display:
         self.background_color = '#303136'
         self.face_color = '#363940'
 
+    def LightMode(self):
+        self.text_color = 'black'
+        self.background_color = 'white'
+        self.face_color = '#DDDDDD'
 
-class Routines:
-    def __init__(self):
-        self.sleep = Event('Sleep', '#546fa8', [])
-        self.morning_routine = Event('Morning Routine', '#8399c9', [])
-        self.lunch = Event('Lunch', '#e8b048', [])
-        self.dinner = Event('Dinner', '#ba8420', [])
 
-    def SetAll(self):
-        if presets.sleep:
-            self.SetSleep()
-        else:
-            DeleteEvent(events.index(self.sleep))
-        if presets.morning_routine:
-            self.SetMorningRoutine()
-        else:
-            DeleteEvent(events.index(self.morning_routine))
-        if presets.lunch:
-            self.SetLunch()
-        else:
-            DeleteEvent(events.index(self.lunch))
-        if presets.dinner:
-            self.SetDinner()
-        else:
-            DeleteEvent(events.index(self.dinner))
+def SetSleep():
+    Event('Sleep', '#546fa8', [])
+    Event('Morning Routine', '#7b9adb', [])
 
-    def SetSleep(self):
-        self.sleep.Occurrences = []
-        for day in range(presets.number_of_days + 1):
-            duration = Slot(presets.length_sleep, presets.time_interval)
-            start_slot = Slot(presets.alarm_time, presets.time_interval) - duration
-            self.sleep.Occurrences.append(StartAndEnd(day, start_slot, duration))
 
-    def SetMorningRoutine(self):
-        self.morning_routine.Occurrences = []
-        for Occurrence in self.sleep.Occurrences:
-            duration = Slot(presets.length_morning_routine, presets.time_interval)
-            self.morning_routine.Occurrences.append(StartAndEnd(Occurrence[1][0], Occurrence[1][1], duration))
+def SetLunch():
+    Event('Lunch', '#e8b048', [])
 
-    def SetLunch(self):
-        self.lunch.Occurrences = []
-        for day in range(presets.number_of_days):
-            start_slot = Slot(presets.lunch_time, presets.time_interval)
-            duration = Slot(presets.length_lunch, presets.time_interval)
-            self.lunch.Occurrences.append(StartAndEnd(day, start_slot, duration))
 
-    def SetDinner(self):
-        self.dinner.Occurrences = []
-        for day in range(presets.number_of_days):
-            start_slot = Slot(presets.dinner_time, presets.time_interval)
-            duration = Slot(presets.length_dinner, presets.time_interval)
-            self.dinner.Occurrences.append(StartAndEnd(day, start_slot, duration))
+def SetDinner():
+    Event('Dinner', '#ba8420', [])
+
+
+def SetMorningRoutine():
+    morning_routine_id = id_dict['Morning Routine']
+    sleep_id = id_dict['Sleep']
+    events[morning_routine_id].Occurrences = []
+    for Occurrence in events[sleep_id].Occurrences:
+        duration = Slot(presets.length_morning_routine, presets.time_interval)
+        events[morning_routine_id].Occurrences.append(StartAndEnd(Occurrence[1][0], Occurrence[1][1], duration))
 
 
 class Presets:
     def __init__(self):
-        self.day_zero = '2021-09-12'
-        self.number_of_days = 7
-        self.time_interval = 5
-        self.alarm_time = '07:30:00'
-        self.length_sleep = '08:00:00'
-        self.length_morning_routine = '00:40:00'
-        self.lunch_time = '12:30:00'
-        self.length_lunch = '00:45:00'
-        self.dinner_time = '18:30:00'
-        self.length_dinner = '01:15:00'
-        self.sleep = True
-        self.morning_routine = True
-        self.lunch = True
-        self.dinner = True
-        self.import_google = True
+        with open('presets.json', 'r') as openfile:
+            preset_dictionary = json.load(openfile)
+            self.day_zero = preset_dictionary['day_zero']
+            self.number_of_days = preset_dictionary['number_of_days']
+            self.time_interval = preset_dictionary['time_interval']
+            self.alarm_time = preset_dictionary['alarm_time']
+            self.length_sleep = preset_dictionary['length_sleep']
+            self.length_morning_routine = preset_dictionary['length_morning_routine']
+            self.lunch_time = preset_dictionary['lunch_time']
+            self.length_lunch = preset_dictionary['length_lunch']
+            self.dinner_time = preset_dictionary['dinner_time']
+            self.length_dinner = preset_dictionary['length_dinner']
+            self.sleep = preset_dictionary['sleep']
+            self.morning_routine = preset_dictionary['morning_routine']
+            self.lunch = preset_dictionary['lunch']
+            self.dinner = preset_dictionary['dinner']
+            self.import_google = preset_dictionary['import_google']
+            self.dark_mode = preset_dictionary['dark_mode']
 
     def PrintPresets(self):
         print(f"day_zero = '{self.day_zero}'\n"
@@ -338,12 +349,32 @@ class Presets:
               f"morning_routine = {self.morning_routine}\n"
               f"lunch = {self.lunch}\n"
               f"dinner = {self.dinner}\n"
-              f"import_google = {self.import_google}\n")
+              f"import_google = {self.import_google}\n"
+              f"dark_mode = {self.dark_mode}\n")
+
+    def Store(self):
+        presets_json = {'day_zero': self.day_zero,
+                        'number_of_days': self.number_of_days,
+                        'time_interval': self.time_interval,
+                        'alarm_time': self.alarm_time,
+                        'length_sleep': self.length_sleep,
+                        'length_morning_routine': self.length_morning_routine,
+                        'lunch_time': self.lunch_time,
+                        'length_lunch': self.length_lunch,
+                        'dinner_time': self.dinner_time,
+                        'length_dinner': self.length_dinner,
+                        'sleep': self.sleep,
+                        'morning_routine': self.morning_routine,
+                        'lunch': self.lunch,
+                        'dinner': self.dinner,
+                        'import_google': self.import_google,
+                        'dark_mode': self.dark_mode}
+        with open('presets.json', 'w') as out_file:
+            out_file.write(json.dumps(presets_json))
 
 
 class Main:
     def __init__(self):
-        self.first = True
         self.schedule = []
         self.overlap = []
         self.number_of_slots = round(24 * 60 / presets.time_interval)
@@ -352,40 +383,15 @@ class Main:
         self.schedule = np.zeros(shape=(presets.number_of_days, round(24 * 60 / presets.time_interval))) - 1
         self.overlap = np.zeros(shape=(presets.number_of_days, round(24 * 60 / presets.time_interval))) - 1
 
-    def SetUp(self):
+    def Update(self):
         self.EmptyArrays()
-        if presets.import_google:
-            ImportGoogleEvents()
-        routines.SetAll()
         AppendEvents()
         ResolveOverlap()
-        self.first = False
-
-    def Update(self):
-        if not self.first:
-            self.EmptyArrays()
-            AppendEvents()
-            ResolveOverlap()
-        else:
-            print('Schedule needs to be set up first.')
-
-    def ReturnEmpty(self):
-        if self.first:
-            print('Schedule needs to be set up first.')
-        else:
-            return EmptySlots()
-
-    def PrintEmpty(self):
-        if self.first:
-            print('Schedule needs to be set up first.')
-        else:
-            print('Empty blocks:')
-            PrintBlockInfo(EmptySlots())
 
 
 # Events, presets and the schedule instance.
+id_dict = {}
 events = []
 presets = Presets()
 display = Display()
-routines = Routines()
 schedule = Main()
