@@ -2,6 +2,7 @@ from PyQt5.QtWidgets import QListWidget, QListWidgetItem, QWidget, QVBoxLayout, 
 from PyQt5 import QtCore
 
 from project.BackEnd import Task
+from project.gui.task_info_gui import TaskInfo
 from project.gui.general_window_gui import GeneralWindow
 
 
@@ -85,6 +86,9 @@ class TaskListItem(QListWidgetItem):
         ### Lower (buttons)
         button_view = QPushButton('View')
         button_view.setStyleSheet(self.prefs.style_sheets['button_priority_rect'])
+        button_view.clicked.connect(
+            lambda: GeneralWindow.pre_init(self.ls_w, self.prefs, TaskInfo)
+        )
         button_view.setFixedWidth(100)
 
         button_edit = QPushButton('Edit')

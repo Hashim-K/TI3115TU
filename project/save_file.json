@@ -1,9 +1,9 @@
 [
       {
-            "TaskID": 6,
-            "Name": "its huge",
-            "Description": "",
-            "Duration": 5,
+            "TaskID": 1,
+            "Name": "Wash Horse",
+            "Description": "Horse is dirty.",
+            "Duration": 55,
             "Priority": 0,
             "Deadline": "2021-10-13",
             "Repeatable": false,
@@ -13,16 +13,16 @@
             "Session": 1
       },
       {
-            "TaskID": 7,
-            "Name": "It shoudnt be",
-            "Description": "",
-            "Duration": 5,
+            "TaskID": 2,
+            "Name": "Doing the Dishes",
+            "Description": "The dishes need to be done.",
+            "Duration": 30,
             "Priority": 0,
             "Deadline": "2021-10-13",
             "Repeatable": false,
             "Category": "category 1",
             "Preferred": "None",
             "Plan_on_same": false,
-            "Session": 1
+            "Session": 2
       }
 ]

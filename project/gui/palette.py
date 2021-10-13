@@ -5,6 +5,7 @@ class Prefs():
         'img_logo' : 'gui/media/logo.png',
         'img_logo_min' : 'gui/media/logo_min.png',
         'img_g_logo' : 'media/google_logo.png',
+        'icon_task_info' : 'gui/media/icon_task_info.png',
         'bar_close' : 'media/bar_close.png',
         # FROM flaticon
         'algo_icon' : 'media/algo_icon.png'   # @ Linector
@@ -35,6 +36,9 @@ class Prefs():
         'text_mute' : ("font-size: 13px; color: '#A0A0A0';" +
                     "border-radius: 10px;" +
                     " padding: 10px 10px;"),
+        'text_mute_tight': ("font-size: 13px; color: '#A0A0A0';" +
+                      "border-radius: 10px;" +
+                      " padding: 0px 0px;"),
         'text_bubble' : ("font-size: 13px; color: 'white';" +
                     "background-color: '#363940'; border-radius: 10px;" +
                     " padding: 15px 15px;"),
