@@ -9,7 +9,7 @@ from project.BackEnd.General import *
 def DoStuff(Monday, Sunday):
     # %% CONNECT WITH GOOGLE ACCOUNT
     our_scopes = ['https://www.googleapis.com/auth/calendar']  # Defined what we can access in user's acc
-    flow = InstalledAppFlow.from_client_secrets_file('../client_secret.json', scopes=our_scopes)
+    flow = InstalledAppFlow.from_client_secrets_file('client_secret.json', scopes=our_scopes)
     try:
         credentials = flow.run_local_server()
     except Exception:

@@ -1,6 +1,9 @@
 from PyQt5.QtWidgets import QListWidget, QListWidgetItem, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton
 from PyQt5 import QtCore
 
+from project.BackEnd import Task
+from project.gui.general_window_gui import GeneralWindow
+
 
 class TaskList(QListWidget):
     def __init__(self, window_list, prefs):
@@ -90,6 +93,7 @@ class TaskListItem(QListWidgetItem):
 
         button_delete = QPushButton('Delete')
         button_delete.setStyleSheet(self.prefs.style_sheets['button_exit_rect'])
+        button_delete.clicked.connect(self.delete_task)
         button_delete.setFixedWidth(100)
 
         # layout_sub.addStretch(1)
@@ -99,3 +103,7 @@ class TaskListItem(QListWidgetItem):
         layout_sub.addWidget(button_delete)
 
         return widget
+
+    def delete_task(self):
+        Task.delete_task(self.prefs.directory['tasks'], self.task.taskID)
+        GeneralWindow.raise_event(self.ls_w, 'reload_tasks')

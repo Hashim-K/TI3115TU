@@ -13,7 +13,7 @@ class Prefs():
     # SAVING DIRECTORIES
 
     directory = {
-        'tasks' : ''
+        'tasks' : 'save_file.json'
     }
 
     # STYLE SHEET
@@ -29,6 +29,9 @@ class Prefs():
         'text_title' : ("font-size: 16px; color: 'white';" +
                     "border-radius: 10px;" +
                     " padding: 0px 0px;"),
+        'text_title_mute': ("font-size: 16px; color: '#5b606b';" +
+                       "border-radius: 10px;" +
+                       " padding: 0px 0px;"),
         'text_mute' : ("font-size: 13px; color: '#A0A0A0';" +
                     "border-radius: 10px;" +
                     " padding: 10px 10px;"),
@@ -72,7 +75,7 @@ class Prefs():
                     "*:hover{background: '#4069ED';}"
                     ),
         'button_low_priority_rect' : (
-                    "*{border: 2px solid '#42464E';" + 
+                    "*{border: 2px solid '#42464E';" +
                     "border-radius: 5px;" +
                     "background-color: '#42464E';" + 
                     "font-size: 13px;"

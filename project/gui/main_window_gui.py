@@ -72,6 +72,15 @@ class MainView(general_window_gui.GeneralWindow):
         title.setMargin(5)
         title.setStyleSheet(self.prefs.style_sheets['text_title'])
 
+        line = QFrame()
+        line.setFrameShape(QFrame.VLine)
+        line.setStyleSheet("color: 'white'")
+
+        ## Counter for tasks
+        self.task_view_counter = QLabel('No Tasks')
+        self.task_view_counter.setMargin(5)
+        self.task_view_counter.setStyleSheet(self.prefs.style_sheets['text_title_mute'])
+
         ## New Task Button
         new_task_button = QPushButton('New')
         new_task_button.setStyleSheet(self.prefs.style_sheets['button_priority_rect'])
@@ -87,6 +96,8 @@ class MainView(general_window_gui.GeneralWindow):
         ### Layout
         tbw_layout = QHBoxLayout()
         tbw_layout.addWidget(title)
+        # tbw_layout.addWidget(line)
+        tbw_layout.addWidget(self.task_view_counter)
         tbw_layout.addStretch(1)
         tbw_layout.addWidget(clear_button)
         tbw_layout.addWidget(new_task_button)
@@ -252,11 +263,21 @@ class MainView(general_window_gui.GeneralWindow):
         try:
             tasks = Task.import_task('save_file.json')
             self.list_widget.load_task_list(tasks)
+
+            # Changing number of tasks
+            num_tasks = len(tasks)
+            if num_tasks == 0:
+                self.task_view_counter.setText(f'No Tasks')
+            elif num_tasks == 1:
+                self.task_view_counter.setText(f'1 Task')
+            else:
+                self.task_view_counter.setText(f'{int(len(tasks))} Tasks')
+
         except FileNotFoundError:
             print("json doesn't exist.")
 
     # New Task Window
-    @staticmethod
+    # @staticmethod
     def new_task(self):
         general_window_gui.GeneralWindow.pre_init(self.ls_w, self.prefs, task_creation_gui.TaskCreationWindow)
     

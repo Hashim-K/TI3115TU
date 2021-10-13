@@ -13,8 +13,18 @@ class Task:
 
     highest_id = Schedule.events[-1].ID
 
-    def __init__(self, name: str, description: str, duration: int, priority: int, deadline: str,
+    def __init__(self, taskID: int, name: str, description: str, duration: int, priority: int, deadline: str,
                  repeatable: bool, category: str, preferred: str, plan_on_same: bool, session: int, filename: str):
+        if taskID != -1:
+            self.taskID = taskID
+        else:
+            if not os.path.exists(filename) or os.stat(filename).st_size < 4:
+                Task.highest_id += 1
+                self.taskID = Task.highest_id
+            else:
+                with open(filename) as file:
+                    task_dict = json.load(file)
+                    self.taskID = task_dict[-1]['TaskID'] + 1
         self.name = name
         self.description = description
         self.duration = duration
@@ -25,14 +35,6 @@ class Task:
         self.preferred = preferred
         self.plan_on_same = plan_on_same
         self.session = session
-        if not os.path.exists(filename) or os.stat(filename).st_size < 4:
-            Task.highest_id += 1
-            self.taskID = Task.highest_id
-        else:
-            with open(filename) as file:
-                task_dict = json.load(file)
-                self.taskID = task_dict[-1]['TaskID'] + 1
-
 
     def __str__(self):
         text_description = f"Task \"{self.name}\" ({self.taskID}): {self.description}.\n"\
@@ -73,7 +75,7 @@ def import_task(filename):
     with open(filename, 'r') as file:
         task_dict = json.load(file)
         for tasks in task_dict:
-            tasks_list.append(Task(tasks['Name'], tasks['Description'], tasks['Duration'],
+            tasks_list.append(Task(tasks['TaskID'], tasks['Name'], tasks['Description'], tasks['Duration'],
                     tasks['Priority'], datetime.fromisoformat(tasks['Deadline']), tasks['Repeatable'],
                     tasks['Category'], tasks['Preferred'], tasks['Plan_on_same'], tasks['Session'], filename))
     return tasks_list
@@ -82,9 +84,11 @@ def import_task(filename):
 def delete_task(filename, taskID):
     with open(filename, 'r') as file:
         task_dict = json.load(file)
+        print(task_dict)
     for i in range(len(task_dict)):
         if task_dict[i]['TaskID'] == taskID:
             del task_dict[i]
             break
     with open(filename, 'w') as file:
+        print(task_dict)
         json.dump(task_dict, file, indent = 6)

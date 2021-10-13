@@ -68,7 +68,7 @@ class TaskCreationWindow(GeneralWindow):
 
         # Priority
         self.priority_dropdown = QComboBox(self)
-        self.priority_dropdown.setStyleSheet("padding: 5px 10px;")
+        self.priority_dropdown.setStyleSheet("padding: 5px 10px; border-radius: 5px; overflow: hidden")
         self.priority_dropdown.addItems([
             "None", "1 (highest)", "2", "3", "4", "5 (lowest)"])
         layout.addRow("Priority", self.priority_dropdown)
@@ -130,12 +130,12 @@ class TaskCreationWindow(GeneralWindow):
         repeat = self.repeat_check.isChecked()
         preferredtime = self.preference_dropbox.currentText()
 
-        new_task = Task(name, description, session_duration, priority, deadline,
-                        repeat, category, preferredtime, onsameday, num_sessions)
+        new_task = Task.Task(-1, name, description, session_duration, priority, deadline,
+                        repeat, category, preferredtime, onsameday, num_sessions, self.prefs.directory['tasks'])
         print(new_task)
 
         # Export Task to Save File
-        Task.export_task(new_task, "save_file.json")
+        Task.Task.export_task(new_task, "save_file.json")
         GeneralWindow.raise_event(self.ls_w, 'reload_tasks')
 
         # then close task creation GUI
