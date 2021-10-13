@@ -6,6 +6,10 @@ from PyQt5.QtWidgets import QApplication
 # GUI modules
 import gui.landing_window_gui
 
+# ADDITIONAL Exception Tracebacks (keeps GUI from crashing)
+import cgitb
+cgitb.enable(format = 'text')
+
 # MAIN attributes
 window_list = list()
 prefs = gui.palette.Prefs()

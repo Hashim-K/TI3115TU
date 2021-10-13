@@ -7,7 +7,7 @@ from PyQt5 import QtGui, QtCore
 # TO DELETE
 import string, random
 
-from project.BackEnd import Task
+from project.BackEnd import Task, Schedule
 from project.gui import general_window_gui, task_list, task_creation_gui
 
 
@@ -161,6 +161,7 @@ class MainView(general_window_gui.GeneralWindow):
         button = QPushButton('Import')
         button.setFixedWidth(75)
         button.setStyleSheet(self.prefs.style_sheets['button_priority_rect'])
+        button.clicked.connect(Schedule.ImportGoogleEvents)
 
         gb_layout.addWidget(button, alignment=QtCore.Qt.AlignRight)
 
