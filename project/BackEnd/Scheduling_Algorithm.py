@@ -1,3 +1,5 @@
+import numpy as np
+
 import Task
 #duration is in number of timeslots
 
@@ -6,9 +8,12 @@ class PossibleTime:
         self.taskID = taskID
         self.timeslots = timeslots
         self.score = score
+    def __str__(self):
+        text_description = f"TaskID \"{self.taskID}\" (\"{self.timeslots}\"): {self.score}. \n"
+        return text_description
 
 def stage1(filename):
-    timetable=[]
+    timetable=np.ndarray(dtype=np.object)
     tasks_list = Task.import_task(filename)
     schedule_slots = [[[1, 15], [1, 30]], [[1, 57], [1, 78]], [[1, 99], [1, 120]]]
     for task in tasks_list:
@@ -24,13 +29,13 @@ def stage1(filename):
                 else:
                     temp_end_day = start_day
                     temp_end_time = start_time + task.duration
-                timetable.append(PossibleTime(task.taskID, [[start_day, start_time], [temp_end_day, temp_end_time]],
+                timetable= np.append(PossibleTime(task.taskID, [[start_day, start_time], [temp_end_day, temp_end_time]],
                                               calc_score(task, start_time)))
                 start_time=+1
                 if start_time >= 288:
                     start_time =- 288
                     start_day =+ 1
-
+    print(timetable[0])
 def calc_score(task, timeslot):
     #sessionR is number of sessions remaining
     score = task.priority * timeslot_pref(task, timeslot) #multiplied by Daystilldeadline-sessionR
@@ -65,3 +70,5 @@ def timeslot_pref(task,timeslot):
             return 3
     if task.preferred == "No Preference":
             return 2
+
+    stage1('../save_file.json')
