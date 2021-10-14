@@ -12,9 +12,9 @@
 ## TA meeting
 - Pipeline issues are still unresolved. If not fixed submit local pylint screenshots
 - We need to refactor oour code atleast once, best to do at end of coding
-        > what could be improved using refactoring
-		> apply what was learnt in the lecture
-		> write about refactor during the process of the entire project
+        - what could be improved using refactoring
+		- apply what was learnt in the lecture
+		- write about refactor during the process of the entire project
 ## Group meeting
 - We still need to finalize google API implementation
 - Teus discussed his progress with regards to the schedule task
