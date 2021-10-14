@@ -8,7 +8,8 @@ from PyQt5.QtGui import QRegExpValidator
 
 from project.BackEnd import Task
 from project.gui.general_window_gui import GeneralWindow
-
+import os
+dirname = os.path.dirname(__file__)
 
 class TaskCreationWindow(GeneralWindow):
 
@@ -146,7 +147,7 @@ class TaskCreationWindow(GeneralWindow):
         print(new_task)
 
         # Export Task to Save File
-        Task.Task.export_task(new_task, "save_file.json")
+        Task.Task.export_task(new_task, os.path.join(dirname, "save_file.json"))
         GeneralWindow.raise_event(self.ls_w, 'reload_tasks')
 
         # then close task creation GUI
