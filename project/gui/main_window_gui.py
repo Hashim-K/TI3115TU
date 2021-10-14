@@ -8,7 +8,7 @@ from PyQt5 import QtGui, QtCore
 import string, random
 
 from project.BackEnd import Task, Schedule
-from project.gui import general_window_gui, task_list, task_creation_gui, routines_list
+from project.gui import general_window_gui, task_list, task_creation_gui, routines_list, add_routine_gui
 
 
 class MainView(general_window_gui.GeneralWindow):
@@ -137,6 +137,11 @@ class MainView(general_window_gui.GeneralWindow):
         head_text = QLabel("Set at which times you are unavailable.\n" +
                            "Task sessions will not be planned during these times.")
         layout.addWidget(head_text)
+
+        # new routine button
+        new_button = QPushButton("Add routine")
+        new_button.clicked.connect(self.new_routine)
+        layout.addWidget(new_button)
 
         # List of routines
         self.routine_list = routines_list.RoutinesList(self.ls_w, self.prefs)
@@ -306,6 +311,9 @@ class MainView(general_window_gui.GeneralWindow):
     # @staticmethod
     def new_task(self):
         general_window_gui.GeneralWindow.pre_init(self.ls_w, self.prefs, task_creation_gui.TaskCreationWindow)
+
+    def new_routine(self):
+        general_window_gui.GeneralWindow.pre_init(self.ls_w, self.prefs, add_routine_gui.AddRoutineWindow)
     
     # Stack Changer
     def display(self, i):
