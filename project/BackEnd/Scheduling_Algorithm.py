@@ -1,74 +1,122 @@
-import numpy as np
-
 import Task
-#duration is in number of timeslots
+
+
+# duration is in number of timeslots
 
 class PossibleTime:
     def __init__(self, taskID, timeslots, score):
         self.taskID = taskID
         self.timeslots = timeslots
         self.score = score
+
     def __str__(self):
-        text_description = f"TaskID \"{self.taskID}\" (\"{self.timeslots}\"): {self.score}. \n"
+        text_description = f"TaskID: {self.taskID} | {self.timeslots} | score:{self.score}"
         return text_description
 
-def stage1(filename):
-    timetable=np.ndarray(dtype=np.object)
+
+def main(filename):
+    timetable = create_timetable(filename)
+    while len(timetable)>0:
+        stc = single_task_check(timetable)
+        if stc != -99:
+            task = timetable[stc]
+            print(task)
+            print("Reason best: one timeslot remaining")
+            Task.delete_task(filename, task.taskID)
+            # ADD TASK TO SCHEDULE
+        else:
+            task = best_score_check(timetable)
+            print(task)
+            print("Reason best: score")
+            Task.delete_task(filename, task.taskID)
+            # ADD TASK TO SCHEDULE
+        timetable = create_timetable(filename)
+        print(len(timetable))
+
+
+
+def create_timetable(filename):
+    timetable = []
     tasks_list = Task.import_task(filename)
-    schedule_slots = [[[1, 15], [1, 30]], [[1, 57], [1, 78]], [[1, 99], [1, 120]]]
+    schedule_slots = [[[1, 15], [1, 30]], [[1, 57], [1, 75]], [[1, 99], [1, 120]]]
     for task in tasks_list:
         for timeslot in schedule_slots:
             start_day = timeslot[0][0]
             start_time = timeslot[0][1]
             end_day = timeslot[1][0]
             end_time = timeslot[1][1]
-            while (start_day * 288)+(start_time + task.duration) <= (end_day * 288)+end_time:
-                if start_time+task.duration >= 288:
+            while (start_day * 288) + (start_time + task.duration) <= (end_day * 288) + end_time:
+                if start_time + task.duration >= 288:
                     temp_end_day = start_day + 1
                     temp_end_time = start_time + task.duration - 288
                 else:
                     temp_end_day = start_day
                     temp_end_time = start_time + task.duration
-                timetable= np.append(PossibleTime(task.taskID, [[start_day, start_time], [temp_end_day, temp_end_time]],
-                                              calc_score(task, start_time)))
-                start_time=+1
+
+                entry = PossibleTime(task.taskID, [[start_day, start_time], [temp_end_day, temp_end_time]],
+                                     calc_score(task, start_time))
+                timetable.append(entry)
+                start_time += 1
                 if start_time >= 288:
-                    start_time =- 288
-                    start_day =+ 1
-    print(timetable[0])
+                    start_time -= 288
+                    start_day += 1
+    # print("helloworld")
+    # for entry in timetable:
+    #   print(entry)
+    return timetable
+
+
+def single_task_check(timetable):
+    pos = -99
+    for i in range(timetable[-1].taskID):
+        if sum(t.taskID == i + 1 for t in timetable) == 1:
+            for pos in range(len(timetable)):
+                if timetable[pos].taskID == i + 1:
+                    return pos
+    return pos
+
+def best_score_check(timetable):
+    timetable = sorted(timetable, key=lambda a: (a.score))
+    return timetable[0]
+
+
 def calc_score(task, timeslot):
-    #sessionR is number of sessions remaining
-    score = task.priority * timeslot_pref(task, timeslot) #multiplied by Daystilldeadline-sessionR
+    # sessionR is number of sessions remaining
+    score = (task.priority + 1) * timeslot_pref(task, timeslot)  # multiplied by Daystilldeadline-sessionR
     return score
 
-def timeslot_pref(task,timeslot):
-    Tavg=timeslot+task.duration/2
-    if task.preferred == "Ungodly hours (0:00-8:00)":
-        if 0<=Tavg<=95:
-            return 1
-        else:
-            return 3
-    if task.preferred == "Morning (8:00-12:00)":
-        if 96 <= Tavg <= 143:
-            return 1
-        else:
-            return 3
-    if task.preferred == "Afternoon (12:00-16:00)":
-        if 144 <= Tavg <= 191:
-            return 1
-        else:
-            return 3
-    if task.preferred == "Evening (16:00-20:00)":
-        if 192 <= Tavg <= 239:
-            return 1
-        else:
-            return 3
-    if task.preferred == "Night (20:00-23:59)":
-        if 240 <= Tavg <= 287:
-            return 1
-        else:
-            return 3
-    if task.preferred == "No Preference":
-            return 2
 
-    stage1('../save_file.json')
+def timeslot_pref(task, timeslot):
+    t_avg = timeslot + task.duration / 2
+    preferenceRating = 2
+    if task.preferred == "Ungodly hours (0:00-8:00)":
+        if 0 <= t_avg <= 95:
+            preferenceRating = 1
+        else:
+            preferenceRating = 3
+    if task.preferred == "Morning (8:00-12:00)":
+        if 96 <= t_avg <= 143:
+            preferenceRating = 1
+        else:
+            preferenceRating = 3
+    if task.preferred == "Afternoon (12:00-16:00)":
+        if 144 <= t_avg <= 191:
+            preferenceRating = 1
+        else:
+            preferenceRating = 3
+    if task.preferred == "Evening (16:00-20:00)":
+        if 192 <= t_avg <= 239:
+            preferenceRating = 1
+        else:
+            preferenceRating = 3
+    if task.preferred == "Night (20:00-23:59)":
+        if 240 <= t_avg <= 287:
+            preferenceRating = 1
+        else:
+            preferenceRating = 3
+    # if task.preferred == "No Preference":
+    #     preferenceRating = 2
+    return preferenceRating
+
+
+main('../save_file.json')

@@ -95,11 +95,11 @@ def find_task(filename, task_ID):
 def delete_task(filename, taskID):
     with open(filename, 'r') as file:
         task_dict = json.load(file)
-        print(task_dict)
+        # print(task_dict)
     for i in range(len(task_dict)):
         if task_dict[i]['TaskID'] == taskID:
             del task_dict[i]
             break
     with open(filename, 'w') as file:
-        print(task_dict)
+        # print(task_dict)
         json.dump(task_dict, file, indent = 6)
