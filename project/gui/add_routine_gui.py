@@ -6,7 +6,7 @@ from PyQt5.QtWidgets import QPushButton, QApplication, QStyleFactory
 from PyQt5.QtCore import QRegExp, Qt, QDate
 from PyQt5.QtGui import QRegExpValidator
 
-from project.BackEnd import Task
+from project.BackEnd import Task, Schedule
 from project.gui.general_window_gui import GeneralWindow
 from project.gui import palette
 
@@ -53,6 +53,7 @@ class AddRoutineWindow(GeneralWindow):
 
         # add button
         self.add_button = QPushButton("Add")
+        self.add_button.clicked.connect(self.add_routine)
 
         # add widgets to layout
         layout.addRow("Category", self.category)
@@ -68,6 +69,22 @@ class AddRoutineWindow(GeneralWindow):
         dur = self.duration.value()
         end = start.addSecs(int(dur*5*60))
         self.end_time.setText("End time: " + end.toString())
+
+    def add_routine(self):
+        # get all values
+        start = self.start_time.time()
+        dur = self.duration.value()
+        cat = self.category.currentText()
+        id = Schedule.id_dict[cat]
+        days = self.recurrence.currentText()
+
+        day_dict = {"Monday": [0], "Tuesday": [1], "Wednesday": [2],
+                        "Thursday": [3], "Friday": [4], "Saturday": [5],
+                        "Sunday": [6], "Weekdays": range(5), "Weekend": [5, 6],
+                        "Every day": range(7)}
+
+        for i in day_dict[days]:
+            Schedule.AddOccurrence(id, i, start, dur)
 
 
 
