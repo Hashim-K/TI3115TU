@@ -11,7 +11,7 @@ from project.BackEnd import Schedule
 
 class Task:
     try:
-        highest_id =Schedule.events[-1].ID
+        highest_id = Schedule.events[-1].ID
     except IndexError:
         highest_id = 0
 
