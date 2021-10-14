@@ -86,9 +86,7 @@ class TaskListItem(QListWidgetItem):
         ### Lower (buttons)
         button_view = QPushButton('View')
         button_view.setStyleSheet(self.prefs.style_sheets['button_priority_rect'])
-        button_view.clicked.connect(
-            lambda: GeneralWindow.pre_init(self.ls_w, self.prefs, TaskInfo)
-        )
+        button_view.clicked.connect(self.view_task)
         button_view.setFixedWidth(100)
 
         button_edit = QPushButton('Edit')
@@ -107,6 +105,11 @@ class TaskListItem(QListWidgetItem):
         layout_sub.addWidget(button_delete)
 
         return widget
+
+    # Task Buttons
+    def view_task(self):
+        window = GeneralWindow.pre_init(self.ls_w, self.prefs, TaskInfo)
+        window.get_task(self.task.taskID)   # Fetches task using its class
 
     def delete_task(self):
         Task.delete_task(self.prefs.directory['tasks'], self.task.taskID)

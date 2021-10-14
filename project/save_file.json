@@ -24,5 +24,18 @@
             "Preferred": "None",
             "Plan_on_same": false,
             "Session": 2
+      },
+      {
+            "TaskID": 4,
+            "Name": "War Crimes in Bosnia",
+            "Description": "Whale whale whale",
+            "Duration": 55,
+            "Priority": 4,
+            "Deadline": "2021-10-14",
+            "Repeatable": true,
+            "Category": "category 2",
+            "Preferred": "Evening (16:00-20:00)",
+            "Plan_on_same": true,
+            "Session": 1
       }
 ]
