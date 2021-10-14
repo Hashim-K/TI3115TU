@@ -1,20 +1,23 @@
+import os
+dirname = os.path.dirname(__file__)
+
 class Prefs():
     # IMAGES
 
     images = {
-        'img_logo' : 'gui/media/logo.png',
-        'img_logo_min' : 'gui/media/logo_min.png',
-        'img_g_logo' : 'media/google_logo.png',
-        'icon_task_info' : 'gui/media/icon_task_info.png',
-        'bar_close' : 'media/bar_close.png',
+        'img_logo': os.path.join(dirname, '../media/logo.png'),
+        'img_logo_min': os.path.join(dirname, '../media/logo_min.png'),
+        'img_g_logo': os.path.join(dirname, '../media/google_logo.png'),
+        'icon_task_info': os.path.join(dirname, '../media/icon_task_info.png'),
+        'bar_close': os.path.join(dirname, '../media/bar_close.png'),
         # FROM flaticon
-        'algo_icon' : 'media/algo_icon.png'   # @ Linector
+        'algo_icon': os.path.join(dirname, '../media/algo_icon.png')   # @ Linector
     }
 
     # SAVING DIRECTORIES
 
     directory = {
-        'tasks' : 'save_file.json'
+        'tasks' : os.path.join(dirname, '../save_file.json')
     }
 
     # STYLE SHEET

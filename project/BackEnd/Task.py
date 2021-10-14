@@ -11,7 +11,7 @@ from project.BackEnd import Schedule
 
 class Task:
     try:
-        highest_id =Schedule.events[-1].ID
+        highest_id = Schedule.events[-1].ID
     except IndexError:
         highest_id = 0
 
@@ -83,7 +83,13 @@ def import_task(filename):
                     tasks['Category'], tasks['Preferred'], tasks['Plan_on_same'], tasks['Session'], filename))
     return tasks_list
 
+def find_task(filename, task_ID):
+    """ Seeks for a task by its taskID. """
+    tasks_list = import_task(filename)
 
+    for task in tasks_list:
+        if task.taskID == task_ID:
+            return task
 
 
 def delete_task(filename, taskID):

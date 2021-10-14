@@ -5,6 +5,8 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 from project.BackEnd import GoogleImport
 from project.BackEnd.General import DayAndSlot, DateFormat, XDaysLater, CheckWhatDay, Slot2Time, TimeBetween, Slot
+import os
+dirname = os.path.dirname(__file__)
 
 
 
@@ -213,12 +215,12 @@ def EmptySlots():
 
 
 def ClearEvents():
-    with open('events.json', 'w') as file:
+    with open(os.path.join(dirname, 'events.json'), 'w') as file:
         file.write('')
 
 
 def GetEvents():
-    with open('events.json', 'r') as open_file:
+    with open(os.path.join(dirname, 'events.json'), 'r') as open_file:
         events_dict = json.load(open_file)
         for event in events_dict:
             Event(event['Label'], event['Color'], event['Occurrences'])
@@ -231,7 +233,7 @@ def StoreEvents():
         events_dict.append({'Label': event.Label,
                             'Color': event.Color,
                             'Occurrences': event.Occurrences})
-    with open('events.json', 'w') as out_file:
+    with open(os.path.join(dirname, 'events.json'), 'w') as out_file:
         out_file.write(json.dumps(events_dict, indent=4))
 
 
@@ -318,7 +320,7 @@ def SetMorningRoutine():
 
 class Presets:
     def __init__(self):
-        with open('BackEnd/presets.json', 'r') as openfile:
+        with open(os.path.join(dirname, 'presets.json'), 'r') as openfile:
             preset_dictionary = json.load(openfile)
             self.day_zero = preset_dictionary['day_zero']
             self.number_of_days = preset_dictionary['number_of_days']
@@ -372,7 +374,7 @@ class Presets:
                         'dinner': self.dinner,
                         'import_google': self.import_google,
                         'dark_mode': self.dark_mode}
-        with open('presets.json', 'w') as out_file:
+        with open(os.path.join(dirname, 'presets.json'), 'w') as out_file:
             out_file.write(json.dumps(presets_json))
 
 
