@@ -1,5 +1,4 @@
-import Schedule
-
+from project.BackEnd import Schedule
 
 blocks = [('Sleep', 0, '0:00', '7:30')]
 for day in range(Schedule.presets.number_of_days):
