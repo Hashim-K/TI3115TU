@@ -318,7 +318,7 @@ def SetMorningRoutine():
 
 class Presets:
     def __init__(self):
-        with open('backend/presets.json', 'r') as openfile:
+        with open('BackEnd/presets.json', 'r') as openfile:
             preset_dictionary = json.load(openfile)
             self.day_zero = preset_dictionary['day_zero']
             self.number_of_days = preset_dictionary['number_of_days']
@@ -393,7 +393,7 @@ class Main:
 
 
 # Events, presets and the schedule instance.
-id_dict = {}
+id_dict = {"Sleep": 0, "Morning routine": 1, "Lunch": 2, "Dinner": 3, "Other": 4}
 events = []
 presets = Presets()
 display = Display()
