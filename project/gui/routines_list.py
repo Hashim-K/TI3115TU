@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import QListWidget, QListWidgetItem, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton
 from PyQt5 import QtCore
 
-class TimeList(QListWidget):
+class RoutinesList(QListWidget):
     def __init__(self, window_list, prefs):
         super().__init__()
         # Store windows and prefs
