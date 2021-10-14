@@ -257,6 +257,10 @@ class MainView(general_window_gui.GeneralWindow):
 
     # Task List Populator
     def populate_list(self):
+        """
+        Populates the UI list of tasks and edits the 'task view' list using
+        a window event.
+        """
         # Flush list
         self.list_widget.clear()
         # Repopulate

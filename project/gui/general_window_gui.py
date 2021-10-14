@@ -32,7 +32,8 @@ class GeneralWindow(QWidget):
             if isinstance(window, window_type):
                 return None
         new_window = window_type(window_list, prefs)
-    
+        return new_window
+
     @staticmethod
     def raise_event(window_list, event_name):
         for window in window_list:
