@@ -8,11 +8,11 @@ for day in range(Schedule.presets.number_of_days):
 
 # Schedule.ImportGoogleEvents()
 
-run = True
+run = False
 if run:
     Schedule.GetEvents()
 
-run = False
+run = True
 if run:
     Schedule.SetSleep()
     Schedule.SetLunch()

@@ -1,6 +1,8 @@
+# TO BE DELETED BUT NOT YET
+
 import sys ,os
 
-import palette, times_list
+import palette, routines_list
 from general_window_gui import GeneralWindow
 from PyQt5.QtWidgets import QHBoxLayout, QWidget, QFormLayout, QLineEdit, QDateEdit, QVBoxLayout,\
     QStackedWidget, QListWidgetItem, QLabel, QSlider, QComboBox, QCheckBox, QPushButton,\
@@ -156,7 +158,7 @@ class SetUpWindow(GeneralWindow):
         layout2.addWidget(question2_text, alignment=Qt.AlignCenter)
 
         # TimeList
-        self.t_list = times_list.TimeList(self.ls_w, self.prefs)
+        self.t_list = routines_list.RoutinesList(self.ls_w, self.prefs)
 
         for x in range(0,20):
             self.t_list.make_item(f'Sleeping {x}', '20.00', '24.00')

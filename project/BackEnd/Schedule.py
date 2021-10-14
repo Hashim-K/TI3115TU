@@ -395,7 +395,7 @@ class Main:
 
 
 # Events, presets and the schedule instance.
-id_dict = {}
+id_dict = {"Sleep": 0, "Morning routine": 1, "Lunch": 2, "Dinner": 3, "Other": 4}
 events = []
 presets = Presets()
 display = Display()

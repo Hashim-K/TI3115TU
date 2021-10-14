@@ -9,7 +9,7 @@ dirname = os.path.dirname(__file__)
 import string, random
 
 from project.BackEnd import Task, Schedule
-from project.gui import general_window_gui, task_list, task_creation_gui
+from project.gui import general_window_gui, task_list, task_creation_gui, routines_list, add_routine_gui
 
 
 class MainView(general_window_gui.GeneralWindow):
@@ -41,16 +41,19 @@ class MainView(general_window_gui.GeneralWindow):
         # Stack of Widgets on RIGHT
         self.stack_events = QWidget()
         self.stack_schedule = QWidget()
+        self.stack_routines = QWidget()
         self.stack_preferences = QWidget()
 
             # Init widgets in stack
         self.stack_tasks_ui()
         self.stack_schedule_ui()
+        self.stack_routines_ui()
         self.stack_preferences_ui()
             # Put widgets ins tack
         self.stack = QStackedWidget()
         self.stack.addWidget(self.stack_events)
         self.stack.addWidget(self.stack_schedule)
+        self.stack.addWidget(self.stack_routines)
         self.stack.addWidget(self.stack_preferences)
             # Add widgets to layout
         layout.addWidget(self.context)  # Context menu on left
@@ -126,6 +129,29 @@ class MainView(general_window_gui.GeneralWindow):
 
         layout.addWidget(text)
         self.stack_schedule.setLayout(layout)
+
+    # Routines view
+    def stack_routines_ui(self):
+        layout = QVBoxLayout()
+
+        # Header
+        head_text = QLabel("Set at which times you are unavailable.\n" +
+                           "Task sessions will not be planned during these times.")
+        layout.addWidget(head_text)
+
+        # new routine button
+        new_button = QPushButton("Add routine")
+        new_button.clicked.connect(self.new_routine)
+        layout.addWidget(new_button)
+
+        # List of routines
+        self.routine_list = routines_list.RoutinesList(self.ls_w, self.prefs)
+        # FOR TESTING ONLY
+        for x in range(0,20):
+            self.routine_list.make_item(f'Sleeping {x}', '20.00', '24.00')
+        layout.addWidget(self.routine_list)
+
+        self.stack_routines.setLayout(layout)
 
     ## Preferences View
     def stack_preferences_ui(self):
@@ -230,12 +256,13 @@ class MainView(general_window_gui.GeneralWindow):
         # Set Routines Button
         self.routines_button = QPushButton('Routines')
         self.routines_button.setStyleSheet(self.prefs.style_sheets['button_prio_burger'])
+        self.routines_button.clicked.connect(lambda:self.display(2))
         self.routines_button.setFixedWidth(100)
 
         # Preferences (Google etc.)
         self.preferences_button = QPushButton('Preferences')
         self.preferences_button.setStyleSheet(self.prefs.style_sheets['button_prio_burger'])
-        self.preferences_button.clicked.connect(lambda:self.display(2))
+        self.preferences_button.clicked.connect(lambda:self.display(3))
         self.preferences_button.setFixedWidth(100)
 
         # Generate schedule button
@@ -285,6 +312,9 @@ class MainView(general_window_gui.GeneralWindow):
     # @staticmethod
     def new_task(self):
         general_window_gui.GeneralWindow.pre_init(self.ls_w, self.prefs, task_creation_gui.TaskCreationWindow)
+
+    def new_routine(self):
+        general_window_gui.GeneralWindow.pre_init(self.ls_w, self.prefs, add_routine_gui.AddRoutineWindow)
     
     # Stack Changer
     def display(self, i):
