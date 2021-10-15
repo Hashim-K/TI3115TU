@@ -21,24 +21,23 @@ def main(filename):
         if stc != -99:
             task = timetable[stc]
             print(task)
-            print("Reason best: one timeslot remaining")
+            print("Reason: one timeslot remaining")
             Task.delete_task(filename, task.taskID)
-            # ADD TASK TO SCHEDULE
+            # ADD TASK TO SCHEDULE @TEUS
         else:
             task = best_score_check(timetable)
             print(task)
-            print("Reason best: score")
+            print("Reason: best score")
             Task.delete_task(filename, task.taskID)
-            # ADD TASK TO SCHEDULE
+            # ADD TASK TO SCHEDULE @TEUS
         timetable = create_timetable(filename)
         print(len(timetable))
-
 
 
 def create_timetable(filename):
     timetable = []
     tasks_list = Task.import_task(filename)
-    schedule_slots = [[[1, 15], [1, 30]], [[1, 57], [1, 75]], [[1, 99], [1, 120]]]
+    schedule_slots = [[[1, 15], [1, 30]], [[1, 57], [1, 75]], [[1, 99], [1, 120]]] #THIS SHOULD BE IMPORTING THE EMPY SCHEDULE SPOTS @TEUS
     for task in tasks_list:
         for timeslot in schedule_slots:
             start_day = timeslot[0][0]
@@ -68,12 +67,13 @@ def create_timetable(filename):
 
 def single_task_check(timetable):
     pos = -99
-    for i in range(timetable[-1].taskID):
-        if sum(t.taskID == i + 1 for t in timetable) == 1:
+    for i in range(timetable[-1].taskID+1):
+        if sum(t.taskID == i for t in timetable) == 1:
             for pos in range(len(timetable)):
                 if timetable[pos].taskID == i + 1:
                     return pos
     return pos
+
 
 def best_score_check(timetable):
     timetable = sorted(timetable, key=lambda a: (a.score))
@@ -118,5 +118,5 @@ def timeslot_pref(task, timeslot):
     #     preferenceRating = 2
     return preferenceRating
 
-
+#testing if it runs
 main('../save_file.json')
