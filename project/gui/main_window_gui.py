@@ -293,7 +293,7 @@ class MainView(general_window_gui.GeneralWindow):
         self.list_widget.clear()
         # Repopulate
         try:
-            tasks = Task.import_task(os.path.join(dirname, 'save_file.json'))
+            tasks = Task.import_task(self.prefs.directory['tasks'])
             self.list_widget.load_task_list(tasks)
 
             # Changing number of tasks
