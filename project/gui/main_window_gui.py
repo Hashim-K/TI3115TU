@@ -134,21 +134,51 @@ class MainView(general_window_gui.GeneralWindow):
     def stack_routines_ui(self):
         layout = QVBoxLayout()
 
+        ## Top Block
+        top_block_widget = QWidget()
+        top_block_widget.setStyleSheet(self.prefs.style_sheets['text_bubble_title'])
+
+        ## Title
+        title = QLabel('Routines')
+        title.setMargin(5)
+        title.setStyleSheet(self.prefs.style_sheets['text_title'])
+
+        ## Add Routine Button
+        add_routine_button = QPushButton("Add routine")
+        add_routine_button.setStyleSheet(self.prefs.style_sheets['button_priority_rect'])
+        add_routine_button.clicked.connect(self.new_routine)
+        add_routine_button.setFixedWidth(100)
+
+        # Layout in Box
+        tbw_layout = QHBoxLayout()
+        tbw_layout.addWidget(title)
+        tbw_layout.addStretch(1)
+        tbw_layout.addWidget(add_routine_button)
+
+        top_block_widget.setLayout(tbw_layout)
+
+        # Divider
+        line_div = QFrame()
+        line_div.setFrameShape(QFrame.HLine)
+        line_div.setStyleSheet("color: '#42464E'")
+
         # Header
         head_text = QLabel("Set at which times you are unavailable.\n" +
                            "Task sessions will not be planned during these times.")
-        layout.addWidget(head_text)
+        head_text.setStyleSheet(self.prefs.style_sheets['text_bubble'])
 
-        # new routine button
-        new_button = QPushButton("Add routine")
-        new_button.clicked.connect(self.new_routine)
-        layout.addWidget(new_button)
+
 
         # List of routines
         self.routine_list = routines_list.RoutinesList(self.ls_w, self.prefs)
         # FOR TESTING ONLY
         for x in range(0,20):
             self.routine_list.make_item(f'Sleeping {x}', '20.00', '24.00')
+
+        # Main Layout
+        layout.addWidget(top_block_widget, alignment=QtCore.Qt.AlignTop)
+        layout.addWidget(head_text)
+        layout.addWidget(line_div)
         layout.addWidget(self.routine_list)
 
         self.stack_routines.setLayout(layout)
