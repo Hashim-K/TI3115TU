@@ -165,7 +165,7 @@ class MainView(general_window_gui.GeneralWindow):
         # Header
         head_text = QLabel("Set at which times you are unavailable.\n" +
                            "Task sessions will not be planned during these times.")
-        head_text.setStyleSheet(self.prefs.style_sheets['text_bubble'])
+        head_text.setStyleSheet(self.prefs.style_sheets['text_bubble_clear'])
 
 
 

@@ -10,6 +10,7 @@ class Prefs():
         'img_g_logo': os.path.join(dirname, '../media/google_logo.png'),
         'icon_task_info': os.path.join(dirname, '../media/icon_task_info.png'),
         'bar_close': os.path.join(dirname, '../media/bar_close.png'),
+        'placeholder': os.path.join(dirname, '../media/slice4.png'),
         # FROM flaticon
         'algo_icon': os.path.join(dirname, '../media/algo_icon.png')   # @ Linector
     }
@@ -45,6 +46,9 @@ class Prefs():
         'text_bubble' : ("font-size: 13px; color: 'white';" +
                     "background-color: '#363940'; border-radius: 10px;" +
                     " padding: 15px 15px;"),
+        'text_bubble_clear' : ("font-size: 13px; color: '#B9BBBE';" +
+                    "border-radius: 10px;" +
+                    " padding: 15px 5px;"),
         'text_bubble_title' : ("font-size: 16px; color: 'white';" +
                     "background-color: '#27282C'; border-radius: 10px;" +
                     " padding: 10px 10px;"),
