@@ -71,12 +71,15 @@ class Task:
 
 def import_task(filename):
     tasks_list = []
-    with open(filename, 'r') as file:
-        task_dict = json.load(file)
-        for tasks in task_dict:
-            tasks_list.append(Task(tasks['TaskID'], tasks['Name'], tasks['Description'], tasks['Duration'],
-                    tasks['Priority'], datetime.fromisoformat(tasks['Deadline']), tasks['Repeatable'],
-                    tasks['Category'], tasks['Preferred'], tasks['Plan_on_same'], tasks['Session'], filename))
+    try:
+        with open(filename, 'r') as file:
+            task_dict = json.load(file)
+            for tasks in task_dict:
+                tasks_list.append(Task(tasks['TaskID'], tasks['Name'], tasks['Description'], tasks['Duration'],
+                        tasks['Priority'], datetime.fromisoformat(tasks['Deadline']), tasks['Repeatable'],
+                        tasks['Category'], tasks['Preferred'], tasks['Plan_on_same'], tasks['Session'], filename))
+    except FileNotFoundError:
+        print('File does not exist')
     return tasks_list
 
 
@@ -91,26 +94,32 @@ def find_task(filename, task_ID):
 
 
 def delete_task(filename, taskID):
-    with open(filename, 'r') as file:
-        task_dict = json.load(file)
-    for i in range(len(task_dict)):
-        if task_dict[i]['TaskID'] == taskID:
-            del task_dict[i]
-            break
-    with open(filename, 'w') as file:
-        json.dump(task_dict, file, indent = 6)
+    try:
+        with open(filename, 'r') as file:
+            task_dict = json.load(file)
+        for i in range(len(task_dict)):
+            if task_dict[i]['TaskID'] == taskID:
+                del task_dict[i]
+                break
+        with open(filename, 'w') as file:
+            json.dump(task_dict, file, indent = 6)
+    except FileNotFoundError:
+        print('File does not exist')
 
 
 def delete_session(filename, taskID):
-    with open(filename, 'r') as file:
-        task_dict = json.load(file)
-    for i in range(len(task_dict)):
-        if task_dict[i]['TaskID'] == taskID:
-            if task_dict[i]['Session'] == 1:
-                del task_dict[i]
-            else:
-                task_dict[i]['Session'] -= 1
-            break
-    with open(filename, 'w') as file:
-        json.dump(task_dict, file, indent = 6)
+    try:
+        with open(filename, 'r') as file:
+            task_dict = json.load(file)
+        for i in range(len(task_dict)):
+            if task_dict[i]['TaskID'] == taskID:
+                if task_dict[i]['Session'] == 1:
+                    del task_dict[i]
+                else:
+                    task_dict[i]['Session'] -= 1
+                break
+        with open(filename, 'w') as file:
+            json.dump(task_dict, file, indent = 6)
+    except FileNotFoundError:
+        print('File does not exist')
 
