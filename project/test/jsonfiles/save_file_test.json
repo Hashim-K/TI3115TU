@@ -1,0 +1,41 @@
+[
+      {
+            "TaskID": 1,
+            "Name": "Wash Horse",
+            "Description": "Horse is dirty.",
+            "Duration": 9,
+            "Priority": 0,
+            "Deadline": "2021-10-13",
+            "Repeatable": false,
+            "Category": "category 1",
+            "Preferred": "None",
+            "Plan_on_same": false,
+            "Session": 1
+      },
+      {
+            "TaskID": 3,
+            "Name": "Title",
+            "Description": "Description",
+            "Duration": 5,
+            "Priority": 0,
+            "Deadline": "2021-10-08",
+            "Repeatable": false,
+            "Category": "category 1",
+            "Preferred": "Morning (8:00-12:00)",
+            "Plan_on_same": true,
+            "Session": 1
+      },
+      {
+            "TaskID": 4,
+            "Name": "Pew pew pew",
+            "Description": "boom boom boom",
+            "Duration": 21,
+            "Priority": 3,
+            "Deadline": "2021-10-14",
+            "Repeatable": true,
+            "Category": "category 2",
+            "Preferred": "Evening (16:00-20:00)",
+            "Plan_on_same": true,
+            "Session": 2
+      }
+]
