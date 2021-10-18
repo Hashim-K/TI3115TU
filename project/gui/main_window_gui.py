@@ -127,6 +127,10 @@ class MainView(general_window_gui.GeneralWindow):
         text.setText('Schedule View')
         text.setStyleSheet(self.prefs.style_sheets['text_bubble_dark'])
 
+        self.schedule_label = QLabel()
+        self.update_schedule_image()
+
+        layout.addWidget(self.schedule_label)
         layout.addWidget(text)
         self.stack_schedule.setLayout(layout)
 
@@ -176,7 +180,6 @@ class MainView(general_window_gui.GeneralWindow):
 
         # List of routines
         self.routine_list = routines_list.RoutinesList(self.ls_w, self.prefs)
-        self.populate_routine_list()
 
         # Main Layout
         layout.addWidget(top_block_widget, alignment=QtCore.Qt.AlignTop)
@@ -186,7 +189,7 @@ class MainView(general_window_gui.GeneralWindow):
 
         self.stack_routines.setLayout(layout)
 
-        # prep schedule. happens before trying to add an event
+        # prep schedule
         try:
             Schedule.GetEvents()
         except:
@@ -197,9 +200,11 @@ class MainView(general_window_gui.GeneralWindow):
             Schedule.SetLunch()
         if 'Dinner' not in Schedule.id_dict:
             Schedule.SetDinner()
+        # Update schedule
         Schedule.StoreEvents()
         Schedule.schedule.Update()
         Schedule.SaveImage()
+        self.populate_routine_list()
 
     ## Preferences View
     def stack_preferences_ui(self):
@@ -396,9 +401,6 @@ class MainView(general_window_gui.GeneralWindow):
         self.routine_list.clear()
         self.routine_list.load_routinelist()
 
-
-    # New Task Window
-    # @staticmethod
     def new_task(self):
         general_window_gui.GeneralWindow.pre_init(self.ls_w, self.prefs, task_creation_gui.TaskCreationWindow)
 
@@ -407,7 +409,13 @@ class MainView(general_window_gui.GeneralWindow):
 
     def clear_routines(self):
         Schedule.ClearEvents()
+        Schedule.schedule.Update()
+        Schedule.SaveImage()
         general_window_gui.GeneralWindow.raise_event(self.ls_w, 'reload_routines')
+
+    def update_schedule_image(self):
+        self.schedule_image = QPixmap(os.path.join(dirname, '../schedule.jpg'))
+        self.schedule_label.setPixmap(self.schedule_image)
     
     # Stack Changer
     def display(self, i):
@@ -419,6 +427,7 @@ class MainView(general_window_gui.GeneralWindow):
             self.populate_tasklist()
         if event_name == 'reload_routines':
             self.populate_routine_list()
+            self.update_schedule_image()
 
 
 class TopBlockWidget(QWidget):  # COULD be TESTED [not done]

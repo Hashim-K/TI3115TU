@@ -34,17 +34,6 @@ class RoutinesList(QListWidget):
 
                 item_widget = item.generate_widget()
                 self.setItemWidget(item, item_widget)
-
-    def make_item(self, name, start_time, end_time):
-        '''Makes a TimeItem and puts it in the list.'''
-        time_list_item = RoutineItem([name, start_time, end_time], self.ls_w, self.prefs)
-        time_list_item_widget = time_list_item.generate_widget()
-
-        self.addItem(time_list_item)
-        self.setItemWidget(time_list_item, time_list_item_widget)
-
-    def export_time_list(self):
-        pass
         
 
 class RoutineItem(QListWidgetItem):
