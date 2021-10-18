@@ -1,14 +1,11 @@
 import json
-
 import os.path
 from datetime import datetime
-
-
-# @dataclass
 from project.BackEnd import Schedule
 
 
 class Task:
+    
     try:
         highest_id = Schedule.events[-1].ID
     except IndexError:

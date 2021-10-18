@@ -1,5 +1,6 @@
 import Task
-
+import json
+from datetime import date
 
 # duration is in number of timeslots
 
@@ -37,7 +38,7 @@ def main(filename):
 def create_timetable(filename):
     timetable = []
     tasks_list = Task.import_task(filename)
-    schedule_slots = [[[1, 15], [1, 30]], [[1, 57], [1, 75]], [[1, 99], [1, 120]]] #THIS SHOULD BE IMPORTING THE EMPY SCHEDULE SPOTS @TEUS
+    schedule_slots = [[[1, 15], [1, 30]], [[1, 57], [1, 75]], [[1, 99], [1, 120]]] #THIS SHOULD BE IMPORTING THE EMPTY SCHEDULE SPOTS @TEUS
     for task in tasks_list:
         for timeslot in schedule_slots:
             start_day = timeslot[0][0]
@@ -82,7 +83,11 @@ def best_score_check(timetable):
 
 def calc_score(task, timeslot):
     # sessionR is number of sessions remaining
-    score = (task.priority + 1) * timeslot_pref(task, timeslot)  # multiplied by Daystilldeadline-sessionR
+    if task.priority == 0:
+        priority = 7
+    else:
+        priority = task.priority
+    score = priority * timeslot_pref(task, timeslot) * (calculate_days_till_deadline(task) - task.session)
     return score
 
 
@@ -117,6 +122,16 @@ def timeslot_pref(task, timeslot):
     # if task.preferred == "No Preference":
     #     preferenceRating = 2
     return preferenceRating
+
+
+def calculate_days_till_deadline(task):
+    with open('presets.json') as file:
+        preset_dict = json.load(file)
+    day_zero = preset_dict['day_zero'].split('-')
+    deadline_day = task.deadline.split('-')
+    date_zero = date(int(day_zero[0]), int(day_zero[1]), int(day_zero[2]))
+    deadline_date = date(int(deadline_day[0]), int(deadline_day[1]), int(deadline_day[2]))
+    return int(str((deadline_date - date_zero)).split(' ')[0])
 
 #testing if it runs
 main('../save_file.json')
