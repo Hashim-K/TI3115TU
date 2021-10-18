@@ -149,10 +149,17 @@ class MainView(general_window_gui.GeneralWindow):
         add_routine_button.clicked.connect(self.new_routine)
         add_routine_button.setFixedWidth(100)
 
+        # Clear all button
+        clear_all = QPushButton("Clear all")
+        clear_all.setStyleSheet(self.prefs.style_sheets['button_exit_rect'])
+        clear_all.clicked.connect(Schedule.ClearEvents)
+        clear_all.setFixedWidth(100)
+
         # Layout in Box
         tbw_layout = QHBoxLayout()
         tbw_layout.addWidget(title)
         tbw_layout.addStretch(1)
+        tbw_layout.addWidget(clear_all)
         tbw_layout.addWidget(add_routine_button)
 
         top_block_widget.setLayout(tbw_layout)
