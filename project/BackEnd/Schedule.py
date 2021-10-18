@@ -1,4 +1,5 @@
 import json
+from json import JSONDecodeError
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -217,6 +218,22 @@ def EmptySlots():
 def ClearEvents():
     with open(os.path.join(dirname, 'events.json'), 'w') as file:
         file.write('')
+    events.clear()
+    PrepEvents()
+
+def PrepEvents():
+    try:
+        GetEvents()
+    except:
+        pass
+    if not events:
+        SetSleep()
+        SetLunch()
+        SetDinner()
+        StoreEvents()
+
+    schedule.Update()
+    SaveImage()
 
 
 def GetEvents():
@@ -227,7 +244,7 @@ def GetEvents():
 
 
 def StoreEvents():
-    ClearEvents()
+    # ClearEvents()
     events_dict = []
     for event in events:
         events_dict.append({'Label': event.Label,

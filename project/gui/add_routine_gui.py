@@ -88,7 +88,6 @@ class AddRoutineWindow(GeneralWindow):
 
         # add event to schedule
         for i in day_dict[days]:
-            print(days, i)
             Schedule.AddOccurrence(id, i, start, dur)
 
         Schedule.StoreEvents()
@@ -96,6 +95,9 @@ class AddRoutineWindow(GeneralWindow):
         # temp
         Schedule.schedule.Update()
         Schedule.SaveImage()
+
+        GeneralWindow.raise_event(self.ls_w, 'reload_routines')
+        self.close()
 
 
 
