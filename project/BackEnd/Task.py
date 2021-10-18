@@ -1,7 +1,6 @@
 import json
 
 import os.path
-from dataclasses import dataclass
 from datetime import datetime
 
 
@@ -83,6 +82,7 @@ def import_task(filename):
                     tasks['Category'], tasks['Preferred'], tasks['Plan_on_same'], tasks['Session'], filename))
     return tasks_list
 
+
 def find_task(filename, task_ID):
     """ Seeks for a task by its taskID. """
     tasks_list = import_task(filename)
@@ -96,11 +96,24 @@ def find_task(filename, task_ID):
 def delete_task(filename, taskID):
     with open(filename, 'r') as file:
         task_dict = json.load(file)
-        # print(task_dict)
     for i in range(len(task_dict)):
         if task_dict[i]['TaskID'] == taskID:
             del task_dict[i]
             break
     with open(filename, 'w') as file:
-        # print(task_dict)
         json.dump(task_dict, file, indent = 6)
+
+
+def delete_session(filename, taskID):
+    with open(filename, 'r') as file:
+        task_dict = json.load(file)
+    for i in range(len(task_dict)):
+        if task_dict[i]['TaskID'] == taskID:
+            if task_dict[i]['Session'] == 1:
+                del task_dict[i]
+            else:
+                task_dict[i]['Session'] -= 1
+            break
+    with open(filename, 'w') as file:
+        json.dump(task_dict, file, indent = 6)
+
