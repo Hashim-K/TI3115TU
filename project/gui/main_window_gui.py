@@ -190,20 +190,9 @@ class MainView(general_window_gui.GeneralWindow):
         self.stack_routines.setLayout(layout)
 
         # prep schedule
-        try:
-            Schedule.GetEvents()
-        except:
-            pass
-        if 'Sleep' not in Schedule.id_dict:
-            Schedule.SetSleep()
-        if 'Lunch' not in Schedule.id_dict:
-            Schedule.SetLunch()
-        if 'Dinner' not in Schedule.id_dict:
-            Schedule.SetDinner()
+        Schedule.PrepEvents()
+
         # Update schedule
-        Schedule.StoreEvents()
-        Schedule.schedule.Update()
-        Schedule.SaveImage()
         self.populate_routine_list()
 
     ## Preferences View
@@ -409,8 +398,6 @@ class MainView(general_window_gui.GeneralWindow):
 
     def clear_routines(self):
         Schedule.ClearEvents()
-        Schedule.schedule.Update()
-        Schedule.SaveImage()
         general_window_gui.GeneralWindow.raise_event(self.ls_w, 'reload_routines')
 
     def update_schedule_image(self):

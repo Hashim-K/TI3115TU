@@ -88,7 +88,6 @@ class AddRoutineWindow(GeneralWindow):
 
         # add event to schedule
         for i in day_dict[days]:
-            print(days, i)
             Schedule.AddOccurrence(id, i, start, dur)
 
         Schedule.StoreEvents()
