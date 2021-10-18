@@ -82,7 +82,7 @@ def best_score_check(timetable):
 
 
 def calc_score(task, timeslot):
-    # sessionR is number of sessions remaining
+    # A lower score means that a certain timeslot and task do fit together well according to all the task details
     if task.priority == 0:
         priority = 7
     else:
@@ -127,11 +127,12 @@ def timeslot_pref(task, timeslot):
 def calculate_days_till_deadline(task):
     with open('presets.json') as file:
         preset_dict = json.load(file)
-    day_zero = preset_dict['day_zero'].split('-')
+    day_zero = preset_dict['day_zero'].split('-') # get the date of day_zero so first date of the planner
     deadline_day = task.deadline.split('-')
+    # turnss dates into date objects
     date_zero = date(int(day_zero[0]), int(day_zero[1]), int(day_zero[2]))
     deadline_date = date(int(deadline_day[0]), int(deadline_day[1]), int(deadline_day[2]))
-    return int(str((deadline_date - date_zero)).split(' ')[0])
+    return int(str((deadline_date - date_zero)).split(' ')[0]) # gets the difference of the two dates from the datetime module
 
 #testing if it runs
 main('../save_file.json')
