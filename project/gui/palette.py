@@ -46,9 +46,15 @@ class Prefs():
         'text_bubble' : ("font-size: 13px; color: 'white';" +
                     "background-color: '#363940'; border-radius: 10px;" +
                     " padding: 15px 15px;"),
+        'text_bubble_slim': ("font-size: 13px; color: 'white';" +
+                        "background-color: '#363940'; border-radius: 10px;" +
+                        " padding: 10px 15px;"),
         'text_bubble_clear' : ("font-size: 13px; color: '#B9BBBE';" +
                     "border-radius: 10px;" +
                     " padding: 15px 5px;"),
+        'text_bubble_clear_slim': ("font-size: 13px; color: '#B9BBBE';" +
+                              "border-radius: 10px;" +
+                              " padding: 5px 5px;"),
         'text_bubble_title' : ("font-size: 16px; color: 'white';" +
                     "background-color: '#27282C'; border-radius: 10px;" +
                     " padding: 10px 10px;"),
