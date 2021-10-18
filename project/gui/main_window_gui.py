@@ -238,32 +238,68 @@ class MainView(general_window_gui.GeneralWindow):
         gb_layout = QVBoxLayout()
 
         ### Prompt
-        prompt_text = "By carrying out an import from a Google Calendar, " \
-                      "the user grants 25/8 full access to read " \
-                      "and write to the user's calendar."
+        prompt_text = "Connecting your Google account will allow 25/8 to " \
+                      "import events from your calendar and also export " \
+                      "a generated schedule to it."
         prompt = QLabel(prompt_text)
         prompt.setWordWrap(True)
         prompt.setStyleSheet(self.prefs.style_sheets['text'])
 
         gb_layout.addWidget(prompt)
 
+        ### Prompt Connect
+        prompt_connect_text = "1) Connect your Google Account"
+        prompt_connect = QLabel(prompt_connect_text)
+        prompt_connect.setWordWrap(True)
+        prompt_connect.setStyleSheet(self.prefs.style_sheets['text_bubble_slim'])
+
+        gb_layout.addWidget(prompt_connect)
+
+        ### Prompt Connect Subscript
+        prompt_text = "This will allow 25/8 to read from and write to your Google " \
+                      "Calendar."
+        prompt = QLabel(prompt_text)
+        prompt.setWordWrap(True)
+        prompt.setStyleSheet(self.prefs.style_sheets['text_bubble_clear_slim'])
+
+        gb_layout.addWidget(prompt)
+
         ### Button
-        button = QPushButton('Import')
-        button.setFixedWidth(75)
+        button = QPushButton(' Connect Google Account')
+        icon = QIcon(self.prefs.images['placeholder'])
+        button.setIcon(icon)
+        button.setFixedWidth(200)
         button.setStyleSheet(self.prefs.style_sheets['button_priority_rect'])
         button.clicked.connect(Schedule.ImportGoogleEvents)
 
-        gb_layout.addWidget(button, alignment=QtCore.Qt.AlignRight)
+        gb_layout.addWidget(button, alignment=QtCore.Qt.AlignCenter)
+
+        ### Prompt Import
+        prompt_import_text = "2) Import Events"
+        prompt_import = QLabel(prompt_import_text)
+        prompt_import.setWordWrap(True)
+        prompt_import.setStyleSheet(self.prefs.style_sheets['text_bubble_slim'])
+
+        gb_layout.addWidget(prompt_import)
+
+        ### Prompt Connect Subscript
+        prompt_text = "Importing the events will enable the scheduler to consider " \
+                      "already scheduled events."
+        prompt = QLabel(prompt_text)
+        prompt.setWordWrap(True)
+        prompt.setStyleSheet(self.prefs.style_sheets['text_bubble_clear_slim'])
+
+        gb_layout.addWidget(prompt)
 
         google_box.setLayout(gb_layout)
 
-        body_layout.addWidget(google_box, 0, 1, 1, 1)
+        body_layout.addWidget(google_box, 0, 0, 1, 1)
 
         # Settings Box
         settings_box = QGroupBox('Settings')
         settings_box.setStyleSheet(self.prefs.style_sheets['std_gbox'])
 
-        body_layout.addWidget(settings_box, 0, 0, 1, 1)
+        body_layout.addWidget(settings_box, 0, 1, 1, 1)
 
         # Main Layout
         layout.addWidget(top_block_widget, alignment=QtCore.Qt.AlignTop)    # Stick to top
