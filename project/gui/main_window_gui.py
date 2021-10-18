@@ -183,6 +183,21 @@ class MainView(general_window_gui.GeneralWindow):
 
         self.stack_routines.setLayout(layout)
 
+        # prep schedule. happens before trying to add an event
+        try:
+            Schedule.GetEvents()
+        except:
+            pass
+        if 'Sleep' not in Schedule.id_dict:
+            Schedule.SetSleep()
+        if 'Lunch' not in Schedule.id_dict:
+            Schedule.SetLunch()
+        if 'Dinner' not in Schedule.id_dict:
+            Schedule.SetDinner()
+        Schedule.StoreEvents()
+        Schedule.schedule.Update()
+        Schedule.SaveImage()
+
     ## Preferences View
     def stack_preferences_ui(self):
         layout = QVBoxLayout()

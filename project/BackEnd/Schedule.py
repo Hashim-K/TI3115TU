@@ -238,11 +238,9 @@ def StoreEvents():
 
 
 def AddOccurrence(id, day, start_time, duration):
-    events[id].Occurrences.append(StartAndEnd(day, Slot(start_time, presets.time_interval),
-                                              Slot(duration, presets.time_interval)))
+    events[id].Occurrences.append(StartAndEnd(day, Slot(start_time, presets.time_interval), duration))
     if id == 0:
         SetMorningRoutine()
-
 
 # Classes
 class Event:
@@ -395,7 +393,7 @@ class Main:
 
 
 # Events, presets and the schedule instance.
-id_dict = {"Sleep": 0, "Morning routine": 1, "Lunch": 2, "Dinner": 3, "Other": 4}
+id_dict = {}
 events = []
 presets = Presets()
 display = Display()

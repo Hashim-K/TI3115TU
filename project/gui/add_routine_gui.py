@@ -71,11 +71,14 @@ class AddRoutineWindow(GeneralWindow):
         self.end_time.setText("End time: " + end.toString())
 
     def add_routine(self):
+
         # get all values
-        start = self.start_time.time()
-        dur = self.duration.value()
+        start = self.start_time.time().toString()
+        dur = self.duration.value()  # slots
+
         cat = self.category.currentText()
         id = Schedule.id_dict[cat]
+
         days = self.recurrence.currentText()
 
         day_dict = {"Monday": [0], "Tuesday": [1], "Wednesday": [2],
@@ -83,8 +86,16 @@ class AddRoutineWindow(GeneralWindow):
                         "Sunday": [6], "Weekdays": range(5), "Weekend": [5, 6],
                         "Every day": range(7)}
 
+        # add event to schedule
         for i in day_dict[days]:
+            print(days, i)
             Schedule.AddOccurrence(id, i, start, dur)
+
+        Schedule.StoreEvents()
+
+        # temp
+        Schedule.schedule.Update()
+        Schedule.SaveImage()
 
 
 
