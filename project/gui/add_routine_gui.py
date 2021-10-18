@@ -97,6 +97,8 @@ class AddRoutineWindow(GeneralWindow):
         Schedule.schedule.Update()
         Schedule.SaveImage()
 
+        GeneralWindow.raise_event(self.ls_w, 'reload_routines')
+
 
 
 if __name__ == "__main__":

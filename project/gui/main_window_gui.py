@@ -112,7 +112,7 @@ class MainView(general_window_gui.GeneralWindow):
         self.list_widget = task_list.TaskList(self.ls_w ,self.prefs)
 
         ## Populate List
-        self.populate_list()
+        self.populate_tasklist()
 
         # Add Layouts
         layout.addWidget(top_block_widget)
@@ -152,7 +152,7 @@ class MainView(general_window_gui.GeneralWindow):
         # Clear all button
         clear_all = QPushButton("Clear all")
         clear_all.setStyleSheet(self.prefs.style_sheets['button_exit_rect'])
-        clear_all.clicked.connect(Schedule.ClearEvents)
+        clear_all.clicked.connect(self.clear_routines)
         clear_all.setFixedWidth(100)
 
         # Layout in Box
@@ -174,13 +174,9 @@ class MainView(general_window_gui.GeneralWindow):
                            "Task sessions will not be planned during these times.")
         head_text.setStyleSheet(self.prefs.style_sheets['text_bubble_clear'])
 
-
-
         # List of routines
         self.routine_list = routines_list.RoutinesList(self.ls_w, self.prefs)
-        # FOR TESTING ONLY
-        for x in range(0,20):
-            self.routine_list.make_item(f'Sleeping {x}', '20.00', '24.00')
+        self.populate_routine_list()
 
         # Main Layout
         layout.addWidget(top_block_widget, alignment=QtCore.Qt.AlignTop)
@@ -372,7 +368,7 @@ class MainView(general_window_gui.GeneralWindow):
         self.context.setLayout(layout)
 
     # Task List Populator
-    def populate_list(self):
+    def populate_tasklist(self):
         """
         Populates the UI list of tasks and edits the 'task view' list using
         a window event.
@@ -396,6 +392,11 @@ class MainView(general_window_gui.GeneralWindow):
         except FileNotFoundError:
             print("json doesn't exist.")
 
+    def populate_routine_list(self):
+        self.routine_list.clear()
+        self.routine_list.load_routinelist()
+
+
     # New Task Window
     # @staticmethod
     def new_task(self):
@@ -403,6 +404,10 @@ class MainView(general_window_gui.GeneralWindow):
 
     def new_routine(self):
         general_window_gui.GeneralWindow.pre_init(self.ls_w, self.prefs, add_routine_gui.AddRoutineWindow)
+
+    def clear_routines(self):
+        Schedule.ClearEvents()
+        general_window_gui.GeneralWindow.raise_event(self.ls_w, 'reload_routines')
     
     # Stack Changer
     def display(self, i):
@@ -411,7 +416,9 @@ class MainView(general_window_gui.GeneralWindow):
     # EVENTS
     def catch_event(self, event_name):
         if event_name == 'reload_tasks':
-            self.populate_list()
+            self.populate_tasklist()
+        if event_name == 'reload_routines':
+            self.populate_routine_list()
 
 
 class TopBlockWidget(QWidget):  # COULD be TESTED [not done]
