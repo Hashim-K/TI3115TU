@@ -1,6 +1,7 @@
 import Task
 import json
 from datetime import date, datetime
+from shutil import copyfile
 
 # duration is in number of timeslots
 
@@ -16,8 +17,10 @@ class PossibleTime:
 
 
 def main(filename):
+    copyfile(filename, '../copy_file.json')
+    filename = '../copy_file.json'
     timetable = create_timetable(filename)
-    while len(timetable)>0:
+    while len(timetable) > 0:
         stc = single_task_check(timetable)
         if stc != -99:
             task = timetable[stc]
@@ -29,7 +32,7 @@ def main(filename):
             task = best_score_check(timetable)
             print(task)
             print("Reason: best score")
-            Task.delete_task(filename, task.taskID)
+            Task.delete_session(filename, task.taskID)
             # ADD TASK TO SCHEDULE @TEUS
         timetable = create_timetable(filename)
         print(len(timetable))
@@ -140,5 +143,5 @@ def calculate_days_till_deadline(task):
     deadline_date = datetime.date(task.deadline) # turns datetime object into date object
     return int(str((deadline_date - date_zero)).split(' ')[0])  # gets the difference of the two dates from the datetime module
 
-#testing if it runs
+# #testing if it runs
 main('../save_file.json')
