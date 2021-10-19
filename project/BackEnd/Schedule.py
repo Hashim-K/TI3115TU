@@ -1,4 +1,5 @@
 import json
+from json import JSONDecodeError
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -217,6 +218,22 @@ def EmptySlots():
 def ClearEvents():
     with open(os.path.join(dirname, 'events.json'), 'w') as file:
         file.write('')
+    events.clear()
+    PrepEvents()
+
+def PrepEvents():
+    try:
+        GetEvents()
+    except:
+        pass
+    if not events:
+        SetSleep()
+        SetLunch()
+        SetDinner()
+        StoreEvents()
+
+    schedule.Update()
+    SaveImage()
 
 
 def GetEvents():
@@ -227,7 +244,7 @@ def GetEvents():
 
 
 def StoreEvents():
-    ClearEvents()
+    # ClearEvents()
     events_dict = []
     for event in events:
         events_dict.append({'Label': event.Label,
@@ -238,11 +255,9 @@ def StoreEvents():
 
 
 def AddOccurrence(id, day, start_time, duration):
-    events[id].Occurrences.append(StartAndEnd(day, Slot(start_time, presets.time_interval),
-                                              Slot(duration, presets.time_interval)))
+    events[id].Occurrences.append(StartAndEnd(day, Slot(start_time, presets.time_interval), duration))
     if id == 0:
         SetMorningRoutine()
-
 
 # Classes
 class Event:
@@ -395,7 +410,7 @@ class Main:
 
 
 # Events, presets and the schedule instance.
-id_dict = {"Sleep": 0, "Morning routine": 1, "Lunch": 2, "Dinner": 3, "Other": 4}
+id_dict = {}
 events = []
 presets = Presets()
 display = Display()

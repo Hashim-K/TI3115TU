@@ -1,5 +1,7 @@
 import Task
-
+import json
+from datetime import date, datetime
+from shutil import copyfile
 
 # duration is in number of timeslots
 
@@ -15,8 +17,10 @@ class PossibleTime:
 
 
 def main(filename):
+    copyfile(filename, '../copy_file.json')
+    filename = '../copy_file.json'
     timetable = create_timetable(filename)
-    while len(timetable)>0:
+    while len(timetable) > 0:
         stc = single_task_check(timetable)
         if stc != -99:
             task = timetable[stc]
@@ -28,7 +32,7 @@ def main(filename):
             task = best_score_check(timetable)
             print(task)
             print("Reason: best score")
-            Task.delete_task(filename, task.taskID)
+            Task.delete_session(filename, task.taskID)
             # ADD TASK TO SCHEDULE @TEUS
         timetable = create_timetable(filename)
         print(len(timetable))
@@ -37,7 +41,7 @@ def main(filename):
 def create_timetable(filename):
     timetable = []
     tasks_list = Task.import_task(filename)
-    schedule_slots = [[[1, 15], [1, 30]], [[1, 57], [1, 75]], [[1, 99], [1, 120]]] #THIS SHOULD BE IMPORTING THE EMPY SCHEDULE SPOTS @TEUS
+    schedule_slots = [[[1, 15], [1, 30]], [[1, 57], [1, 75]], [[1, 99], [1, 120]]] # THIS SHOULD BE IMPORTING THE EMPTY SCHEDULE SPOTS @TEUS
     for task in tasks_list:
         for timeslot in schedule_slots:
             start_day = timeslot[0][0]
@@ -66,6 +70,7 @@ def create_timetable(filename):
 
 
 def single_task_check(timetable):
+    """" Checking if there is a task with only one possible timeslot left. """
     pos = -99
     for i in range(timetable[-1].taskID+1):
         if sum(t.taskID == i for t in timetable) == 1:
@@ -76,18 +81,26 @@ def single_task_check(timetable):
 
 
 def best_score_check(timetable):
+    """ Retrieving the lowest score from the timetable. """
     timetable = sorted(timetable, key=lambda a: (a.score))
     return timetable[0]
 
 
 def calc_score(task, timeslot):
-    # sessionR is number of sessions remaining
-    score = (task.priority + 1) * timeslot_pref(task, timeslot)  # multiplied by Daystilldeadline-sessionR
+    """" Calculating the score, which is an indication how well a task and timeslot fit together. """
+    if task.priority == 0:  # priority of one means no priority
+        priority = 7
+    else:
+        priority = task.priority
+    score = priority * timeslot_pref(task, timeslot) + (calculate_days_till_deadline(task) - task.session)
     return score
 
 
 def timeslot_pref(task, timeslot):
-    t_avg = timeslot + task.duration / 2
+    """ Comparing if a timeslot fits well with the preference of a task,
+    if it corresponds the score is 1 and if it doesn't the score is 3.
+    """
+    t_avg = timeslot + task.duration / 2  # to know in which timeslot a task/timeslot combination falls we take the average time
     preferenceRating = 2
     if task.preferred == "Ungodly hours (0:00-8:00)":
         if 0 <= t_avg <= 95:
@@ -118,5 +131,17 @@ def timeslot_pref(task, timeslot):
     #     preferenceRating = 2
     return preferenceRating
 
-#testing if it runs
+
+def calculate_days_till_deadline(task):
+    """" Calculating the days between two dates using datetime module,
+    Needed to calculate the score of task/timeslot combination.
+    """
+    with open('presets.json') as file:
+        preset_dict = json.load(file)
+    day_zero = preset_dict['day_zero'].split('-')  # get the date of day_zero so first date of the planner
+    date_zero = date(int(day_zero[0]), int(day_zero[1]), int(day_zero[2]))  # turns date into date objects
+    deadline_date = datetime.date(task.deadline) # turns datetime object into date object
+    return int(str((deadline_date - date_zero)).split(' ')[0])  # gets the difference of the two dates from the datetime module
+
+# #testing if it runs
 main('../save_file.json')
