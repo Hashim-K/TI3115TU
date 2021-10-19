@@ -52,7 +52,6 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual('15:05:00', Slot2Time(181, 5))
         self.assertEqual('02:05:00', Slot2Time(125, 1))
 
-
     def test_DateFormat(self):
         self.assertEqual('September 23rd', DateFormat('2021-09-23'))
         self.assertEqual('January 1st', DateFormat('2021-01-01'))
