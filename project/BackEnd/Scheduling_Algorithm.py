@@ -1,7 +1,9 @@
-import Task
+from project.BackEnd import Task
 import json
 from datetime import date, datetime
 from shutil import copyfile
+import os
+dirname = os.path.dirname(__file__)
 
 # duration is in number of timeslots
 
@@ -80,6 +82,17 @@ def single_task_check(timetable):
     return pos
 
 
+def overlap_check(tasks_list, empty_slots, event):
+    """ Checks if the allocated timeslot of event eliminates all the timeslots of another task. """
+    for task in tasks_list:
+        timeslots = []
+        count = 0
+        for i in range(len(empty_slots)):
+            for empty_slot in empty_slots[i]:
+                if empty_slot[0] + count + task.duration <= empty_slot[1]:
+                    timeslots.append([i, empty_slot[0] + count, empty_slot[0] + count + task.duration])
+
+
 def best_score_check(timetable):
     """ Retrieving the lowest score from the timetable. """
     timetable = sorted(timetable, key=lambda a: (a.score))
@@ -92,7 +105,7 @@ def calc_score(task, timeslot):
         priority = 7
     else:
         priority = task.priority
-    score = priority * timeslot_pref(task, timeslot) + (calculate_days_till_deadline(task) - task.session)
+    score = priority * timeslot_pref(task, timeslot) + (calculate_days_till_deadline(task, os.path.join(dirname, 'presets.json')) - task.session)
     return score
 
 
@@ -100,6 +113,7 @@ def timeslot_pref(task, timeslot):
     """ Comparing if a timeslot fits well with the preference of a task,
     if it corresponds the score is 1 and if it doesn't the score is 3.
     """
+    # if timeslot length changes, this code needs to change as well !!!!
     t_avg = timeslot + task.duration / 2  # to know in which timeslot a task/timeslot combination falls we take the average time
     preferenceRating = 2
     if task.preferred == "Ungodly hours (0:00-8:00)":
@@ -132,15 +146,15 @@ def timeslot_pref(task, timeslot):
     return preferenceRating
 
 
-def calculate_days_till_deadline(task):
+def calculate_days_till_deadline(task, filename):
     """" Calculating the days between two dates using datetime module,
     Needed to calculate the score of task/timeslot combination.
     """
-    with open('presets.json') as file:
+    with open(filename) as file:
         preset_dict = json.load(file)
     day_zero = preset_dict['day_zero'].split('-')  # get the date of day_zero so first date of the planner
     date_zero = date(int(day_zero[0]), int(day_zero[1]), int(day_zero[2]))  # turns date into date objects
-    deadline_date = datetime.date(task.deadline) # turns datetime object into date object
+    deadline_date = datetime.date(task.deadline)  # turns datetime object into date object
     return int(str((deadline_date - date_zero)).split(' ')[0])  # gets the difference of the two dates from the datetime module
 
 # #testing if it runs
