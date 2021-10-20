@@ -9,6 +9,7 @@ class Prefs():
         'img_logo_min': os.path.join(dirname, '../media/logo_min.png'),
         'img_g_logo': os.path.join(dirname, '../media/google_logo.png'),
         'icon_task_info': os.path.join(dirname, '../media/icon_task_info.png'),
+        'icon_add': os.path.join(dirname, '../media/add.png'),
         'bar_close': os.path.join(dirname, '../media/bar_close.png'),
         'placeholder': os.path.join(dirname, '../media/slice4.png'),
         # FROM flaticon
