@@ -1,6 +1,6 @@
 import sys
 
-from PyQt5.QtWidgets import QWidget, QFormLayout, QLineEdit, QDateEdit, QVBoxLayout, QHBoxLayout
+from PyQt5.QtWidgets import QWidget, QFormLayout, QLineEdit, QDateEdit, QVBoxLayout, QHBoxLayout, QFrame
 from PyQt5.QtWidgets import QLabel, QSlider, QComboBox, QCheckBox
 from PyQt5.QtWidgets import QPushButton, QApplication, QStyleFactory
 from PyQt5.QtCore import QRegExp, Qt, QDate
@@ -117,6 +117,7 @@ class TaskCreationWindow(GeneralWindow):
         bottom_layout.addWidget(self.cancel_button)
 
         # Layout and Size
+        top_layout.setContentsMargins(0, 5, 0, 15)  # Bottom padding
         main_layout.addLayout(top_layout)
         main_layout.addLayout(bottom_layout)
         self.setLayout(main_layout)
