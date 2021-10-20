@@ -22,3 +22,19 @@
 - Restructuring the menu on the left of the main window so that it has a more natural flow, *suggested:* schedule, google, routines, tasks.
 - Adding an image on a screen that shows how the program is supposed to be used. Probably on the empty 'Schedule' screen.
 - Making categories work as intended.
+# Meeting Notes | 2021-10-20 | Week 7
+*By A. Eyong*
+## General Notes
+- Report was quite good; the parts on the programming of the software was a little
+too in depth, however it does not have to be changed. New parts should be less
+extensive.
+- Merge Requests need more extensive comments
+## Sprint Planning Update
+- Hashim and Teus will work on integrating the algorithm with the schedule.
+- **Robin**:
+    - Add preferred hours to the `task_creation_gui.py` with double slider.
+    - Work on implementation of overlap resolver
+- **Achere**:
+    - Work on GUI OAuth integration with Hashim
+    - Style Add Routine window
+    - Style Schedule Page
