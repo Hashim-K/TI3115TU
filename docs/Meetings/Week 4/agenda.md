@@ -1,5 +1,5 @@
 ## Agenda 2021-09-27
-
+_by N.I.M. Oosterlaar_
  - [x] Discuss the technicalities and difficulties of implementing OAuth
  - [x] Discuss possible ways of testing our code
  - [x] Discuss the main python file
