@@ -116,6 +116,7 @@ class TaskCreationWindow(GeneralWindow):
         bottom_layout.addWidget(self.cancel_button)
 
         # Layout and Size
+        top_layout.setContentsMargins(0, 5, 0, 15)  # Bottom padding
         main_layout.addLayout(top_layout)
         main_layout.addLayout(bottom_layout)
         self.setLayout(main_layout)
