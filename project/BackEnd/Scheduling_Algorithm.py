@@ -35,25 +35,17 @@ def main(filename):
             print(entry)
             print("Reason: one timeslot remaining")
             # ADD TASK TO SCHEDULE @TEUS
-            try:
-                Schedule.GetEvents()
-            except:
-                pass
             task = Task.find_task(filename, entry.taskID)
             if task.name not in Schedule.id_dict:
                 Schedule.Event(task.name, '#FFFFFF', [])
             Schedule.events[Schedule.id_dict[task.name]].Occurrences.append(entry.timeslots)
             Schedule.StoreEvents()
-            Task.delete_task(filename, entry.taskID)
+            Task.delete_session(filename, entry.taskID)
         else:
             entry = best_score_check(timetable)
             print(entry)
             print("Reason: best score")
             # ADD TASK TO SCHEDULE @TEUS
-            try:
-                Schedule.GetEvents()
-            except:
-                pass
             task = Task.find_task(filename, entry.taskID)
             print(task)
             if task.name not in Schedule.id_dict:
@@ -63,10 +55,7 @@ def main(filename):
             Task.delete_session(filename, entry.taskID)
         timetable = create_timetable(filename)
         print(len(timetable))
-    try:
-        Schedule.GetEvents()
-    except:
-        pass
+
     Schedule.schedule.Update()
     Schedule.SaveImage()
 
@@ -76,11 +65,9 @@ def create_timetable(filename):
     of every task/timeslot combination and its corresponding score.
     """
     timetable = []
+    timeslot_duration = 5
+    total_slots = 1440/timeslot_duration
     tasks_list = Task.import_task(filename)
-    try:
-        Schedule.GetEvents()
-    except:
-        pass
     Schedule.schedule.Update()
     schedule_slots =  Schedule.EmptySlots()
     print(schedule_slots)
@@ -90,10 +77,10 @@ def create_timetable(filename):
             start_time = timeslot[0][1]
             end_day = timeslot[1][0]
             end_time = timeslot[1][1]
-            while (start_day * 288) + (start_time + task.duration) <= (end_day * 288) + end_time:
-                if start_time + task.duration >= 288:
+            while (start_day * total_slots) + (start_time + task.duration) <= (end_day * total_slots) + end_time:
+                if start_time + task.duration >= total_slots:
                     temp_end_day = start_day + 1
-                    temp_end_time = start_time + task.duration - 288
+                    temp_end_time = start_time + task.duration - total_slots
                 else:
                     temp_end_day = start_day
                     temp_end_time = start_time + task.duration
@@ -102,12 +89,9 @@ def create_timetable(filename):
                                      calc_score(task, start_time))
                 timetable.append(entry)
                 start_time += 1
-                if start_time >= 288:
-                    start_time -= 288
+                if start_time >= total_slots:
+                    start_time -= total_slots
                     start_day += 1
-    # print("helloworld")
-    # for entry in timetable:
-    #   print(entry)
     return timetable
 
 
