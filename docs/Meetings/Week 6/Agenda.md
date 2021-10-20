@@ -1,4 +1,5 @@
 # Agenda 2021-10-11
+_by R.E.M. Liu_
 
  - [x] Did all the merges go well this weekend?
  - [x] Were changes made to 'Schedule'? If so, what were the changes? And is it ready to be integrated in the GUI now?
