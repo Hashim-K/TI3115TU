@@ -37,5 +37,21 @@
             "Preferred": "Evening (16:00-20:00)",
             "Plan_on_same": true,
             "Session": 1
+      },
+      {
+            "TaskID": 5,
+            "Name": "new preference",
+            "Description": "checking new preference",
+            "Duration": 60,
+            "Priority": 1,
+            "Deadline": "2021-10-20",
+            "Repeatable": false,
+            "Category": "category 1",
+            "Preferred": [
+                  "08:00:00",
+                  "16:00:00"
+            ],
+            "Plan_on_same": false,
+            "Session": 1
       }
 ]

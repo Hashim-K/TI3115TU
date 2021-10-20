@@ -1,9 +1,8 @@
 import sys
 
-from PyQt5.QtWidgets import QWidget, QFormLayout, QLineEdit, QDateEdit, QVBoxLayout, QHBoxLayout
-from PyQt5.QtWidgets import QLabel, QSlider, QComboBox, QCheckBox
-from PyQt5.QtWidgets import QPushButton, QApplication, QStyleFactory
-from PyQt5.QtCore import QRegExp, Qt, QDate
+from PyQt5.QtWidgets import QWidget, QFormLayout, QLineEdit, QDateEdit, QVBoxLayout, QHBoxLayout, QTimeEdit
+from PyQt5.QtWidgets import QLabel, QSlider, QComboBox, QCheckBox, QPushButton
+from PyQt5.QtCore import QRegExp, Qt, QDate, QTime
 from PyQt5.QtGui import QRegExpValidator
 
 from project.BackEnd import Task
@@ -51,6 +50,7 @@ class TaskCreationWindow(GeneralWindow):
         self.numsessions_field.setValidator(QRegExpValidator(QRegExp(r'[0-9]+')))
         top_layout.addRow("Number of sessions", self.numsessions_field)
 
+        # Duration
         self.duration_label = QLabel("5 minutes", self)
 
         self.sessionduration_slider = QSlider(Qt.Horizontal, self)
@@ -86,13 +86,12 @@ class TaskCreationWindow(GeneralWindow):
         top_layout.addRow("Category", self.category_dropbox)
 
         # Preference
-        self.preference_dropbox = QComboBox(self)
-        self.preference_dropbox.setStyleSheet("padding: 5px 10px;")
-        pref_times = ["None", "Morning (8:00-12:00)",
-                      "Afternoon (12:00-16:00)", "Evening (16:00-20:00)",
-                      "Night (20:00-23:59)", "Ungodly hours (0:00-8:00)"]
-        self.preference_dropbox.addItems(pref_times)
-        top_layout.addRow("Preferred time", self.preference_dropbox)
+        top_layout.addRow(QLabel("Preferred time (0:00 to 0:00 is considered as no preference)"))
+
+        self.preference_start = QTimeEdit()
+        self.preference_end = QTimeEdit()
+        top_layout.addRow("Start time", self.preference_start)
+        top_layout.addRow("End time", self.preference_end)
 
         # Plan on same day
         self.sameday_check = QCheckBox(self)
@@ -140,7 +139,7 @@ class TaskCreationWindow(GeneralWindow):
         category = self.category_dropbox.currentText()
         onsameday = self.sameday_check.isChecked()
         repeat = self.repeat_check.isChecked()
-        preferredtime = self.preference_dropbox.currentText()
+        preferredtime = (self.preference_start.time().toString(), self.preference_end.time().toString())
 
         new_task = Task.Task(-1, name, description, session_duration, priority, deadline,
                         repeat, category, preferredtime, onsameday, num_sessions, self.prefs.directory['tasks'])
