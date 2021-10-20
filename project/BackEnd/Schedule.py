@@ -406,7 +406,7 @@ class Main:
     def Update(self):
         self.EmptyArrays()
         AppendEvents()
-        ResolveOverlap()
+        return ResolveOverlap()
 
 
 # Events, presets and the schedule instance.
