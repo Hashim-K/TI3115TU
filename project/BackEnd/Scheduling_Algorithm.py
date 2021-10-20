@@ -15,7 +15,7 @@ class PossibleTime:
         self.score = score
 
     def __str__(self):
-        text_description = f"TaskID: {self.taskID} | {self.timeslots} | score:{self.score}"
+        text_description = f"TaskID: {self.taskID} | {self.timeslots} | score: {self.score}"
         return text_description
 
 
