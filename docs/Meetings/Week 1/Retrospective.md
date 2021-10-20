@@ -1,5 +1,5 @@
 ## Week 1 sprint review
-_By R.E.M. Liu_
+_by R.E.M. Liu_
 
 - We formed our group.
 - We set up our GitLab, and a Whatsapp group and Discord server for communication.
