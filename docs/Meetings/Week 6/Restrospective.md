@@ -1,4 +1,6 @@
-﻿# Week 6 Sprint retrospective
+# Week 6 Sprint retrospective
+_by R.E.M. Liu_
+
 ## What did we do
 - We almost finished the algorithm
 - We are working on making the gui for setting routines
