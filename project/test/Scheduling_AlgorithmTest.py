@@ -52,7 +52,7 @@ class MyTestCase(unittest.TestCase):
         timeslot = 300
         self.assertEqual(3, timeslot_pref(task, timeslot))
         task = Task(-1, "Title", "Description", 5, 0, datetime(2021, 10, 20, 0, 0), False, "category 1",
-                    "No preference", True, 1, 'nofile')
+                    "None", True, 1, 'nofile')
         self.assertEqual(2, timeslot_pref(task, timeslot))
 
     def test_string(self):

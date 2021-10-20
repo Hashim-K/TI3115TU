@@ -55,12 +55,16 @@ class AddRoutineWindow(GeneralWindow):
         self.add_button = QPushButton("Add")
         self.add_button.clicked.connect(self.add_routine)
 
+        # Overlap text
+        self.overlap_text = QLabel()
+
         # add widgets to layout
         layout.addRow("Category", self.category)
         layout.addRow("Start time", self.start_time)
         layout.addRow("Duration", self.duration)
         layout.addRow(self.end_time)
         layout.addRow("Recurrence", self.recurrence)
+        layout.addRow(self.overlap_text)
         layout.addRow(self.add_button)
         self.setLayout(layout)
 
@@ -90,14 +94,22 @@ class AddRoutineWindow(GeneralWindow):
         for i in day_dict[days]:
             Schedule.AddOccurrence(id, i, start, dur)
 
-        Schedule.StoreEvents()
+        # Check overlap
+        if Schedule.schedule.Update():
+            # display info
+            self.notify_overlap()
+            # clear event
+            Schedule.events.clear()
+            Schedule.GetEvents()
+        else:
+            # No overlap, Update schedule
+            Schedule.StoreEvents()
+            Schedule.SaveImage()
+            GeneralWindow.raise_event(self.ls_w, 'reload_routines')
+            self.close()
 
-        # temp
-        Schedule.schedule.Update()
-        Schedule.SaveImage()
-
-        GeneralWindow.raise_event(self.ls_w, 'reload_routines')
-        self.close()
+    def notify_overlap(self):
+        self.overlap_text.setText("The new routine overlaps with an existing routine.")
 
 
 
