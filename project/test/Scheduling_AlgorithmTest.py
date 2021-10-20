@@ -17,7 +17,7 @@ class MyTestCase(unittest.TestCase):
                                                          os.path.join(dirname, 'jsonfiles/TestDatesTillDeadline.json')))
 
     def test_overlap_check(self):
-        tasks_list = import_task(os.path.join(dirname,'jsonfiles/FileForTestingOne.json'))
+        tasks_list = import_task(os.path.join(dirname, 'jsonfiles/FileForTestingOne.json'))
         empty = [[[5, 25]]]
         event = PossibleTime(3, [[0, 6], [0, 24]], 1)
         self.assertFalse(overlap_check(tasks_list, empty, event))

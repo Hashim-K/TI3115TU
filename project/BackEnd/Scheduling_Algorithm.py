@@ -8,6 +8,7 @@ dirname = os.path.dirname(__file__)
 # duration is in number of timeslots
 
 class PossibleTime:
+    """ Used to store a task/timeslot combination and its corresponding score. """
     def __init__(self, taskID, timeslots, score):
         self.taskID = taskID
         self.timeslots = timeslots
@@ -19,6 +20,9 @@ class PossibleTime:
 
 
 def main(filename):
+    """ Deciding which task to schedule next,
+    and turning that task into an event an placing it in the schedule.
+    """
     copyfile(filename, '../copy_file.json')
     filename = '../copy_file.json'
     timetable = create_timetable(filename)
@@ -41,6 +45,9 @@ def main(filename):
 
 
 def create_timetable(filename):
+    """ Creates a list of all PossibleTime objects by making a PossibleTime object
+    of every task/timeslot combination and its corresponding score.
+    """
     timetable = []
     tasks_list = Task.import_task(filename)
     schedule_slots = [[[1, 15], [1, 30]], [[1, 57], [1, 75]], [[1, 99], [1, 120]]] # THIS SHOULD BE IMPORTING THE EMPTY SCHEDULE SPOTS @TEUS
@@ -85,12 +92,20 @@ def single_task_check(timetable):
 def overlap_check(tasks_list, empty_slots, event):
     """ Checks if the allocated timeslot of event eliminates all the timeslots of another task. """
     for task in tasks_list:
-        timeslots = []
-        count = 0
+        times = []
         for i in range(len(empty_slots)):
             for empty_slot in empty_slots[i]:
-                if empty_slot[0] + count + task.duration <= empty_slot[1]:
-                    timeslots.append([i, empty_slot[0] + count, empty_slot[0] + count + task.duration])
+                for j in range(empty_slot[1] - empty_slot[0]):
+                    if empty_slot[0] + j + task.duration <= empty_slot[1]:
+                        times.append([i, empty_slot[0] + j, empty_slot[0] + j + task.duration])
+                else:
+                    break
+        day, start, end = (event.timeslots[0][0], event.timeslots[0][1], event.timeslots[1][1])
+        for slot in times:
+            if slot[0] != day or not(start <= slot[1] <= end or start <= slot[2] <= end):
+                return True
+    return False
+
 
 
 def best_score_check(timetable):
@@ -158,4 +173,4 @@ def calculate_days_till_deadline(task, filename):
     return int(str((deadline_date - date_zero)).split(' ')[0])  # gets the difference of the two dates from the datetime module
 
 # #testing if it runs
-main('../save_file.json')
+# main('../save_file.json')
