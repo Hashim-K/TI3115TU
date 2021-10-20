@@ -1,4 +1,5 @@
 # Week 4 sprint retrospective
+_by N.I.M. Oosterlaar_
 
 ## What went well?
 
