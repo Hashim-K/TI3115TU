@@ -3,6 +3,7 @@ import json
 from datetime import date, datetime
 from shutil import copyfile
 import os
+import Schedule
 dirname = os.path.dirname(__file__)
 
 # duration is in number of timeslots
@@ -26,22 +27,48 @@ def main(filename):
     copyfile(filename, '../copy_file.json')
     filename = '../copy_file.json'
     timetable = create_timetable(filename)
+    print(len(timetable))
     while len(timetable) > 0:
         stc = single_task_check(timetable)
         if stc != -99:
-            task = timetable[stc]
-            print(task)
+            entry = timetable[stc]
+            print(entry)
             print("Reason: one timeslot remaining")
-            Task.delete_task(filename, task.taskID)
             # ADD TASK TO SCHEDULE @TEUS
+            try:
+                Schedule.GetEvents()
+            except:
+                pass
+            task = Task.find_task(filename, entry.taskID)
+            if task.name not in Schedule.id_dict:
+                Schedule.Event(task.name, '#FFFFFF', [])
+            Schedule.events[Schedule.id_dict[task.name]].Occurrences.append(entry.timeslots)
+            Schedule.StoreEvents()
+            Task.delete_task(filename, entry.taskID)
         else:
-            task = best_score_check(timetable)
-            print(task)
+            entry = best_score_check(timetable)
+            print(entry)
             print("Reason: best score")
-            Task.delete_session(filename, task.taskID)
             # ADD TASK TO SCHEDULE @TEUS
+            try:
+                Schedule.GetEvents()
+            except:
+                pass
+            task = Task.find_task(filename, entry.taskID)
+            print(task)
+            if task.name not in Schedule.id_dict:
+                Schedule.Event(task.name, '#FFFFFF', [])
+            Schedule.events[Schedule.id_dict[task.name]].Occurrences.append(entry.timeslots)
+            Schedule.StoreEvents()
+            Task.delete_session(filename, entry.taskID)
         timetable = create_timetable(filename)
         print(len(timetable))
+    try:
+        Schedule.GetEvents()
+    except:
+        pass
+    Schedule.schedule.Update()
+    Schedule.SaveImage()
 
 
 def create_timetable(filename):
@@ -50,7 +77,13 @@ def create_timetable(filename):
     """
     timetable = []
     tasks_list = Task.import_task(filename)
-    schedule_slots = [[[1, 15], [1, 30]], [[1, 57], [1, 75]], [[1, 99], [1, 120]]] # THIS SHOULD BE IMPORTING THE EMPTY SCHEDULE SPOTS @TEUS
+    try:
+        Schedule.GetEvents()
+    except:
+        pass
+    Schedule.schedule.Update()
+    schedule_slots =  Schedule.EmptySlots()
+    print(schedule_slots)
     for task in tasks_list:
         for timeslot in schedule_slots:
             start_day = timeslot[0][0]
@@ -93,6 +126,7 @@ def overlap_check(tasks_list, empty_slots, event):
     """ Checks if the allocated timeslot of event eliminates all the timeslots of another task. """
     for task in tasks_list:
         times = []
+        count = 0
         for i in range(len(empty_slots)):
             for empty_slot in empty_slots[i]:
                 for j in range(empty_slot[1] - empty_slot[0]):
@@ -105,7 +139,6 @@ def overlap_check(tasks_list, empty_slots, event):
             if slot[0] != day or not(start <= slot[1] <= end or start <= slot[2] <= end):
                 return True
     return False
-
 
 
 def best_score_check(timetable):
@@ -173,4 +206,4 @@ def calculate_days_till_deadline(task, filename):
     return int(str((deadline_date - date_zero)).split(' ')[0])  # gets the difference of the two dates from the datetime module
 
 # #testing if it runs
-# main('../save_file.json')
+main('../save_file.json')
