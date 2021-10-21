@@ -1,6 +1,6 @@
 from project.BackEnd import Task, Schedule
 import json
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from shutil import copyfile
 import os
 
@@ -67,20 +67,29 @@ def create_timetable(filename):
     """ Creates a list of all PossibleTime objects by making a PossibleTime object
     of every task/timeslot combination and its corresponding score.
     """
+    with open(os.path.join(dirname, 'presets.json')) as file:
+        preset_dict = json.load(file)
+    day_zero = preset_dict['day_zero'].split('-')
+    date_zero = date(int(day_zero[0]), int(day_zero[1]), int(day_zero[2]))
     timetable = []
     timeslot_duration = 5
     total_slots = 1440/timeslot_duration
     tasks_list = Task.import_task(filename)
     Schedule.schedule.Update()
     schedule_slots = Schedule.EmptySlots()
-    print(schedule_slots)
+    # print(schedule_slots)
     for task in tasks_list:
+        saved_end_day = 0
+        current_day = date_zero
+        deadline_date = datetime.date(task.deadline)
         for timeslot in schedule_slots:
             start_day = timeslot[0][0]
             start_time = timeslot[0][1]
             end_day = timeslot[1][0]
             end_time = timeslot[1][1]
-            while (start_day * total_slots) + (start_time + task.duration) <= (end_day * total_slots) + end_time:
+            current_day += timedelta(days=(end_day - saved_end_day))
+            while ((start_day * total_slots) + (start_time + task.duration) <= (end_day * total_slots) + end_time
+                    and current_day <= deadline_date):
                 if start_time + task.duration >= total_slots:
                     temp_end_day = start_day + 1
                     temp_end_time = start_time + task.duration - total_slots
@@ -95,6 +104,9 @@ def create_timetable(filename):
                 if start_time >= total_slots:
                     start_time -= total_slots
                     start_day += 1
+                saved_end_day = temp_end_day
+    for time in timetable:
+        print(time)
     return timetable
 
 
@@ -212,4 +224,4 @@ def calculate_days_till_deadline(task, filename):
     return int(str((deadline_date - date_zero)).split(' ')[0])  # gets the difference of the two dates from the datetime module
 
 # #testing if it runs
-# main('../save_file.json')
+main('../save_file.json')
