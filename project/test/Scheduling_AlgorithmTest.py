@@ -23,6 +23,9 @@ class MyTestCase(unittest.TestCase):
         self.assertFalse(overlap_check(tasks_list, empty, event))
         event = PossibleTime(3, [[0, 5], [0, 10]], 1)
         self.assertTrue(overlap_check(tasks_list, empty, event))
+        tasks_list.append(Task(-1, "Title", "Description", 15, 0, datetime(2021, 10, 20, 0, 0), False, "category 1",
+                               "Morning (8:00-12:00)", True, 1, 'nofile'))
+        self.assertFalse(overlap_check(tasks_list, empty, event))
 
     def test_timeslot_pref(self):
         task = Task(-1, "Title", "Description", 5, 0, datetime(2021, 10, 20, 0, 0), False, "category 1",
@@ -54,6 +57,13 @@ class MyTestCase(unittest.TestCase):
         task = Task(-1, "Title", "Description", 5, 0, datetime(2021, 10, 20, 0, 0), False, "category 1",
                     "None", True, 1, 'nofile')
         self.assertEqual(2, timeslot_pref(task, timeslot))
+
+    def test_eq(self):
+        time1 = PossibleTime(3, [[2, 56], [2, 80]], 2)
+        time2 = PossibleTime(3, [[2, 56], [2, 80]], 3)
+        time3 = PossibleTime(4, [[2, 56], [2, 80]], 2)
+        self.assertTrue(time1 == time2)
+        self.assertFalse(time1 == time3)
 
     def test_string(self):
         time = PossibleTime(3, [[2, 56], [2, 80]], 2)

@@ -1,9 +1,9 @@
-from project.BackEnd import Task
+from project.BackEnd import Task, Schedule
 import json
 from datetime import date, datetime
 from shutil import copyfile
 import os
-import Schedule
+
 dirname = os.path.dirname(__file__)
 
 # duration is in number of timeslots
@@ -18,6 +18,9 @@ class PossibleTime:
     def __str__(self):
         text_description = f"TaskID: {self.taskID} | {self.timeslots} | score: {self.score}"
         return text_description
+
+    def __eq__(self, other):
+        return self.taskID == other.taskID and self.timeslots == other.timeslots
 
 
 def main(filename):
@@ -69,7 +72,7 @@ def create_timetable(filename):
     total_slots = 1440/timeslot_duration
     tasks_list = Task.import_task(filename)
     Schedule.schedule.Update()
-    schedule_slots =  Schedule.EmptySlots()
+    schedule_slots = Schedule.EmptySlots()
     print(schedule_slots)
     for task in tasks_list:
         for timeslot in schedule_slots:
@@ -108,9 +111,11 @@ def single_task_check(timetable):
 
 def overlap_check(tasks_list, empty_slots, event):
     """ Checks if the allocated timeslot of event eliminates all the timeslots of another task. """
+    not_overlap = []
+    count = 0
     for task in tasks_list:
         times = []
-        count = 0
+        count += 1
         for i in range(len(empty_slots)):
             for empty_slot in empty_slots[i]:
                 for j in range(empty_slot[1] - empty_slot[0]):
@@ -121,8 +126,14 @@ def overlap_check(tasks_list, empty_slots, event):
         day, start, end = (event.timeslots[0][0], event.timeslots[0][1], event.timeslots[1][1])
         for slot in times:
             if slot[0] != day or not(start <= slot[1] <= end or start <= slot[2] <= end):
-                return True
-    return False
+                not_overlap.append(True)
+                break
+        if len(not_overlap) != count:
+            not_overlap.append(False)
+    if False in not_overlap:
+        return False
+    return True
+
 
 
 def best_score_check(timetable):
@@ -190,4 +201,4 @@ def calculate_days_till_deadline(task, filename):
     return int(str((deadline_date - date_zero)).split(' ')[0])  # gets the difference of the two dates from the datetime module
 
 # #testing if it runs
-main('../save_file.json')
+# main('../save_file.json')
