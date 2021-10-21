@@ -111,9 +111,12 @@ def single_task_check(timetable):
 
 def overlap_check(tasks_list, empty_slots, event):
     """ Checks if the allocated timeslot of event eliminates all the timeslots of another task. """
+    tasks_list.sort(reverse=True)
     not_overlap = []
+    taken_slots = [(event.timeslots[0][0], event.timeslots[0][1], event.timeslots[1][1])]
     count = 0
     for task in tasks_list:
+        sessions = task.session
         times = []
         count += 1
         for i in range(len(empty_slots)):
@@ -121,13 +124,21 @@ def overlap_check(tasks_list, empty_slots, event):
                 for j in range(empty_slot[1] - empty_slot[0]):
                     if empty_slot[0] + j + task.duration <= empty_slot[1]:
                         times.append([i, empty_slot[0] + j, empty_slot[0] + j + task.duration])
-                else:
-                    break
-        day, start, end = (event.timeslots[0][0], event.timeslots[0][1], event.timeslots[1][1])
+                    else:
+                        break
         for slot in times:
-            if slot[0] != day or not(start <= slot[1] <= end or start <= slot[2] <= end):
-                not_overlap.append(True)
-                break
+            available = True
+            for taken_slot in taken_slots:
+                if not((slot[0] != taken_slot[0] or
+                        not(taken_slot[1] <= slot[1] <= taken_slot[2] or taken_slot[1] <= slot[2] <= taken_slot[2]))):
+                    available = False
+            if available is True:
+                taken_slots.append((slot[0], slot[1], slot[2]))
+                if sessions == 1:
+                    not_overlap.append(True)
+                    break
+                else:
+                    sessions -= 1
         if len(not_overlap) != count:
             not_overlap.append(False)
     if False in not_overlap:

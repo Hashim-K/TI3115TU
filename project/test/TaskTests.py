@@ -114,6 +114,17 @@ class MyTestCase(unittest.TestCase):
         with open('jsonfiles/FileForTestingDeleteSession.json') as file:
             self.assertEqual('[]', file.read())
 
+    def test_lt(self):
+        task1 = Task(-1, "Title", "Description", 10, 0, datetime(2021, 10, 20, 0, 0), False, "category 1",
+                     "Morning (8:00-12:00)", True, 1, 'nofile')
+        task2 = Task(-1, "Title", "Description", 5, 0, datetime(2021, 10, 20, 0, 0), False, "category 1",
+                     "Morning (8:00-12:00)", True, 1, 'nofile')
+        task3 = Task(-1, "Title", "Description", 15, 0, datetime(2021, 10, 20, 0, 0), False, "category 1",
+             "Morning (8:00-12:00)", True, 1, 'nofile')
+        self.assertTrue(task2 < task1)
+        self.assertTrue(task1 < task3)
+        self.assertFalse(task3 < task2)
+
 
 
 @patch('builtins.print')

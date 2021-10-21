@@ -41,6 +41,9 @@ class Task:
                             + f"number of sessions: {self.session}, session duration: {self.duration}"
         return text_description
 
+    def __lt__(self, other):
+        return self.duration < other.duration
+
     def export_task(self, filename):
         """ Storing tasks in a JSON file. """
         entry = {
