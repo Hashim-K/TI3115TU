@@ -1,4 +1,7 @@
 import sys
+import time
+
+from PyQt5.QtCore import QThread
 from PyQt5.QtWidgets import QApplication, QGroupBox, QHBoxLayout, QLabel, QListWidget, QListWidgetItem, QScrollArea, QAction, QMainWindow, QPushButton, QStackedLayout, QStackedWidget, QToolBar, QVBoxLayout, QWidget, QFileDialog, QGridLayout, QLineEdit, QFrame
 from PyQt5.QtGui import QColor, QIcon, QPixmap, QCursor, QFont
 from PyQt5 import QtGui, QtCore
@@ -384,8 +387,11 @@ class MainView(general_window_gui.GeneralWindow):
         self.context.setLayout(layout)
 
     def add_schedule(self):
-        service = GoogleAPI.authenticate()
-        GoogleAPI.create_calendar(service, 'anything')  # Anything is placeholder
+        # This MUST be a class variable as to not get destroyed after being added
+        self.google_worker = GoogleWorker()
+        self.google_worker.start()
+        self.google_worker.finished.connect(lambda:print("Google Thread Finished"))
+
 
     # Task List Populator
     def populate_tasklist(self):
@@ -442,6 +448,13 @@ class MainView(general_window_gui.GeneralWindow):
             self.populate_routine_list()
             self.update_schedule_image()
 
+class GoogleWorker(QThread):
+    """
+    Thread that does google calendar creation and authentication (PLACEHOLDER)
+    """
+    def run(self):  # Override
+        service = GoogleAPI.authenticate()
+        GoogleAPI.create_calendar(service, 'anything')  # Anything is placeholder
 
 class TopBlockWidget(QWidget):  # COULD be TESTED [not done]
     """
