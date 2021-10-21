@@ -82,6 +82,16 @@ class Prefs():
                     "margin: 0px 0px;}" +
                     "*:hover{background: '#4069ED';}"
                     ),
+        'button_disabled_rect': (
+                "*{border: 2px solid '#18191B';" +
+                "border-radius: 5px;" +
+                "background-color: '#18191B';" +
+                "font-size: 13px;"
+                "color : '#575C6B';" +
+                "padding: 5px 0px;" +
+                "margin: 0px 0px;}" +
+                "*:hover{background: '#30333D';}"
+        ),
         'button_priority_rect' : (
                     "*{border: 2px solid '#404EED';" + 
                     "border-radius: 5px;" +
