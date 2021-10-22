@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import QWidget, QFormLayout, QLineEdit, QDateEdit, QVBoxLay
 from PyQt5.QtWidgets import QLabel, QSlider, QComboBox, QCheckBox
 from PyQt5.QtWidgets import QPushButton, QApplication, QStyleFactory
 from PyQt5.QtCore import QRegExp, Qt, QDate
-from PyQt5.QtGui import QRegExpValidator
+from PyQt5.QtGui import QRegExpValidator, QIcon
 
 from project.BackEnd import Task
 from project.gui.general_window_gui import GeneralWindow
@@ -23,6 +23,8 @@ class TaskCreationWindow(GeneralWindow):
                         "font-size: 13px;" +
                         "background-color: #303136;"
                         )
+        icon = QIcon(self.prefs.images['icon_add'])
+        self.setWindowIcon(icon)
 
         # Layout
         main_layout = QVBoxLayout()

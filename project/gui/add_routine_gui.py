@@ -25,6 +25,7 @@ class AddRoutineWindow(GeneralWindow):
                         )
         icon = QIcon(self.prefs.images['icon_add'])
         self.setWindowIcon(icon)
+        self.setFixedWidth(250)
 
         # Layout
         form_layout = QFormLayout()
