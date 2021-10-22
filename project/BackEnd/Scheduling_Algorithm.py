@@ -1,8 +1,9 @@
-from project.BackEnd import Task
+from project.BackEnd import Task, Schedule
 import json
 from datetime import date, datetime
 from shutil import copyfile
 import os
+
 dirname = os.path.dirname(__file__)
 
 # duration is in number of timeslots
@@ -18,6 +19,9 @@ class PossibleTime:
         text_description = f"TaskID: {self.taskID} | {self.timeslots} | score: {self.score}"
         return text_description
 
+    def __eq__(self, other):
+        return self.taskID == other.taskID and self.timeslots == other.timeslots
+
 
 def main(filename):
     """ Deciding which task to schedule next,
@@ -26,22 +30,37 @@ def main(filename):
     copyfile(filename, '../copy_file.json')
     filename = '../copy_file.json'
     timetable = create_timetable(filename)
+    print(len(timetable))
     while len(timetable) > 0:
         stc = single_task_check(timetable)
         if stc != -99:
-            task = timetable[stc]
-            print(task)
+            entry = timetable[stc]
+            print(entry)
             print("Reason: one timeslot remaining")
-            Task.delete_task(filename, task.taskID)
             # ADD TASK TO SCHEDULE @TEUS
+            task = Task.find_task(filename, entry.taskID)
+            if task.name not in Schedule.id_dict:
+                Schedule.Event(task.name, '#FFFFFF', [])
+            Schedule.events[Schedule.id_dict[task.name]].Occurrences.append(entry.timeslots)
+            Schedule.StoreEvents()
+            Task.delete_session(filename, entry.taskID)
         else:
-            task = best_score_check(timetable)
-            print(task)
+            entry = best_score_check(timetable)
+            print(entry)
             print("Reason: best score")
-            Task.delete_session(filename, task.taskID)
             # ADD TASK TO SCHEDULE @TEUS
+            task = Task.find_task(filename, entry.taskID)
+            print(task)
+            if task.name not in Schedule.id_dict:
+                Schedule.Event(task.name, '#FFFFFF', [])
+            Schedule.events[Schedule.id_dict[task.name]].Occurrences.append(entry.timeslots)
+            Schedule.StoreEvents()
+            Task.delete_session(filename, entry.taskID)
         timetable = create_timetable(filename)
         print(len(timetable))
+
+    Schedule.schedule.Update()
+    Schedule.SaveImage()
 
 
 def create_timetable(filename):
@@ -49,18 +68,22 @@ def create_timetable(filename):
     of every task/timeslot combination and its corresponding score.
     """
     timetable = []
+    timeslot_duration = 5
+    total_slots = 1440/timeslot_duration
     tasks_list = Task.import_task(filename)
-    schedule_slots = [[[1, 15], [1, 30]], [[1, 57], [1, 75]], [[1, 99], [1, 120]]] # THIS SHOULD BE IMPORTING THE EMPTY SCHEDULE SPOTS @TEUS
+    Schedule.schedule.Update()
+    schedule_slots = Schedule.EmptySlots()
+    print(schedule_slots)
     for task in tasks_list:
         for timeslot in schedule_slots:
             start_day = timeslot[0][0]
             start_time = timeslot[0][1]
             end_day = timeslot[1][0]
             end_time = timeslot[1][1]
-            while (start_day * 288) + (start_time + task.duration) <= (end_day * 288) + end_time:
-                if start_time + task.duration >= 288:
+            while (start_day * total_slots) + (start_time + task.duration) <= (end_day * total_slots) + end_time:
+                if start_time + task.duration >= total_slots:
                     temp_end_day = start_day + 1
-                    temp_end_time = start_time + task.duration - 288
+                    temp_end_time = start_time + task.duration - total_slots
                 else:
                     temp_end_day = start_day
                     temp_end_time = start_time + task.duration
@@ -69,12 +92,9 @@ def create_timetable(filename):
                                      calc_score(task, start_time))
                 timetable.append(entry)
                 start_time += 1
-                if start_time >= 288:
-                    start_time -= 288
+                if start_time >= total_slots:
+                    start_time -= total_slots
                     start_day += 1
-    # print("helloworld")
-    # for entry in timetable:
-    #   print(entry)
     return timetable
 
 
@@ -91,20 +111,39 @@ def single_task_check(timetable):
 
 def overlap_check(tasks_list, empty_slots, event):
     """ Checks if the allocated timeslot of event eliminates all the timeslots of another task. """
+    tasks_list.sort(reverse=True)
+    not_overlap = []
+    taken_slots = [(event.timeslots[0][0], event.timeslots[0][1], event.timeslots[1][1])]
+    count = 0
     for task in tasks_list:
+        sessions = task.session
         times = []
+        count += 1
         for i in range(len(empty_slots)):
             for empty_slot in empty_slots[i]:
                 for j in range(empty_slot[1] - empty_slot[0]):
                     if empty_slot[0] + j + task.duration <= empty_slot[1]:
                         times.append([i, empty_slot[0] + j, empty_slot[0] + j + task.duration])
-                else:
-                    break
-        day, start, end = (event.timeslots[0][0], event.timeslots[0][1], event.timeslots[1][1])
+                    else:
+                        break
         for slot in times:
-            if slot[0] != day or not(start <= slot[1] <= end or start <= slot[2] <= end):
-                return True
-    return False
+            available = True
+            for taken_slot in taken_slots:
+                if not((slot[0] != taken_slot[0] or
+                        not(taken_slot[1] <= slot[1] <= taken_slot[2] or taken_slot[1] <= slot[2] <= taken_slot[2]))):
+                    available = False
+            if available is True:
+                taken_slots.append((slot[0], slot[1], slot[2]))
+                if sessions == 1:
+                    not_overlap.append(True)
+                    break
+                else:
+                    sessions -= 1
+        if len(not_overlap) != count:
+            not_overlap.append(False)
+    if False in not_overlap:
+        return False
+    return True
 
 
 

@@ -202,9 +202,17 @@ def EmptySlots():
     free_block = []
     for day in range(presets.number_of_days):
         for slot in range(schedule.number_of_slots):
-            if schedule.schedule[day][slot] == -1:
+            if slot == number_of_slots -1:
+                free_block.append([day, slot])
+                free_blocks.append(free_block)
+                free_block = []
+            elif schedule.schedule[day][slot] == -1:
                 free_block.append([day, slot])
             else:
+                if slot == number_of_slots -1:
+                    free_block.append([day, slot])
+                    free_blocks.append(free_block)
+                    free_block = []
                 if len(free_block) > 0 or (len(free_block) > 0 and slot == number_of_slots - 1):
                     free_block.append([day, slot])
                     free_blocks.append(free_block)

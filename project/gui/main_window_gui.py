@@ -1,4 +1,7 @@
 import sys
+import time
+
+from PyQt5.QtCore import QThread
 from PyQt5.QtWidgets import QApplication, QGroupBox, QHBoxLayout, QLabel, QListWidget, QListWidgetItem, QScrollArea, QAction, QMainWindow, QPushButton, QStackedLayout, QStackedWidget, QToolBar, QVBoxLayout, QWidget, QFileDialog, QGridLayout, QLineEdit, QFrame
 from PyQt5.QtGui import QColor, QIcon, QPixmap, QCursor, QFont
 from PyQt5 import QtGui, QtCore
@@ -8,7 +11,7 @@ dirname = os.path.dirname(__file__)
 # TO DELETE
 import string, random
 
-from project.BackEnd import Task, Schedule
+from project.BackEnd import Task, Schedule, GoogleAPI
 from project.gui import general_window_gui, task_list, task_creation_gui, routines_list, add_routine_gui
 
 
@@ -121,17 +124,38 @@ class MainView(general_window_gui.GeneralWindow):
 
     ## Schedule View
     def stack_schedule_ui(self):
+        # Main Layout
         layout = QVBoxLayout()
-        
-        text = QLabel()
-        text.setText('Schedule View')
-        text.setStyleSheet(self.prefs.style_sheets['text_bubble_dark'])
+
+        # Top Block
+        top_block_widget = QWidget()
+        top_block_widget.setStyleSheet(self.prefs.style_sheets['text_bubble_title'])
+
+        ## Title
+        title = QLabel()
+        title.setMargin(5)
+        title.setText('Schedule View')
+        title.setStyleSheet(self.prefs.style_sheets['text_title'])
+
+        ## Export Schedule Button
+        export_schedule_button = QPushButton("Export to Calendar")
+        export_schedule_button.setToolTip('Export currently unavailable')   # TO DELETE
+        export_schedule_button.setStyleSheet(self.prefs.style_sheets['button_disabled_rect'])
+        export_schedule_button.setFixedWidth(150)
+
+        # Top Block Layout
+        tbw_layout = QHBoxLayout()
+        tbw_layout.addWidget(title)
+        tbw_layout.addStretch(1)
+        tbw_layout.addWidget(export_schedule_button)
+        top_block_widget.setLayout(tbw_layout)
 
         self.schedule_label = QLabel()
         self.update_schedule_image()
 
+        # Main Layout
+        layout.addWidget(top_block_widget, alignment=QtCore.Qt.AlignTop)
         layout.addWidget(self.schedule_label)
-        layout.addWidget(text)
         self.stack_schedule.setLayout(layout)
 
     # Routines view
@@ -247,7 +271,7 @@ class MainView(general_window_gui.GeneralWindow):
 
         ### Prompt Connect Subscript
         prompt_text = "This will allow 25/8 to read from and write to your Google " \
-                      "Calendar."
+                      "Calendar. If a Google a"
         prompt = QLabel(prompt_text)
         prompt.setWordWrap(True)
         prompt.setStyleSheet(self.prefs.style_sheets['text_bubble_clear_slim'])
@@ -260,7 +284,7 @@ class MainView(general_window_gui.GeneralWindow):
         button.setIcon(icon)
         button.setFixedWidth(200)
         button.setStyleSheet(self.prefs.style_sheets['button_priority_rect'])
-        button.clicked.connect(Schedule.ImportGoogleEvents)
+        button.clicked.connect(GoogleAPI.authenticate)
 
         gb_layout.addWidget(button, alignment=QtCore.Qt.AlignCenter)
 
@@ -346,6 +370,7 @@ class MainView(general_window_gui.GeneralWindow):
         # Generate schedule button
         self.generate_button = QPushButton('Generate\nschedule')
         self.generate_button.setStyleSheet(self.prefs.style_sheets['button_priority_rect'])
+        self.generate_button.clicked.connect(self.add_schedule)
         self.generate_button.setFixedWidth(100)
 
         layout.addWidget(self.event_button)
@@ -360,6 +385,13 @@ class MainView(general_window_gui.GeneralWindow):
         layout.addWidget(self.generate_button)
 
         self.context.setLayout(layout)
+
+    def add_schedule(self):
+        # This MUST be a class variable as to not get destroyed after being added
+        self.google_worker = GoogleWorker()
+        self.google_worker.start()
+        self.google_worker.finished.connect(lambda:print("Google Thread Finished"))
+
 
     # Task List Populator
     def populate_tasklist(self):
@@ -416,6 +448,13 @@ class MainView(general_window_gui.GeneralWindow):
             self.populate_routine_list()
             self.update_schedule_image()
 
+class GoogleWorker(QThread):
+    """
+    Thread that does google calendar creation and authentication (PLACEHOLDER)
+    """
+    def run(self):  # Override
+        service = GoogleAPI.authenticate()
+        GoogleAPI.create_calendar(service, 'anything')  # Anything is placeholder
 
 class TopBlockWidget(QWidget):  # COULD be TESTED [not done]
     """

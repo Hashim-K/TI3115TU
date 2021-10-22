@@ -9,6 +9,7 @@ class Prefs():
         'img_logo_min': os.path.join(dirname, '../media/logo_min.png'),
         'img_g_logo': os.path.join(dirname, '../media/google_logo.png'),
         'icon_task_info': os.path.join(dirname, '../media/icon_task_info.png'),
+        'icon_add': os.path.join(dirname, '../media/add.png'),
         'bar_close': os.path.join(dirname, '../media/bar_close.png'),
         'placeholder': os.path.join(dirname, '../media/slice4.png'),
         # FROM flaticon
@@ -81,6 +82,16 @@ class Prefs():
                     "margin: 0px 0px;}" +
                     "*:hover{background: '#4069ED';}"
                     ),
+        'button_disabled_rect': (
+                "*{border: 2px solid '#18191B';" +
+                "border-radius: 5px;" +
+                "background-color: '#18191B';" +
+                "font-size: 13px;"
+                "color : '#575C6B';" +
+                "padding: 5px 0px;" +
+                "margin: 0px 0px;}" +
+                "*:hover{background: '#30333D';}"
+        ),
         'button_priority_rect' : (
                     "*{border: 2px solid '#404EED';" + 
                     "border-radius: 5px;" +
