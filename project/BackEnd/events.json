@@ -2,34 +2,12 @@
     {
         "Label": "Sleep",
         "Color": "#546fa8",
-        "Occurrences": [
-            [
-                [
-                    0,
-                    0
-                ],
-                [
-                    0,
-                    1
-                ]
-            ]
-        ]
+        "Occurrences": []
     },
     {
         "Label": "Morning Routine",
         "Color": "#7b9adb",
-        "Occurrences": [
-            [
-                [
-                    0,
-                    1
-                ],
-                [
-                    0,
-                    9
-                ]
-            ]
-        ]
+        "Occurrences": []
     },
     {
         "Label": "Lunch",

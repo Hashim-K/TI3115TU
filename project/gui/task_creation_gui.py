@@ -22,6 +22,8 @@ class TaskCreationWindow(GeneralWindow):
                         "font-size: 13px;" +
                         "background-color: #303136;"
                         )
+        icon = QIcon(self.prefs.images['icon_add'])
+        self.setWindowIcon(icon)
 
         # Layout
         main_layout = QVBoxLayout()
