@@ -53,5 +53,37 @@
             ],
             "Plan_on_same": false,
             "Session": 1
+      },
+      {
+            "TaskID": 6,
+            "Name": "",
+            "Description": "",
+            "Duration": 150,
+            "Priority": 0,
+            "Deadline": "2021-10-23",
+            "Repeatable": false,
+            "Category": "category 1",
+            "Preferred": [
+                  "00:00:00",
+                  "00:00:00"
+            ],
+            "Plan_on_same": false,
+            "Session": 1
+      },
+      {
+            "TaskID": 7,
+            "Name": "pref time",
+            "Description": "",
+            "Duration": 15,
+            "Priority": 0,
+            "Deadline": "2021-10-23",
+            "Repeatable": false,
+            "Category": "category 1",
+            "Preferred": [
+                  "00:00:00",
+                  "18:00:00"
+            ],
+            "Plan_on_same": false,
+            "Session": 1
       }
 ]
