@@ -1,16 +1,26 @@
 [
     {
-        "Label": "Doing chores",
+        "Label": "Example",
         "Color": "#FFFFFF",
         "Occurrences": [
             [
                 [
                     0,
-                    0
+                    114
                 ],
                 [
                     0,
-                    120
+                    174
+                ]
+            ],
+            [
+                [
+                    1,
+                    114
+                ],
+                [
+                    1,
+                    174
                 ]
             ]
         ]

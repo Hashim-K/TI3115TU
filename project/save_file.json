@@ -5,11 +5,24 @@
             "Description": "Washing clothes, dishes, cleaning house",
             "Duration": 120,
             "Priority": 3,
-            "Deadline": "2021-10-26",
+            "Deadline": "2021-10-28",
             "Repeatable": false,
             "Category": "category 1",
             "Preferred": "None",
             "Plan_on_same": false,
             "Session": 1
+      },
+      {
+            "TaskID": 5,
+            "Name": "Example",
+            "Description": "Example task",
+            "Duration": 60,
+            "Priority": 3,
+            "Deadline": "2021-10-28",
+            "Repeatable": false,
+            "Category": "category 1",
+            "Preferred": "Afternoon (12:00-16:00)",
+            "Plan_on_same": true,
+            "Session": 2
       }
 ]
