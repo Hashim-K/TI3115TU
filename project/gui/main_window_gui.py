@@ -1,3 +1,4 @@
+import getpass
 import sys
 import time
 
@@ -14,7 +15,7 @@ dirname = os.path.dirname(__file__)
 import string, random
 
 from project.BackEnd import Task, Schedule, GoogleAPI
-from project.gui import general_window_gui, task_list, task_creation_gui, routines_list, add_routine_gui
+from project.gui import general_window_gui, task_list, task_creation_gui, routines_list, add_routine_gui, dialog_window_gui
 
 
 class MainView(general_window_gui.GeneralWindow):
@@ -44,18 +45,21 @@ class MainView(general_window_gui.GeneralWindow):
         self.text_ui()
 
         # Stack of Widgets on RIGHT
+        self.stack_home = QWidget()
         self.stack_events = QWidget()
         self.stack_schedule = QWidget()
         self.stack_routines = QWidget()
         self.stack_preferences = QWidget()
 
             # Init widgets in stack
+        self.stack_home_ui()
         self.stack_tasks_ui()
         self.stack_schedule_ui()
         self.stack_routines_ui()
         self.stack_preferences_ui()
             # Put widgets ins tack
         self.stack = QStackedWidget()
+        self.stack.addWidget(self.stack_home)
         self.stack.addWidget(self.stack_events)
         self.stack.addWidget(self.stack_schedule)
         self.stack.addWidget(self.stack_routines)
@@ -68,6 +72,30 @@ class MainView(general_window_gui.GeneralWindow):
 
     # UI GENERATORS
     ## Task View
+    def stack_home_ui(self):
+        # Main Layout
+        layout = QVBoxLayout()
+
+        # Welcome Title
+        title = QLabel(f'Welcome back!')
+        title.setContentsMargins(0,0,0,50)
+        title.setStyleSheet(self.prefs.style_sheets['text_title_large'])
+        title.setAlignment(QtCore.Qt.AlignCenter)
+
+        # Home Image
+        home_image = QPixmap(self.prefs.images['home_image'])
+
+        home_image_label = QLabel()
+        home_image_label.setPixmap(home_image)
+        home_image_label.setAlignment(QtCore.Qt.AlignCenter)
+
+        # Main Layout
+        layout.addStretch()
+        layout.addWidget(title)
+        layout.addWidget(home_image_label)
+        layout.addStretch()
+        self.stack_home.setLayout(layout)
+
     def stack_tasks_ui(self):
         # Layout
         layout = QVBoxLayout()
@@ -101,6 +129,8 @@ class MainView(general_window_gui.GeneralWindow):
         clear_button = QPushButton('Clear')
         clear_button.setStyleSheet(self.prefs.style_sheets['button_exit_rect'])
         clear_button.setFixedWidth(75)
+
+        clear_button.clicked.connect(self.delete_all_tasks)
 
         ### Layout
         tbw_layout = QHBoxLayout()
@@ -139,6 +169,12 @@ class MainView(general_window_gui.GeneralWindow):
         title.setText('Schedule View')
         title.setStyleSheet(self.prefs.style_sheets['text_title'])
 
+        # Generate Schedule Button
+        generate_schedule_button = QPushButton("Generate Schedule")
+        generate_schedule_button.setToolTip('Make 25/8 generate a schedule')   # TO DELETE
+        generate_schedule_button.setStyleSheet(self.prefs.style_sheets['button_priority_rect'])
+        generate_schedule_button.setFixedWidth(150)
+
         ## Export Schedule Button
         export_schedule_button = QPushButton("Export to Calendar")
         export_schedule_button.setToolTip('Export currently unavailable')   # TO DELETE
@@ -149,6 +185,7 @@ class MainView(general_window_gui.GeneralWindow):
         tbw_layout = QHBoxLayout()
         tbw_layout.addWidget(title)
         tbw_layout.addStretch(1)
+        tbw_layout.addWidget(generate_schedule_button)
         tbw_layout.addWidget(export_schedule_button)
         top_block_widget.setLayout(tbw_layout)
 
@@ -273,7 +310,8 @@ class MainView(general_window_gui.GeneralWindow):
 
         ### Prompt Connect Subscript
         prompt_text = "This will allow 25/8 to read from and write to your Google " \
-                      "Calendar."
+                      "Calendar. If a Google account is already connected the " \
+                      "connection to that account will be severed."
         prompt = QLabel(prompt_text)
         prompt.setWordWrap(True)
         prompt.setStyleSheet(self.prefs.style_sheets['text_bubble_clear_slim'])
@@ -299,8 +337,8 @@ class MainView(general_window_gui.GeneralWindow):
         gb_layout.addWidget(prompt_import)
 
         ### Prompt Connect Subscript
-        prompt_text = "Importing the events will enable the scheduler to consider " \
-                      "already scheduled events."
+        prompt_text = "Importing events will enable 25/8 to consider " \
+                      "already scheduled events when making your schedule."
         prompt = QLabel(prompt_text)
         prompt.setWordWrap(True)
         prompt.setStyleSheet(self.prefs.style_sheets['text_bubble_clear_slim'])
@@ -366,37 +404,49 @@ class MainView(general_window_gui.GeneralWindow):
         line4 = QFrame()
         line4.setFrameShape(QFrame.HLine)
         line4.setStyleSheet("color: '#42464E'")
-        
+
+        line5 = QFrame()
+        line5.setFrameShape(QFrame.HLine)
+        line5.setStyleSheet("color: '#42464E'")
+
+        # Home Button
+        self.home_button = QPushButton('Home')
+        self.home_button.setStyleSheet(self.prefs.style_sheets['button_prio_burger'])
+        self.home_button.clicked.connect(lambda:self.display(0))
+        self.home_button.setFixedWidth(100)
+
         # Event Button
         self.event_button = QPushButton('Tasks')
         self.event_button.setStyleSheet(self.prefs.style_sheets['button_prio_burger'])
-        self.event_button.clicked.connect(lambda:self.display(0))
+        self.event_button.clicked.connect(lambda:self.display(1))
         self.event_button.setFixedWidth(100)
 
         # Schedule Button
         self.schedule_button = QPushButton('Schedule')
         self.schedule_button.setStyleSheet(self.prefs.style_sheets['button_prio_burger'])
-        self.schedule_button.clicked.connect(lambda:self.display(1))
+        self.schedule_button.clicked.connect(lambda:self.display(2))
         self.schedule_button.setFixedWidth(100)
 
         # Set Routines Button
         self.routines_button = QPushButton('Routines')
         self.routines_button.setStyleSheet(self.prefs.style_sheets['button_prio_burger'])
-        self.routines_button.clicked.connect(lambda:self.display(2))
+        self.routines_button.clicked.connect(lambda:self.display(3))
         self.routines_button.setFixedWidth(100)
 
         # Preferences (Google etc.)
         self.preferences_button = QPushButton('Preferences')
         self.preferences_button.setStyleSheet(self.prefs.style_sheets['button_prio_burger'])
-        self.preferences_button.clicked.connect(lambda:self.display(3))
+        self.preferences_button.clicked.connect(lambda:self.display(4))
         self.preferences_button.setFixedWidth(100)
 
         # Generate schedule button
-        self.generate_button = QPushButton('Generate\nschedule')
+        self.generate_button = QPushButton('Generate\nSchedule')
         self.generate_button.setStyleSheet(self.prefs.style_sheets['button_priority_rect'])
         self.generate_button.clicked.connect(self.add_schedule)
         self.generate_button.setFixedWidth(100)
 
+        layout.addWidget(self.home_button)
+        layout.addWidget(line5)
         layout.addWidget(self.event_button)
         layout.addWidget(line)
         layout.addWidget(self.schedule_button)
@@ -410,14 +460,14 @@ class MainView(general_window_gui.GeneralWindow):
 
         self.context.setLayout(layout)
 
+    ## Make Google Thread
     def add_schedule(self):
         # This MUST be a class variable as to not get destroyed after being added
         self.google_worker = GoogleWorker()
         self.google_worker.start()
         self.google_worker.finished.connect(lambda:print("Google Thread Finished"))
 
-
-    # Task List Populator
+    # Task List Functions
     def populate_tasklist(self):
         """
         Populates the UI list of tasks and edits the 'task view' list using
@@ -442,19 +492,37 @@ class MainView(general_window_gui.GeneralWindow):
         except FileNotFoundError:
             print("json doesn't exist.")
 
+    def new_task(self):
+        general_window_gui.GeneralWindow.pre_init(self.ls_w, self.prefs, task_creation_gui.TaskCreationWindow)
+
+    def delete_all_tasks(self):
+        """Deletes all tasks after prompt"""
+        def delete_actual():
+            Task.delete_all_tasks(os.path.join(dirname, "../save_file.json"))
+            self.populate_tasklist()    # Reload list
+
+        dialog = dialog_window_gui.CustomDialog('Delete all tasks?', self.prefs, self)
+        if dialog.exec():
+            delete_actual()
+        else:
+            pass
+
+    # Routine View Functions
     def populate_routine_list(self):
         self.routine_list.clear()
         self.routine_list.load_routinelist()
-
-    def new_task(self):
-        general_window_gui.GeneralWindow.pre_init(self.ls_w, self.prefs, task_creation_gui.TaskCreationWindow)
 
     def new_routine(self):
         general_window_gui.GeneralWindow.pre_init(self.ls_w, self.prefs, add_routine_gui.AddRoutineWindow)
 
     def clear_routines(self):
-        Schedule.ClearEvents()
-        general_window_gui.GeneralWindow.raise_event(self.ls_w, 'reload_routines')
+        """Clears all routines after prompt"""
+        dialog = dialog_window_gui.CustomDialog('Delete all routines?', self.prefs, self)
+        if dialog.exec():
+            Schedule.ClearEvents()
+            general_window_gui.GeneralWindow.raise_event(self.ls_w, 'reload_routines')
+        else:
+            pass
 
     def update_schedule_image(self):
         self.schedule_image = QPixmap(os.path.join(dirname, '../schedule.jpg'))
