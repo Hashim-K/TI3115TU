@@ -1,8 +1,10 @@
 import sys
 import time
 
-from PyQt5.QtCore import QThread
-from PyQt5.QtWidgets import QApplication, QGroupBox, QHBoxLayout, QLabel, QListWidget, QListWidgetItem, QScrollArea, QAction, QMainWindow, QPushButton, QStackedLayout, QStackedWidget, QToolBar, QVBoxLayout, QWidget, QFileDialog, QGridLayout, QLineEdit, QFrame
+from PyQt5.QtCore import QThread, Qt
+from PyQt5.QtWidgets import QApplication, QGroupBox, QHBoxLayout, QLabel, QListWidget, QListWidgetItem, QScrollArea, \
+    QAction, QMainWindow, QPushButton, QStackedLayout, QStackedWidget, QToolBar, QVBoxLayout, QWidget, QFileDialog, \
+    QGridLayout, QLineEdit, QFrame, QSlider
 from PyQt5.QtGui import QColor, QIcon, QPixmap, QCursor, QFont
 from PyQt5 import QtGui, QtCore
 import os
@@ -271,7 +273,7 @@ class MainView(general_window_gui.GeneralWindow):
 
         ### Prompt Connect Subscript
         prompt_text = "This will allow 25/8 to read from and write to your Google " \
-                      "Calendar. If a Google a"
+                      "Calendar."
         prompt = QLabel(prompt_text)
         prompt.setWordWrap(True)
         prompt.setStyleSheet(self.prefs.style_sheets['text_bubble_clear_slim'])
@@ -313,6 +315,28 @@ class MainView(general_window_gui.GeneralWindow):
         settings_box = QGroupBox('Settings')
         settings_box.setStyleSheet(self.prefs.style_sheets['std_gbox'])
 
+        settings_layout = QVBoxLayout()
+
+        # Morning routine slider
+        self.mr_text = QLabel("Morning routine duration: ")
+        self.mr_text.setStyleSheet(self.prefs.style_sheets['text'])
+
+        self.morning_routine = QSlider(Qt.Horizontal, self)
+        self.morning_routine.setMinimum(0)
+        self.morning_routine.setMaximum(8)
+        self.morning_routine.valueChanged.connect(self.update_morning_routine)
+
+        mr_descr = QLabel("When setting a sleep routine, a morning routine will automatically be added after the"
+                          " sleep routine.")
+        mr_descr.setStyleSheet(self.prefs.style_sheets['text_bubble_clear_slim'])
+        mr_descr.setWordWrap(True)
+
+        settings_layout.addWidget(self.mr_text)
+        settings_layout.addWidget(self.morning_routine)
+        settings_layout.addWidget(mr_descr)
+        settings_layout.addStretch(1)
+
+        settings_box.setLayout(settings_layout)
         body_layout.addWidget(settings_box, 0, 1, 1, 1)
 
         # Main Layout
@@ -435,6 +459,11 @@ class MainView(general_window_gui.GeneralWindow):
     def update_schedule_image(self):
         self.schedule_image = QPixmap(os.path.join(dirname, '../schedule.jpg'))
         self.schedule_label.setPixmap(self.schedule_image)
+
+    def update_morning_routine(self):
+        duration = int(self.morning_routine.value())*15
+        self.mr_text.setText(f"Morning routine duration: {duration} minutes")
+        # WRITE TO JSON AND DON'T FORGET TO INIT
     
     # Stack Changer
     def display(self, i):

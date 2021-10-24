@@ -169,7 +169,7 @@ class TaskCreationWindow(GeneralWindow):
         num_sessions = self.numsessions_field.text()
         num_sessions = int(num_sessions)
         session_duration = self.sessionduration_slider.value()
-        session_duration = 15*int(session_duration)
+        session_duration = int(session_duration)
         priority = self.priority_dropdown.currentIndex()
         category = self.category_dropbox.currentText()
         onsameday = self.sameday_check.isChecked()
