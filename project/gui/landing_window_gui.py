@@ -4,7 +4,8 @@ from PyQt5.QtWidgets import QApplication, QLabel, QPushButton, QVBoxLayout, QWid
 from PyQt5.QtGui import QIcon, QPixmap, QCursor
 from PyQt5 import QtGui, QtCore
 
-from project.gui import general_window_gui, main_window_gui
+from project.gui import general_window_gui, main_window_gui, about_window_gui
+
 
 class LandingView(general_window_gui.GeneralWindow):
     def __init__(self, window_list, prefs):
@@ -13,11 +14,17 @@ class LandingView(general_window_gui.GeneralWindow):
     def launch(self):
         # main_window = main_window_gui.MainWindow(self.ls_w, self.prefs)
         general_window_gui.GeneralWindow.pre_init(self.ls_w, self.prefs, main_window_gui.MainView)
+        # Close All Derivatives (About)
+        general_window_gui.GeneralWindow.raise_event(self.ls_w, 'close_landing_deriv')
+        # Close Self
         self.close()
     
     def init_ui(self):
         # DATA
-        username = getpass.getuser()
+        username_ls = list(getpass.getuser())   # Username formatting
+        username_ls[0] = username_ls[0].upper()
+        username = ''.join(username_ls)
+
         msg_hi = f'Welcome {username}'
         # WINDOW
         self.setFixedSize(250, 500)
@@ -52,7 +59,7 @@ class LandingView(general_window_gui.GeneralWindow):
 
         # Version Text
         v_text = QLabel()
-        v_text.setText('v0.1')
+        v_text.setText(self.prefs.ver_nr)
         v_text.setStyleSheet(self.prefs.style_sheets['text_mute'])
         v_text.setAlignment(QtCore.Qt.AlignRight)
 
@@ -82,6 +89,8 @@ class LandingView(general_window_gui.GeneralWindow):
         help_button = QPushButton('About')
         help_button.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
         help_button.setStyleSheet(self.prefs.style_sheets['button_low_priority'])
+
+        help_button.clicked.connect(lambda:general_window_gui.GeneralWindow.pre_init(self.ls_w, self.prefs, about_window_gui.AboutWindow))
 
         grid.addWidget(help_button, 3, 1, 1, 1)
 

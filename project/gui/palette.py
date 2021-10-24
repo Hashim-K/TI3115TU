@@ -2,6 +2,9 @@ import os
 dirname = os.path.dirname(__file__)
 
 class Prefs():
+    # VERSION INFO
+    ver_nr = 'v0.97'
+
     # IMAGES
 
     images = {
@@ -10,7 +13,10 @@ class Prefs():
         'img_g_logo': os.path.join(dirname, '../media/google_logo.png'),
         'icon_task_info': os.path.join(dirname, '../media/icon_task_info.png'),
         'icon_add': os.path.join(dirname, '../media/add.png'),
+        'icon_info': os.path.join(dirname, '../media/info.png'),
+        'icon_warning': os.path.join(dirname, '../media/warning.png'),
         'bar_close': os.path.join(dirname, '../media/bar_close.png'),
+        'home_image': os.path.join(dirname, '../media/home_image.png'),
         'placeholder': os.path.join(dirname, '../media/slice4.png'),
         # FROM flaticon
         'algo_icon': os.path.join(dirname, '../media/algo_icon.png')   # @ Linector
@@ -35,6 +41,9 @@ class Prefs():
         'text_title' : ("font-size: 16px; color: 'white';" +
                     "border-radius: 10px;" +
                     " padding: 0px 0px;"),
+        'text_title_large': ("font-size: 24px; color: '#A5AAB9';" +
+                       "border-radius: 10px;" +
+                       " padding: 0px 10px;"),
         'text_title_mute': ("font-size: 16px; color: '#5b606b';" +
                        "border-radius: 10px;" +
                        " padding: 0px 0px;"),

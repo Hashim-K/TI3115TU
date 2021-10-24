@@ -87,7 +87,6 @@ def import_task(filename):
         print('File does not exist')
     return tasks_list
 
-
 def find_task(filename, task_ID):
     """ Seeks for a task by its taskID. """
     tasks_list = import_task(filename)
@@ -96,6 +95,11 @@ def find_task(filename, task_ID):
             return task
     print('Task: Task not Found')
 
+def delete_all_tasks(filename):
+    """Deletes all tasks from a JSON file."""
+    tasks_list = import_task(filename)
+    for task in tasks_list:
+        delete_task(filename, task.taskID)
 
 def delete_task(filename, taskID):
     """ Delete a task from a JSON file. """

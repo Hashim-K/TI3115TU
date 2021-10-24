@@ -259,7 +259,7 @@ def StoreEvents():
                             'Color': event.Color,
                             'Occurrences': event.Occurrences})
     with open(os.path.join(dirname, 'events.json'), 'w') as out_file:
-        out_file.write(json.dumps(events_dict, indent=4))
+            json.dump(events_dict, out_file, indent=4)
 
 
 def AddOccurrence(id, day, start_time, duration):
@@ -398,7 +398,7 @@ class Presets:
                         'import_google': self.import_google,
                         'dark_mode': self.dark_mode}
         with open(os.path.join(dirname, 'presets.json'), 'w') as out_file:
-            out_file.write(json.dumps(presets_json))
+            json.dump(presets_json, out_file, indent=6)
 
 
 class Main:
