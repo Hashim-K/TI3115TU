@@ -377,6 +377,67 @@ class MainView(general_window_gui.GeneralWindow):
         settings_box.setLayout(settings_layout)
         body_layout.addWidget(settings_box, 0, 1, 1, 1)
 
+        ### PET
+        ## Layout
+        sb_layout = QVBoxLayout()
+
+        ## Title Categories
+        title_categories_text = "Categories"
+        title_categories = QLabel(title_categories_text)
+        title_categories.setWordWrap(True)
+        title_categories.setStyleSheet(self.prefs.style_sheets['text_bubble_slim'])
+
+        sb_layout.addWidget(title_categories)
+
+        ## Categories Dropdown
+        self.categories_dropdown = QComboBox(self)
+        self.categories_dropdown.setStyleSheet("padding: 5px 10px; color: 'white'")
+        placeholder_categories = ["category1", "category2"]
+        self.categories_dropdown.addItems(placeholder_categories)    # Place Categories
+
+        sb_layout.addWidget(self.categories_dropdown)
+
+        ## Buttons
+        button_row = QHBoxLayout()
+
+        add_category_button = QPushButton('Add')
+        add_category_button.setStyleSheet(self.prefs.style_sheets['button_priority_rect'])
+        add_category_button.setFixedWidth(75)
+        button_row.addWidget(add_category_button)
+
+        edit_category_button = QPushButton('Edit')
+        edit_category_button.setStyleSheet(self.prefs.style_sheets['button_low_priority_rect'])
+        edit_category_button.setFixedWidth(75)
+        button_row.addWidget(edit_category_button)
+
+        button_row.addStretch()
+
+        color_piece = QPushButton('')
+        color_piece.setFixedWidth(75)
+        special_sheet = (
+                "*{border: 2px solid '#42464E';" +
+                "border-radius: 5px;" +
+                "background-color: '#42464E';" +
+                "font-size: 13px;"
+                "color : 'white';" +
+                "padding: 5px 0px;" +
+                "margin: 0px 0px;}" +
+                "*:hover{background: '#4069ED'; color: 'white';}"
+        )
+        color_piece.setStyleSheet(special_sheet)
+        button_row.addWidget(color_piece)
+
+        button_row.addStretch()
+
+        delete_category_button = QPushButton('Delete')
+        delete_category_button.setStyleSheet(self.prefs.style_sheets['button_exit_rect'])
+        delete_category_button.setFixedWidth(75)
+        button_row.addWidget(delete_category_button)
+
+        sb_layout.addLayout(button_row)
+        sb_layout.addStretch(1)
+        settings_box.setLayout(sb_layout)
+
         # Main Layout
         layout.addWidget(top_block_widget, alignment=QtCore.Qt.AlignTop)    # Stick to top
         layout.addLayout(body_layout)
@@ -523,6 +584,9 @@ class MainView(general_window_gui.GeneralWindow):
             general_window_gui.GeneralWindow.raise_event(self.ls_w, 'reload_routines')
         else:
             pass
+
+    # Preferences View Functions
+
 
     def update_schedule_image(self):
         self.schedule_image = QPixmap(os.path.join(dirname, '../schedule.jpg'))
