@@ -14,7 +14,7 @@ class CategoryCreationWindow(GeneralWindow):
     def __init__(self, window_list, prefs):
         super().__init__(window_list, prefs)
 
-        self.hex_col_selected = ''
+        self.hex_col_selected = '#FFFFFF'
 
     def init_ui(self):
         # WINDOW
@@ -66,7 +66,7 @@ class CategoryCreationWindow(GeneralWindow):
         self.colour_piece = QPushButton('')
         self.colour_piece.setFixedWidth(75)
         colour_right_layout.addWidget(self.colour_piece)
-        self.colour_piece.setText('#FFFFF')
+        self.colour_piece.setText('#FFFFFF')
         temp_sheet = (
                 "*{border: 2px solid '#FFFFFF';" +
                 "border-radius: 5px;" +
@@ -97,13 +97,19 @@ class CategoryCreationWindow(GeneralWindow):
         existing_categories = Category.import_category(self.prefs.directory['categories'])
         # Check for existence
         current_name = self.title_edit.text()
-        id_of_found = ''    # For over
-        existing_cats_names = [name for name in existing_categories['title']]
+        id_of_found = None    # For overwriting old one
 
-        if current_name in existing_cats_names:     # If Already exists
+        for category in existing_categories:
+            if category.title == current_name:
+                id_of_found = category.category_id
+                break
+
+        # CHANGE: To Edit Old
+        if id_of_found is not None:     # If Already exists
             dialog = dialog_window_gui.CustomDialog('Task with name already exists, override?', self.prefs, self)
             if dialog.exec():
-                pass
+                # Delete category
+                Category.delete_category(self.prefs.directory['categories'], id_of_found)
             else:
                 return  # Stop making category
         # Create

@@ -16,6 +16,7 @@ class CustomDialog(QDialog):
 
         # Message
         message = QLabel(prompt)
+        message.setWordWrap(True)
         message.setStyleSheet(prefs.style_sheets['text'])
 
         # Custom Buttons
