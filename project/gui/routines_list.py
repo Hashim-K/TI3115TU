@@ -25,9 +25,9 @@ class RoutinesList(QListWidget):
                 days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
                 day = days[day]
                 start_time = occurrence[0][1]
-                start_time = General.Slot2Time(start_time, 5)
+                start_time = General.Slot2Time(start_time, 15)
                 end_time = occurrence[1][1]
-                end_time = General.Slot2Time(end_time, 5)
+                end_time = General.Slot2Time(end_time, 15)
                 item = RoutineItem(name, day, start_time, end_time, self.ls_w, self.prefs)
 
                 self.addItem(item)
