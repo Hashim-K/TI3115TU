@@ -1,6 +1,7 @@
+import datetime
 import sys
 
-from PyQt5.QtWidgets import QWidget, QFormLayout, QLineEdit, QDateEdit, QVBoxLayout
+from PyQt5.QtWidgets import QWidget, QFormLayout, QLineEdit, QDateEdit, QVBoxLayout, QHBoxLayout
 from PyQt5.QtWidgets import QLabel, QSlider, QComboBox, QCheckBox, QTimeEdit
 from PyQt5.QtWidgets import QPushButton, QApplication, QStyleFactory
 from PyQt5.QtCore import QRegExp, Qt, QDate
@@ -25,7 +26,7 @@ class AddRoutineWindow(GeneralWindow):
                         )
         icon = QIcon(self.prefs.images['icon_add'])
         self.setWindowIcon(icon)
-        self.setFixedWidth(250)
+        self.setFixedWidth(300)
 
         # Layout
         form_layout = QFormLayout()
@@ -47,24 +48,34 @@ class AddRoutineWindow(GeneralWindow):
 
         # start time
         title_start_time = QLabel('Start Time')
-        title_start_time.setStyleSheet(self.prefs.style_sheets['text_mute_tight'])
-        self.start_time = QTimeEdit(self)
-        self.start_time.setStyleSheet("padding: 5px 10px;")
-        # self.start_time.valueChanged.connect(self.update_endtime)
-        self.start_time.timeChanged.connect(self.update_endtime)
 
-        # duration
-        self.end_time = QLabel("End time", self)
-        self.end_time.setStyleSheet("padding: 5px 10px;")
-        self.end_time.setStyleSheet(self.prefs.style_sheets['text_mute_tight'])
+        start_time_layout = QHBoxLayout()
+        start_time_layout.addWidget(QLabel("Start time"))
+        start_time_layout.addStretch(1)
 
-        title_duration = QLabel('Duration')
-        title_duration.setStyleSheet(self.prefs.style_sheets['text_mute_tight'])
+        self.start_hour = QComboBox(self)
+        self.start_hour.addItems([f'{x}' for x in range(24)])
+        start_time_layout.addWidget(self.start_hour)
+        start_time_layout.addWidget(QLabel('h'))
+        self.start_min = QComboBox(self)
+        self.start_min.addItems(['0', '15', '30', '45'])
+        start_time_layout.addWidget(self.start_min)
+        start_time_layout.addWidget(QLabel('m'))
 
-        self.duration = QSlider(Qt.Horizontal, self)
-        self.duration.setMinimum(1)
-        self.duration.setMaximum(288)  # 24 hours
-        self.duration.valueChanged.connect(self.update_endtime)
+        # End time
+        title_end_time = QLabel("End time")
+        end_time_layout = QHBoxLayout()
+        end_time_layout.addWidget(QLabel("End time"))
+        end_time_layout.addStretch(1)
+
+        self.end_hour = QComboBox(self)
+        self.end_hour.addItems([f'{x}' for x in range(24)])
+        end_time_layout.addWidget(self.end_hour)
+        end_time_layout.addWidget(QLabel('h'))
+        self.end_min = QComboBox(self)
+        self.end_min.addItems(['0', '15', '30', '45'])
+        end_time_layout.addWidget(self.end_min)
+        end_time_layout.addWidget(QLabel('m'))
 
         # recurrence
         title_recurrence = QLabel('Recurrence')
@@ -86,25 +97,32 @@ class AddRoutineWindow(GeneralWindow):
         # add widgets to layout
         form_layout.addRow(title)
         form_layout.addRow(title_category, self.category)
-        form_layout.addRow(title_start_time, self.start_time)
-        form_layout.addRow(title_duration, self.duration)
-        form_layout.addRow(self.end_time)
+        form_layout.addRow(start_time_layout)
+        form_layout.addRow(end_time_layout)
         form_layout.addRow(title_recurrence, self.recurrence)
         form_layout.addRow(self.overlap_text)
         form_layout.addRow(self.add_button)
         self.setLayout(form_layout)
 
-    def update_endtime(self):
-        start = self.start_time.time()
-        dur = self.duration.value()
-        end = start.addSecs(int(dur*5*60))
-        self.end_time.setText("End time: " + end.toString())
+    # def update_endtime(self):
+    #     start = self.start_time.time()
+    #     dur = self.duration.value()
+    #     end = start.addSecs(int(dur*5*60))
+    #     self.end_time.setText("End time: " + end.toString())
 
     def add_routine(self):
 
         # get all values
-        start = self.start_time.time().toString()
-        dur = self.duration.value()  # slots
+        # start = self.start_time.time().toString()
+        # dur = self.duration.value()  # slots
+
+        start = datetime.time(int(self.start_hour.currentText()), int(self.start_min.currentText()))
+        end = datetime.time(int(self.end_hour.currentText()), int(self.end_min.currentText()))
+        dummydate = datetime.date(1, 1, 1)
+        start_dum = datetime.datetime.combine(dummydate, start)
+        end = datetime.datetime.combine(dummydate, end)
+        duration = end - start_dum
+        slots = divmod(duration.total_seconds(), 900)[0]
 
         cat = self.category.currentText()
         id = Schedule.id_dict[cat]
@@ -118,7 +136,7 @@ class AddRoutineWindow(GeneralWindow):
 
         # add event to schedule
         for i in day_dict[days]:
-            Schedule.AddOccurrence(id, i, start, dur)
+            Schedule.AddOccurrence(id, i, str(start), int(slots))
 
         # Check overlap
         if Schedule.schedule.Update():
