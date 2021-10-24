@@ -1,0 +1,17 @@
+[
+      {
+            "category_id": 1,
+            "title": "The Best Category",
+            "colour": "#ff33a7"
+      },
+      {
+            "category_id": 2,
+            "title": "The Best Category",
+            "colour": "#ff33a7"
+      },
+      {
+            "category_id": 3,
+            "title": "The Best Category",
+            "colour": "#ff33a7"
+      }
+]

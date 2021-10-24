@@ -14,7 +14,7 @@ dirname = os.path.dirname(__file__)
 # TO DELETE
 import string, random
 
-from project.BackEnd import Task, Schedule, GoogleAPI
+from project.BackEnd import Task, Schedule, GoogleAPI, Category
 from project.gui import general_window_gui, task_list, task_creation_gui, routines_list, add_routine_gui, dialog_window_gui
 
 
@@ -386,31 +386,19 @@ class MainView(general_window_gui.GeneralWindow):
         settings_layout.addWidget(title_categories)
 
         ## Categories Dropdown
+        combo_row = QHBoxLayout()
+
         self.categories_dropdown = QComboBox(self)
         self.categories_dropdown.setStyleSheet("padding: 5px 10px; color: 'white'")
-        placeholder_categories = ["category1", "category2"]
-        self.categories_dropdown.addItems(placeholder_categories)    # Place Categories
+        categories = Category.import_category(self.prefs.directory['categories'])
+        self.update_categories_dropdown(categories)     # Initial Init
 
-        settings_layout.addWidget(self.categories_dropdown)
+        combo_row.addWidget(self.categories_dropdown)
 
-        ## Buttons
-        button_row = QHBoxLayout()
-
-        add_category_button = QPushButton('Add')
-        add_category_button.setStyleSheet(self.prefs.style_sheets['button_priority_rect'])
-        add_category_button.setFixedWidth(75)
-        button_row.addWidget(add_category_button)
-
-        edit_category_button = QPushButton('Edit')
-        edit_category_button.setStyleSheet(self.prefs.style_sheets['button_low_priority_rect'])
-        edit_category_button.setFixedWidth(75)
-        button_row.addWidget(edit_category_button)
-
-        button_row.addStretch()
-
-        color_piece = QPushButton('')
-        color_piece.setFixedWidth(75)
-        color_piece.setText('#FFFFF')
+        ### Color Show
+        self.colour_piece = QPushButton('')
+        self.colour_piece.setFixedWidth(75)
+        self.colour_piece.setText('#FFFFF')
         special_sheet = (
                 "*{border: 2px solid '#42464E';" +
                 "border-radius: 5px;" +
@@ -421,15 +409,34 @@ class MainView(general_window_gui.GeneralWindow):
                 "margin: 0px 0px;}" +
                 "*:hover{background: '#4069ED'; color: 'black';}"
         )
-        color_piece.setStyleSheet(special_sheet)
-        button_row.addWidget(color_piece)
+        self.colour_piece.setStyleSheet(special_sheet)
 
-        button_row.addStretch()
+        combo_row.addWidget(self.colour_piece)
 
+        settings_layout.addLayout(combo_row)
+
+        ## Buttons
+        button_row = QHBoxLayout()
+
+        ### Add Button
+        add_category_button = QPushButton('Add')
+        add_category_button.setStyleSheet(self.prefs.style_sheets['button_priority_rect'])
+        add_category_button.setFixedWidth(75)
+        button_row.addWidget(add_category_button)
+
+        ### Edit Button
+        edit_category_button = QPushButton('Edit')
+        edit_category_button.setStyleSheet(self.prefs.style_sheets['button_low_priority_rect'])
+        edit_category_button.setFixedWidth(75)
+        button_row.addWidget(edit_category_button)
+        
+        ### Delete Button
         delete_category_button = QPushButton('Delete')
         delete_category_button.setStyleSheet(self.prefs.style_sheets['button_exit_rect'])
         delete_category_button.setFixedWidth(75)
         button_row.addWidget(delete_category_button)
+
+        button_row.addStretch()
 
         settings_layout.addLayout(button_row)
         settings_layout.addStretch(1)
@@ -583,8 +590,14 @@ class MainView(general_window_gui.GeneralWindow):
             pass
 
     # Preferences View Functions
+    def update_categories_dropdown(self, categories):
+        """Updates the categories dropdown under 'Preferences'"""
+        self.categories_dropdown.clear()  # Clear Dropdown
+        for category in categories:
+            # Add To Dropdown
+            self.categories_dropdown.addItem(category['title'], category['category_id'])
 
-
+    # Schedule View Functions
     def update_schedule_image(self):
         self.schedule_image = QPixmap(os.path.join(dirname, '../schedule.jpg'))
         self.schedule_label.setPixmap(self.schedule_image)
