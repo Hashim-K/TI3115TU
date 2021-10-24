@@ -5,7 +5,7 @@ import time
 from PyQt5.QtCore import QThread, Qt
 from PyQt5.QtWidgets import QApplication, QGroupBox, QHBoxLayout, QLabel, QListWidget, QListWidgetItem, QScrollArea, \
     QAction, QMainWindow, QPushButton, QStackedLayout, QStackedWidget, QToolBar, QVBoxLayout, QWidget, QFileDialog, \
-    QGridLayout, QLineEdit, QFrame, QSlider
+    QGridLayout, QLineEdit, QFrame, QSlider, QComboBox
 from PyQt5.QtGui import QColor, QIcon, QPixmap, QCursor, QFont
 from PyQt5 import QtGui, QtCore
 import os
@@ -356,8 +356,8 @@ class MainView(general_window_gui.GeneralWindow):
         settings_layout = QVBoxLayout()
 
         # Morning routine slider
-        self.mr_text = QLabel("Morning routine duration: ")
-        self.mr_text.setStyleSheet(self.prefs.style_sheets['text'])
+        self.mr_text = QLabel("Morning Routine Duration ")
+        self.mr_text.setStyleSheet(self.prefs.style_sheets['text_bubble_slim'])
 
         self.morning_routine = QSlider(Qt.Horizontal, self)
         self.morning_routine.setMinimum(0)
@@ -377,17 +377,13 @@ class MainView(general_window_gui.GeneralWindow):
         settings_box.setLayout(settings_layout)
         body_layout.addWidget(settings_box, 0, 1, 1, 1)
 
-        ### PET
-        ## Layout
-        sb_layout = QVBoxLayout()
-
         ## Title Categories
         title_categories_text = "Categories"
         title_categories = QLabel(title_categories_text)
         title_categories.setWordWrap(True)
         title_categories.setStyleSheet(self.prefs.style_sheets['text_bubble_slim'])
 
-        sb_layout.addWidget(title_categories)
+        settings_layout.addWidget(title_categories)
 
         ## Categories Dropdown
         self.categories_dropdown = QComboBox(self)
@@ -395,7 +391,7 @@ class MainView(general_window_gui.GeneralWindow):
         placeholder_categories = ["category1", "category2"]
         self.categories_dropdown.addItems(placeholder_categories)    # Place Categories
 
-        sb_layout.addWidget(self.categories_dropdown)
+        settings_layout.addWidget(self.categories_dropdown)
 
         ## Buttons
         button_row = QHBoxLayout()
@@ -414,15 +410,16 @@ class MainView(general_window_gui.GeneralWindow):
 
         color_piece = QPushButton('')
         color_piece.setFixedWidth(75)
+        color_piece.setText('#FFFFF')
         special_sheet = (
                 "*{border: 2px solid '#42464E';" +
                 "border-radius: 5px;" +
                 "background-color: '#42464E';" +
                 "font-size: 13px;"
-                "color : 'white';" +
+                "color : rgba(0,0,0,0);" +
                 "padding: 5px 0px;" +
                 "margin: 0px 0px;}" +
-                "*:hover{background: '#4069ED'; color: 'white';}"
+                "*:hover{background: '#4069ED'; color: 'black';}"
         )
         color_piece.setStyleSheet(special_sheet)
         button_row.addWidget(color_piece)
@@ -434,9 +431,9 @@ class MainView(general_window_gui.GeneralWindow):
         delete_category_button.setFixedWidth(75)
         button_row.addWidget(delete_category_button)
 
-        sb_layout.addLayout(button_row)
-        sb_layout.addStretch(1)
-        settings_box.setLayout(sb_layout)
+        settings_layout.addLayout(button_row)
+        settings_layout.addStretch(1)
+        settings_box.setLayout(settings_layout)
 
         # Main Layout
         layout.addWidget(top_block_widget, alignment=QtCore.Qt.AlignTop)    # Stick to top
