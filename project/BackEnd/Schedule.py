@@ -209,10 +209,10 @@ def EmptySlots():
             elif schedule.schedule[day][slot] == -1:
                 free_block.append([day, slot])
             else:
-                if slot == number_of_slots -1:
-                    free_block.append([day, slot])
-                    free_blocks.append(free_block)
-                    free_block = []
+                # if slot == number_of_slots -1:
+                #     free_block.append([day, slot])
+                #     free_blocks.append(free_block)
+                #     free_block = []
                 if len(free_block) > 0 or (len(free_block) > 0 and slot == number_of_slots - 1):
                     free_block.append([day, slot])
                     free_blocks.append(free_block)
@@ -220,6 +220,9 @@ def EmptySlots():
     for free_block in free_blocks:
         while len(free_block) > 2:
             free_block.pop(1)
+    for free_block in free_blocks:  # this code is a temporary fix
+        if len(free_block) < 2:
+            free_blocks.pop(free_blocks.index(free_block))
     return free_blocks
 
 
@@ -228,6 +231,7 @@ def ClearEvents():
         file.write('')
     events.clear()
     PrepEvents()
+
 
 def PrepEvents():
     try:

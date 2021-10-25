@@ -1,0 +1,41 @@
+[
+      {
+            "TaskID": 1,
+            "Name": "Deadline1Test",
+            "Description": "Testing code task 1 ",
+            "Duration": 5,
+            "Priority": 5,
+            "Deadline": "2021-10-19",
+            "Repeatable": false,
+            "Category": "category 1",
+            "Preferred": "None",
+            "Plan_on_same": true,
+            "Session": 1
+      },
+      {
+            "TaskID": 2,
+            "Name": "Deadline2",
+            "Description": "Other task for testing",
+            "Duration": 10,
+            "Priority": 5,
+            "Deadline": "2021-10-19",
+            "Repeatable": false,
+            "Category": "category 1",
+            "Preferred": "Afternoon (12:00-16:00)",
+            "Plan_on_same": false,
+            "Session": 1
+      },
+      {
+            "TaskID": 3,
+            "Name": "Long Task",
+            "Description": "Long task for testing",
+            "Duration": 20,
+            "Priority": 1,
+            "Deadline": "2021-10-25",
+            "Repeatable": false,
+            "Category": "category 2",
+            "Preferred": "Afternoon (12:00-16:00)",
+            "Plan_on_same": false,
+            "Session": 1
+      }
+]
