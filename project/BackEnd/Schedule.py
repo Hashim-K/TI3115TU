@@ -90,24 +90,24 @@ def ResolveOverlap():
     number_of_days = presets.number_of_days
     number_of_slots = len(schedule.schedule[0])
     is_overlap = False
-    identified_overlaps = []
+    identified_overlaps = set()
     for day in range(number_of_days):
         for slot in range(number_of_slots):
             event1_id = int(schedule.overlap[day][slot])
             if event1_id >= 0:
                 is_overlap = True
                 event2_id = int(schedule.schedule[day][slot])
-                print_message = True
-                for overlap in identified_overlaps:
-                    if event1_id == overlap[0] and event2_id == overlap[1] and day == overlap[2]:
-                        print_message = False
-                if print_message:
-                    index = BlockIndex(events[event2_id].Occurrences, day, slot)
-                    print(f"It seems like '{events[event1_id].Label}' overlaps with '{events[event2_id].Label}' on "
-                          f"{DateFormat(XDaysLater(presets.day_zero, day))}. "
-                          f"[Event={events[event2_id].ID}, Occurrence={index}]\n")
-                    identified_overlaps.append([event1_id, event2_id, day])
-    return is_overlap
+                # if event1_id != event2_id:
+                identified_overlaps.add((event1_id, event2_id, day))
+
+                #     index = BlockIndex(events[event2_id].Occurrences, day, slot)
+                #     print(f"It seems like '{events[event1_id].Label}' overlaps with '{events[event2_id].Label}' on "
+                #           f"{DateFormat(XDaysLater(presets.day_zero, day))}. "
+                #           f"[Event={events[event2_id].ID}, Occurrence={index}]\n")
+    if not is_overlap:
+        return False
+    else:
+        return identified_overlaps
 
 
 # This function deletes an event based on its id.
@@ -370,6 +370,10 @@ class Presets:
                         'dark_mode': self.dark_mode}
         with open(os.path.join(dirname, 'presets.json'), 'w') as out_file:
             json.dump(presets_json, out_file, indent=6)
+
+    # def update_day_zero(self):
+    #     current_day =
+    #     # self.day_zero =
 
 
 class Main:
