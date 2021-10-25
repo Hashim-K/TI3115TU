@@ -66,7 +66,7 @@ class MyTestCase(unittest.TestCase):
     def test_empty_file(self):
         file = open("jsonfiles/empty.json", "w")
         file.close()
-        task = Task(-1, "Title", "Description", 5, 0, date(2021, 10, 8), False, "category 1", "Morning (8:00-12:00)", True,
+        task = Task(-1, "Title", "Description", 5, 0, date(2021, 11, 19), False, "category 1", "Morning (8:00-12:00)", True,
                     1, 'nofile')
         task.taskID = 1
         task.export_task("jsonfiles/empty.json")
