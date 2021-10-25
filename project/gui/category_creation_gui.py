@@ -106,7 +106,7 @@ class CategoryCreationWindow(GeneralWindow):
 
         # CHANGE: To Edit Old
         if id_of_found is not None:     # If Already exists
-            dialog = dialog_window_gui.CustomDialog('Task with name already exists, override?', self.prefs, self)
+            dialog = dialog_window_gui.CustomDialog('Category with title already exists, override?', self.prefs, self)
             if dialog.exec():
                 # Delete category
                 Category.delete_category(self.prefs.directory['categories'], id_of_found)
@@ -117,6 +117,11 @@ class CategoryCreationWindow(GeneralWindow):
             -1, self.title_edit.text(), self.hex_col_selected, self.prefs.directory['categories'])
         # Export
         category.export_category(self.prefs.directory['categories'])
+
+        # Reload Main GUI
+        GeneralWindow.raise_event(self.ls_w, 'reload_categories')
+        # Close Window
+        self.close()
 
     def change_colour(self):
         # Get Colour & Store
@@ -137,10 +142,10 @@ class CategoryCreationWindow(GeneralWindow):
         self.colour_piece.setStyleSheet(new_sheet)
 
 # FOR TESTING
-def window():
-    app = QApplication(sys.argv)
-    win = CategoryCreationWindow([], palette.Prefs)
-
-    sys.exit(app.exec())
-
-window()
+# def window():
+#     app = QApplication(sys.argv)
+#     win = CategoryCreationWindow([], palette.Prefs)
+#
+#     sys.exit(app.exec())
+#
+# window()

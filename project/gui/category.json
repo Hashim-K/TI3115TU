@@ -68,5 +68,30 @@
             "category_id": 13,
             "title": "Test",
             "colour": "#FFFFFF"
+      },
+      {
+            "category_id": 14,
+            "title": "Test",
+            "colour": "#FFFFFF"
+      },
+      {
+            "category_id": 15,
+            "title": "Test",
+            "colour": "#FFFFFF"
+      },
+      {
+            "category_id": 16,
+            "title": "Test",
+            "colour": "#FFFFFF"
+      },
+      {
+            "category_id": 17,
+            "title": "Test",
+            "colour": "#FFFFFF"
+      },
+      {
+            "category_id": 18,
+            "title": "Test",
+            "colour": "#FFFFFF"
       }
 ]
