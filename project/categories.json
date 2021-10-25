@@ -7,6 +7,21 @@
       {
             "category_id": 2,
             "title": "Bon Gepakt",
-            "colour": "#46d7ff"
+            "colour": "#55aaff"
+      },
+      {
+            "category_id": 3,
+            "title": "Kale",
+            "colour": "#8769ff"
+      },
+      {
+            "category_id": 4,
+            "title": "Pat",
+            "colour": "#6c93ff"
+      },
+      {
+            "category_id": 5,
+            "title": "Ketph",
+            "colour": "#74ff42"
       }
 ]

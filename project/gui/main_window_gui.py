@@ -9,6 +9,9 @@ from PyQt5.QtWidgets import QApplication, QGroupBox, QHBoxLayout, QLabel, QListW
 from PyQt5.QtGui import QColor, QIcon, QPixmap, QCursor, QFont
 from PyQt5 import QtGui, QtCore
 import os
+
+from project.gui.category_creation_gui import CategoryCreationWindow
+
 dirname = os.path.dirname(__file__)
 
 # TO DELETE
@@ -390,8 +393,7 @@ class MainView(general_window_gui.GeneralWindow):
 
         self.categories_dropdown = QComboBox(self)
         self.categories_dropdown.setStyleSheet("padding: 5px 10px; color: 'white'")
-        categories = Category.import_category(self.prefs.directory['categories'])
-        self.update_categories_dropdown(categories)     # Initial Init
+        self.update_categories_dropdown()     # Initial Init
 
         combo_row.addWidget(self.categories_dropdown)
 
@@ -422,6 +424,8 @@ class MainView(general_window_gui.GeneralWindow):
         add_category_button = QPushButton('Add')
         add_category_button.setStyleSheet(self.prefs.style_sheets['button_priority_rect'])
         add_category_button.setFixedWidth(75)
+        add_category_button.clicked.connect(lambda:
+            general_window_gui.GeneralWindow.pre_init(self.ls_w, self.prefs, CategoryCreationWindow))
         button_row.addWidget(add_category_button)
 
         ### Edit Button
@@ -590,12 +594,13 @@ class MainView(general_window_gui.GeneralWindow):
             pass
 
     # Preferences View Functions
-    def update_categories_dropdown(self, categories):
+    def update_categories_dropdown(self):
         """Updates the categories dropdown under 'Preferences'"""
+        categories = Category.import_category(self.prefs.directory['categories'])
         self.categories_dropdown.clear()  # Clear Dropdown
         for category in categories:
             # Add To Dropdown
-            self.categories_dropdown.addItem(category['title'], category['category_id'])
+            self.categories_dropdown.addItem(category.title, category.category_id)
 
     # Schedule View Functions
     def update_schedule_image(self):
@@ -618,6 +623,8 @@ class MainView(general_window_gui.GeneralWindow):
         if event_name == 'reload_routines':
             self.populate_routine_list()
             self.update_schedule_image()
+        if event_name == 'reload_categories':
+            self.update_categories_dropdown()
 
 class GoogleWorker(QThread):
     """
