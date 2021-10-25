@@ -13,13 +13,25 @@ class MyTestCase(unittest.TestCase):
         pre = json.load(openfile)
 
     def test_empty_slots(self):
-        # presets.number_of_days = 7
-        # presets.time_interval = 5
-        # schedule.number_of_slots = round(24 * 60 / presets.time_interval)
-        # schedule.schedule = np.zeros(shape=(presets.number_of_days, round(24 * 60 / presets.time_interval))) - 1
-        answer = [[[0, 0], [0, 287]], [[1, 0], [1, 287]], [[2, 0], [2, 287]], [[3, 0], [3, 287]],
-                  [[4, 0], [4, 287]], [[5, 0], [5, 287]], [[6, 0], [6, 287]]]
+        presets.number_of_days = 3
+        presets.time_interval = 60
+        schedule.number_of_slots = round(24 * 60 / presets.time_interval)
+        schedule.schedule = np.zeros(shape=(presets.number_of_days, round(24 * 60 / presets.time_interval))) - 1
+        answer = [[[0, 0], [0, 23]], [[1, 0], [1, 23]], [[2, 0], [2, 23]]]
         self.assertEqual(answer, EmptySlots())
+        schedule.schedule[2][-1] = 2
+        answer = [[[0, 0], [0, 23]], [[1, 0], [1, 23]], [[2, 0], [2, 23]]]
+        self.assertEqual(answer, EmptySlots())
+        # for i in range(5):
+        #     schedule.schedule[1][10+i] = 3
+        # answer = [[[0, 0], [0, 23]], [[1, 0], [1, 10]], [[1, 15], [1, 23]], [[2, 0], [2, 23]]]
+        # self.assertEqual(answer, EmptySlots())
+        # schedule.schedule[1][-1] = 1
+        # answer = [[[0, 0], [0, 23]], [[1, 0], [1, 10]], [[1, 15], [1, 23]], [[2, 0], [2, 23]]]
+        # self.assertEqual(answer, EmptySlots())
+        # schedule.schedule[1][-2] = 1
+        # answer = [[[0, 0], [0, 23]], [[1, 0], [1, 10]], [[1, 15], [1, 22]], [[2, 0], [2, 23]]]
+        # self.assertEqual(answer, EmptySlots())
 
     def test_Display(self):
         display = Display()
