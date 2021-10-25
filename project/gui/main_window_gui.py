@@ -1,3 +1,4 @@
+import datetime
 import getpass
 import sys
 import time
@@ -359,7 +360,7 @@ class MainView(general_window_gui.GeneralWindow):
         settings_layout = QVBoxLayout()
 
         # Morning routine slider
-        self.mr_text = QLabel("Morning Routine Duration ")
+        self.mr_text = QLabel("Morning Routine Duration: ")
         self.mr_text.setStyleSheet(self.prefs.style_sheets['text_bubble_slim'])
 
         self.morning_routine = QSlider(Qt.Horizontal, self)
@@ -367,14 +368,26 @@ class MainView(general_window_gui.GeneralWindow):
         self.morning_routine.setMaximum(8)
         self.morning_routine.valueChanged.connect(self.update_morning_routine)
 
+        mr_val = Schedule.presets.length_morning_routine
+        mr_val = int(mr_val[3:5])
+        self.morning_routine.setValue(int(mr_val)*15)
+        self.mr_text.setText(f"Morning Routine Duration: {mr_val} minutes")
+
         mr_descr = QLabel("When setting a sleep routine, a morning routine will automatically be added after the"
                           " sleep routine.")
         mr_descr.setStyleSheet(self.prefs.style_sheets['text_bubble_clear_slim'])
         mr_descr.setWordWrap(True)
 
+        # Save button
+        mr_save = QPushButton("Save")
+        mr_save.setStyleSheet(self.prefs.style_sheets['button_priority_rect'])
+        mr_save.clicked.connect(self.save_morning_routine)
+        mr_save.setFixedWidth(75)
+
         settings_layout.addWidget(self.mr_text)
         settings_layout.addWidget(self.morning_routine)
         settings_layout.addWidget(mr_descr)
+        settings_layout.addWidget(mr_save)
         settings_layout.addStretch(1)
 
         settings_box.setLayout(settings_layout)
@@ -652,8 +665,14 @@ class MainView(general_window_gui.GeneralWindow):
     def update_morning_routine(self):
         duration = int(self.morning_routine.value())*15
         self.mr_text.setText(f"Morning routine duration: {duration} minutes")
-        # WRITE TO JSON AND DON'T FORGET TO INIT
-    
+
+    def save_morning_routine(self):
+        duration = int(self.morning_routine.value())*15
+        self.mr_text.setText(f"Morning routine duration: {duration} minutes (Saved)")
+        duration = str(datetime.time(duration//60, duration%60, 0))
+        Schedule.presets.length_morning_routine = duration
+        Schedule.presets.Store()
+
     # Stack Changer
     def display(self, i):
         self.stack.setCurrentIndex(i)
