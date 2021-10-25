@@ -8,6 +8,7 @@ from PyQt5.QtCore import QRegExp, Qt, QDate
 from PyQt5.QtGui import QRegExpValidator, QIcon
 
 from project.BackEnd import Task, Schedule
+from project.BackEnd.General import DateFormat, XDaysLater
 from project.gui.general_window_gui import GeneralWindow
 from project.gui import palette
 
@@ -93,6 +94,7 @@ class AddRoutineWindow(GeneralWindow):
 
         # Overlap text
         self.overlap_text = QLabel()
+        self.overlap_text.setWordWrap(True)
 
         # add widgets to layout
         form_layout.addRow(title)
@@ -141,7 +143,8 @@ class AddRoutineWindow(GeneralWindow):
         # Check overlap
         if Schedule.schedule.Update():
             # display info
-            self.notify_overlap()
+            overlap_set = Schedule.schedule.Update()
+            self.notify_overlap(overlap_set)
             # clear event
             Schedule.events.clear()
             Schedule.GetEvents()
@@ -152,8 +155,15 @@ class AddRoutineWindow(GeneralWindow):
             GeneralWindow.raise_event(self.ls_w, 'reload_routines')
             self.close()
 
-    def notify_overlap(self):
-        self.overlap_text.setText("The new routine overlaps with an existing routine.")
+    def notify_overlap(self, info):
+        text = ""
+        while info:
+            overlap = info.pop()
+            text += f"{Schedule.events[overlap[0]].Label} overlaps with {Schedule.events[overlap[1]].Label} on " \
+                    f"{DateFormat(XDaysLater(Schedule.presets.day_zero, overlap[2]))}.\n"
+        print(text)
+        self.overlap_text.setText(text)
+
 
 
 
