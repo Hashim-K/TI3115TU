@@ -1,0 +1,12 @@
+[
+      {
+            "category_id": 1,
+            "title": "High Prio",
+            "colour": "#f831ff"
+      },
+      {
+            "category_id": 2,
+            "title": "Bon Gepakt",
+            "colour": "#46d7ff"
+      }
+]

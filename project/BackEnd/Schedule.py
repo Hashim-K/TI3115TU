@@ -348,54 +348,21 @@ class Presets:
             self.day_zero = preset_dictionary['day_zero']
             self.number_of_days = preset_dictionary['number_of_days']
             self.time_interval = preset_dictionary['time_interval']
-            self.alarm_time = preset_dictionary['alarm_time']
-            self.length_sleep = preset_dictionary['length_sleep']
             self.length_morning_routine = preset_dictionary['length_morning_routine']
-            self.lunch_time = preset_dictionary['lunch_time']
-            self.length_lunch = preset_dictionary['length_lunch']
-            self.dinner_time = preset_dictionary['dinner_time']
-            self.length_dinner = preset_dictionary['length_dinner']
-            self.sleep = preset_dictionary['sleep']
-            self.morning_routine = preset_dictionary['morning_routine']
-            self.lunch = preset_dictionary['lunch']
-            self.dinner = preset_dictionary['dinner']
-            self.import_google = preset_dictionary['import_google']
             self.dark_mode = preset_dictionary['dark_mode']
 
     def PrintPresets(self):
         print(f"day_zero = '{self.day_zero}'\n"
               f"number_of_days = {self.number_of_days}\n"
               f"time_interval = {self.time_interval}\n"
-              f"alarm_time = '{self.alarm_time}'\n"
-              f"length_sleep = '{self.length_sleep}'\n"
               f"length_morning_routine = '{self.length_morning_routine}'\n"
-              f"lunch_time = '{self.lunch_time}'\n"
-              f"length_lunch = '{self.length_lunch}'\n"
-              f"dinner_time = '{self.dinner_time}'\n"
-              f"length_dinner = '{self.length_dinner}'\n"
-              f"sleep = {self.sleep}\n"
-              f"morning_routine = {self.morning_routine}\n"
-              f"lunch = {self.lunch}\n"
-              f"dinner = {self.dinner}\n"
-              f"import_google = {self.import_google}\n"
               f"dark_mode = {self.dark_mode}\n")
 
     def Store(self):
         presets_json = {'day_zero': self.day_zero,
                         'number_of_days': self.number_of_days,
                         'time_interval': self.time_interval,
-                        'alarm_time': self.alarm_time,
-                        'length_sleep': self.length_sleep,
                         'length_morning_routine': self.length_morning_routine,
-                        'lunch_time': self.lunch_time,
-                        'length_lunch': self.length_lunch,
-                        'dinner_time': self.dinner_time,
-                        'length_dinner': self.length_dinner,
-                        'sleep': self.sleep,
-                        'morning_routine': self.morning_routine,
-                        'lunch': self.lunch,
-                        'dinner': self.dinner,
-                        'import_google': self.import_google,
                         'dark_mode': self.dark_mode}
         with open(os.path.join(dirname, 'presets.json'), 'w') as out_file:
             json.dump(presets_json, out_file, indent=6)

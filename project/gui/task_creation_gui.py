@@ -1,9 +1,10 @@
 import sys
+import datetime
 
 from PyQt5.QtWidgets import QWidget, QFormLayout, QLineEdit, QDateEdit, QVBoxLayout, QHBoxLayout, QTimeEdit
 from PyQt5.QtWidgets import QLabel, QSlider, QComboBox, QCheckBox, QPushButton
 from PyQt5.QtCore import QRegExp, Qt, QDate, QTime
-from PyQt5.QtGui import QRegExpValidator
+from PyQt5.QtGui import QRegExpValidator, QIcon
 
 from project.BackEnd import Task
 from project.gui.general_window_gui import GeneralWindow
@@ -53,11 +54,11 @@ class TaskCreationWindow(GeneralWindow):
         top_layout.addRow("Number of sessions", self.numsessions_field)
 
         # Duration
-        self.duration_label = QLabel("5 minutes", self)
+        self.duration_label = QLabel("15 minutes", self)
 
         self.sessionduration_slider = QSlider(Qt.Horizontal, self)
         self.sessionduration_slider.setMinimum(1)
-        self.sessionduration_slider.setMaximum(48)
+        self.sessionduration_slider.setMaximum(16)
         self.sessionduration_slider.valueChanged.connect(self.update_duration)
 
         top_layout.addRow(QLabel("Session duration"), self.duration_label)
@@ -88,12 +89,43 @@ class TaskCreationWindow(GeneralWindow):
         top_layout.addRow("Category", self.category_dropbox)
 
         # Preference
-        top_layout.addRow(QLabel("Preferred time (0:00 to 0:00 is considered as no preference)"))
+        self.preference_check = QCheckBox(self)
+        self.preference_check.setChecked(True)
+        top_layout.addRow("Preferred time", self.preference_check)
 
-        self.preference_start = QTimeEdit()
-        self.preference_end = QTimeEdit()
-        top_layout.addRow("Start time", self.preference_start)
-        top_layout.addRow("End time", self.preference_end)
+        # self.preference_start = QTimeEdit()
+        # self.preference_end = QTimeEdit()
+        # top_layout.addRow("Start time", self.preference_start)
+        # top_layout.addRow("End time", self.preference_end)
+
+        preference_start = QHBoxLayout()
+        preference_start.addWidget(QLabel("Start time"))
+        preference_start.addStretch(1)
+
+        self.start_hour = QComboBox(self)
+        self.start_hour.addItems([f'{x}' for x in range(24)])
+        preference_start.addWidget(self.start_hour)
+        preference_start.addWidget(QLabel('h'))
+        self.start_min = QComboBox(self)
+        self.start_min.addItems(['0', '15', '30', '45'])
+        preference_start.addWidget(self.start_min)
+        preference_start.addWidget(QLabel('m'))
+
+        preference_end = QHBoxLayout()
+        preference_end.addWidget(QLabel("End time"))
+        preference_end.addStretch(1)
+
+        self.end_hour = QComboBox(self)
+        self.end_hour.addItems([f'{x}' for x in range(24)])
+        preference_end.addWidget(self.end_hour)
+        preference_end.addWidget(QLabel('h'))
+        self.end_min = QComboBox(self)
+        self.end_min.addItems(['0', '15', '30', '45'])
+        preference_end.addWidget(self.end_min)
+        preference_end.addWidget(QLabel('m'))
+
+        top_layout.addRow(preference_start)
+        top_layout.addRow(preference_end)
 
         # Plan on same day
         self.sameday_check = QCheckBox(self)
@@ -126,7 +158,7 @@ class TaskCreationWindow(GeneralWindow):
         self.setFixedWidth(480)
 
     def update_duration(self, val):
-        self.duration_label.setText(str(5*val) + " minutes")
+        self.duration_label.setText(str(15*val) + " minutes")
 
     def create_task(self):
         # Creat Task
@@ -137,15 +169,19 @@ class TaskCreationWindow(GeneralWindow):
         num_sessions = self.numsessions_field.text()
         num_sessions = int(num_sessions)
         session_duration = self.sessionduration_slider.value()
-        session_duration = 5*int(session_duration)
+        session_duration = int(session_duration)
         priority = self.priority_dropdown.currentIndex()
         category = self.category_dropbox.currentText()
         onsameday = self.sameday_check.isChecked()
         repeat = self.repeat_check.isChecked()
-        preferredtime = (self.preference_start.time().toString(), self.preference_end.time().toString())
+        preferred_time = self.preference_check.isChecked()
+        if preferred_time:
+            pref_start = str(datetime.time(int(self.start_hour.currentText()), int(self.start_min.currentText())))
+            pref_end = str(datetime.time(int(self.end_hour.currentText()), int(self.end_min.currentText())))
+            preferred_time = (pref_start, pref_end)
 
         new_task = Task.Task(-1, name, description, session_duration, priority, deadline,
-                        repeat, category, preferredtime, onsameday, num_sessions, self.prefs.directory['tasks'])
+                        repeat, category, preferred_time, onsameday, num_sessions, self.prefs.directory['tasks'])
         print(new_task)
 
         # Export Task to Save File

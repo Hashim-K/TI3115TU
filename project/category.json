@@ -1,0 +1,22 @@
+[
+      {
+            "category_id": 0,
+            "title": "Test",
+            "colour": "#FFFFFF"
+      },
+      {
+            "category_id": 1,
+            "title": "Test",
+            "colour": "#FFFFFF"
+      },
+      {
+            "category_id": 2,
+            "title": "Test",
+            "colour": "#FFFFFF"
+      },
+      {
+            "category_id": 3,
+            "title": "Test",
+            "colour": "#FFFFFF"
+      }
+]

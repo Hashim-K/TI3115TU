@@ -2,8 +2,10 @@ import getpass
 import sys
 import time
 
-from PyQt5.QtCore import QThread
-from PyQt5.QtWidgets import QApplication, QGroupBox, QHBoxLayout, QLabel, QListWidget, QListWidgetItem, QScrollArea, QAction, QMainWindow, QPushButton, QStackedLayout, QStackedWidget, QToolBar, QVBoxLayout, QWidget, QFileDialog, QGridLayout, QLineEdit, QFrame
+from PyQt5.QtCore import QThread, Qt
+from PyQt5.QtWidgets import QApplication, QGroupBox, QHBoxLayout, QLabel, QListWidget, QListWidgetItem, QScrollArea, \
+    QAction, QMainWindow, QPushButton, QStackedLayout, QStackedWidget, QToolBar, QVBoxLayout, QWidget, QFileDialog, \
+    QGridLayout, QLineEdit, QFrame, QSlider, QComboBox
 from PyQt5.QtGui import QColor, QIcon, QPixmap, QCursor, QFont
 from PyQt5 import QtGui, QtCore
 import os
@@ -12,7 +14,7 @@ dirname = os.path.dirname(__file__)
 # TO DELETE
 import string, random
 
-from project.BackEnd import Task, Schedule, GoogleAPI
+from project.BackEnd import Task, Schedule, GoogleAPI, Category
 from project.gui import general_window_gui, task_list, task_creation_gui, routines_list, add_routine_gui, dialog_window_gui
 
 
@@ -351,7 +353,94 @@ class MainView(general_window_gui.GeneralWindow):
         settings_box = QGroupBox('Settings')
         settings_box.setStyleSheet(self.prefs.style_sheets['std_gbox'])
 
+        settings_layout = QVBoxLayout()
+
+        # Morning routine slider
+        self.mr_text = QLabel("Morning Routine Duration ")
+        self.mr_text.setStyleSheet(self.prefs.style_sheets['text_bubble_slim'])
+
+        self.morning_routine = QSlider(Qt.Horizontal, self)
+        self.morning_routine.setMinimum(0)
+        self.morning_routine.setMaximum(8)
+        self.morning_routine.valueChanged.connect(self.update_morning_routine)
+
+        mr_descr = QLabel("When setting a sleep routine, a morning routine will automatically be added after the"
+                          " sleep routine.")
+        mr_descr.setStyleSheet(self.prefs.style_sheets['text_bubble_clear_slim'])
+        mr_descr.setWordWrap(True)
+
+        settings_layout.addWidget(self.mr_text)
+        settings_layout.addWidget(self.morning_routine)
+        settings_layout.addWidget(mr_descr)
+        settings_layout.addStretch(1)
+
+        settings_box.setLayout(settings_layout)
         body_layout.addWidget(settings_box, 0, 1, 1, 1)
+
+        ## Title Categories
+        title_categories_text = "Categories"
+        title_categories = QLabel(title_categories_text)
+        title_categories.setWordWrap(True)
+        title_categories.setStyleSheet(self.prefs.style_sheets['text_bubble_slim'])
+
+        settings_layout.addWidget(title_categories)
+
+        ## Categories Dropdown
+        combo_row = QHBoxLayout()
+
+        self.categories_dropdown = QComboBox(self)
+        self.categories_dropdown.setStyleSheet("padding: 5px 10px; color: 'white'")
+        categories = Category.import_category(self.prefs.directory['categories'])
+        self.update_categories_dropdown(categories)     # Initial Init
+
+        combo_row.addWidget(self.categories_dropdown)
+
+        ### Color Show
+        self.colour_piece = QPushButton('')
+        self.colour_piece.setFixedWidth(75)
+        self.colour_piece.setText('#FFFFF')
+        special_sheet = (
+                "*{border: 2px solid '#42464E';" +
+                "border-radius: 5px;" +
+                "background-color: '#42464E';" +
+                "font-size: 13px;"
+                "color : rgba(0,0,0,0);" +
+                "padding: 5px 0px;" +
+                "margin: 0px 0px;}" +
+                "*:hover{background: '#4069ED'; color: 'black';}"
+        )
+        self.colour_piece.setStyleSheet(special_sheet)
+
+        combo_row.addWidget(self.colour_piece)
+
+        settings_layout.addLayout(combo_row)
+
+        ## Buttons
+        button_row = QHBoxLayout()
+
+        ### Add Button
+        add_category_button = QPushButton('Add')
+        add_category_button.setStyleSheet(self.prefs.style_sheets['button_priority_rect'])
+        add_category_button.setFixedWidth(75)
+        button_row.addWidget(add_category_button)
+
+        ### Edit Button
+        edit_category_button = QPushButton('Edit')
+        edit_category_button.setStyleSheet(self.prefs.style_sheets['button_low_priority_rect'])
+        edit_category_button.setFixedWidth(75)
+        button_row.addWidget(edit_category_button)
+        
+        ### Delete Button
+        delete_category_button = QPushButton('Delete')
+        delete_category_button.setStyleSheet(self.prefs.style_sheets['button_exit_rect'])
+        delete_category_button.setFixedWidth(75)
+        button_row.addWidget(delete_category_button)
+
+        button_row.addStretch()
+
+        settings_layout.addLayout(button_row)
+        settings_layout.addStretch(1)
+        settings_box.setLayout(settings_layout)
 
         # Main Layout
         layout.addWidget(top_block_widget, alignment=QtCore.Qt.AlignTop)    # Stick to top
@@ -500,9 +589,23 @@ class MainView(general_window_gui.GeneralWindow):
         else:
             pass
 
+    # Preferences View Functions
+    def update_categories_dropdown(self, categories):
+        """Updates the categories dropdown under 'Preferences'"""
+        self.categories_dropdown.clear()  # Clear Dropdown
+        for category in categories:
+            # Add To Dropdown
+            self.categories_dropdown.addItem(category['title'], category['category_id'])
+
+    # Schedule View Functions
     def update_schedule_image(self):
         self.schedule_image = QPixmap(os.path.join(dirname, '../schedule.jpg'))
         self.schedule_label.setPixmap(self.schedule_image)
+
+    def update_morning_routine(self):
+        duration = int(self.morning_routine.value())*15
+        self.mr_text.setText(f"Morning routine duration: {duration} minutes")
+        # WRITE TO JSON AND DON'T FORGET TO INIT
     
     # Stack Changer
     def display(self, i):
