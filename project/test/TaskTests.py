@@ -1,15 +1,16 @@
 import unittest
-from project.BackEnd.Task import Task, import_task, delete_task, find_task, delete_session
+from project.BackEnd.Task import Task, import_task, delete_task, find_task, delete_session, delete_all_tasks
 import filecmp
 from datetime import date, datetime
 import os
 from project.BackEnd import Schedule
 from unittest.mock import patch
+from shutil import copyfile
 
 class MyTestCase(unittest.TestCase):
     def test_initialising(self):
         task = Task(-1, 'Netflix', 'Watching a series', 60, 3, "2021-10-05",
-                    False, 'Free Time', "Morning (8:00-12:00)", True, 3, 'nofile')
+                    False, 'Free Time', ["08:00:00", "12:00:00"], True, 3, 'nofile')
         self.assertEqual('Netflix', task.name)
         self.assertEqual('Watching a series', task.description)
         self.assertEqual(60, task.duration)
@@ -17,19 +18,19 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual("2021-10-05", task.deadline)
         self.assertEqual(False, task.repeatable)
         self.assertEqual('Free Time', task.category)
-        self.assertEqual("Morning (8:00-12:00)", task.preferred)
+        self.assertEqual(["08:00:00", "12:00:00"], task.preferred)
         self.assertEqual(True, task.plan_on_same)
         self.assertEqual(3, task.session)
 
     def test_string(self):
-        task = Task(-1, "Title", "Description", 5, 0, "2021-10-08", False, "category 1", "Morning (8:00-12:00)", True, 1,
+        task = Task(-1, "Title", "Description", 5, 0, "2021-10-08", False, 1, ["08:00:00", "12:00:00"], True, 1,
                     'nofile')
         self.assertEqual(
             f"Task \"Title\" ({task.taskID}): Description.\nDeadline: 2021-10-08, number of sessions: 1, session duration: 5",
             str(task))
 
     def test_export(self):
-        task = Task(-1, "Title", "Description", 5, 0, date(2021, 10, 8), False, "category 1", "Morning (8:00-12:00)", True,
+        task = Task(-1, "Title", "Description", 5, 0, date(2021, 10, 8), False, 1, ["08:00:00", "12:00:00"], True,
                     1, 'nofile')
         task.taskID = 1
         if os.path.exists('jsonfiles/FileForExportTesting.json'):
@@ -39,8 +40,8 @@ class MyTestCase(unittest.TestCase):
             filecmp.cmp('jsonfiles/FileForTestingOne.json', 'jsonfiles/FileForExportTesting.json', shallow=False))
 
     def test_import(self):
-        task = Task(-1, "Title", "Description", 5, 0, datetime(2021, 10, 8, 0, 0), False, "category 1",
-                    "Morning (8:00-12:00)", True, 1, 'nofile')
+        task = Task(-1, "Title", "Description", 5, 0, datetime(2021, 10, 8, 0, 0), False, 1,
+                    ["08:00:00", "12:00:00"], True, 1, 'nofile')
         self.assertEqual(task.name, import_task('jsonfiles/FileForTestingOne.json')[0].name)
         self.assertEqual(task.description, import_task('jsonfiles/FileForTestingOne.json')[0].description)
         self.assertEqual(task.duration, import_task('jsonfiles/FileForTestingOne.json')[0].duration)
@@ -56,7 +57,7 @@ class MyTestCase(unittest.TestCase):
         delete_task('jsonfiles/FileForTestingOne.json', 1)
         with open('jsonfiles/FileForTestingOne.json') as file:
             self.assertEqual('[]', file.read())
-        task = Task(-1, "Title", "Description", 5, 0, date(2021, 10, 8), False, "category 1", "Morning (8:00-12:00)", True,
+        task = Task(-1, "Title", "Description", 5, 0, date(2021, 10, 8), False, 1, ["08:00:00", "12:00:00"], True,
                     1, 'nofile')
         task.taskID = 1
         task.export_task('jsonfiles/FileForTestingOne.json')
@@ -66,7 +67,7 @@ class MyTestCase(unittest.TestCase):
     def test_empty_file(self):
         file = open("jsonfiles/empty.json", "w")
         file.close()
-        task = Task(-1, "Title", "Description", 5, 0, date(2021, 11, 19), False, "category 1", "Morning (8:00-12:00)", True,
+        task = Task(-1, "Title", "Description", 5, 0, date(2021, 10, 8), False, 1, ["08:00:00", "12:00:00"], True,
                     1, 'nofile')
         task.taskID = 1
         task.export_task("jsonfiles/empty.json")
@@ -77,19 +78,19 @@ class MyTestCase(unittest.TestCase):
             highest_id = Schedule.events[-1].ID
         except IndexError:
             highest_id = 0
-        task = Task(-1, "Title", "Description", 5, 0, datetime(2021, 10, 8, 0, 0), False, "category 1",
-                    "Morning (8:00-12:00)", True, 1, 'jsonfiles/TestID.json')
+        task = Task(-1, "Title", "Description", 5, 0, datetime(2021, 10, 8, 0, 0), False, 1,
+                    ["08:00:00", "12:00:00"], True, 1, 'jsonfiles/TestID.json')
         self.assertEqual(9, task.taskID)
-        task = Task(-1, "Title", "Description", 5, 0, datetime(2021, 10, 8, 0, 0), False, "category 1",
-                    "Morning (8:00-12:00)", True, 1, 'jsonfiles/testIDempty.json')
+        task = Task(-1, "Title", "Description", 5, 0, datetime(2021, 10, 8, 0, 0), False, 1,
+                    ["08:00:00", "12:00:00"], True, 1, 'jsonfiles/testIDempty.json')
         self.assertEqual(task.taskID, highest_id + 1)
-        task = Task(-1, "Title", "Description", 5, 0, datetime(2021, 10, 8, 0, 0), False, "category 1",
-                    "Morning (8:00-12:00)", True, 1, 'nofile')
+        task = Task(-1, "Title", "Description", 5, 0, datetime(2021, 10, 8, 0, 0), False, 1,
+                    ["08:00:00", "12:00:00"], True, 1, 'nofile')
         self.assertEqual(task.taskID, highest_id + 2)
 
     def test_find_task(self):
         task_found = find_task('jsonfiles/save_file_test.json', 3)
-        task = Task(3, "Title", "Description", 5, 0, datetime(2021, 10, 8, 0, 0), False, "category 1", "Morning (8:00-12:00)", True,
+        task = Task(3, "Title", "Description", 5, 0, datetime(2021, 10, 8, 0, 0), False, 1, ["08:00:00", "12:00:00"], True,
                     1, 'nofile')
         self.assertEqual(task_found.taskID, task.taskID)
         self.assertEqual(task_found.name, task.name)
@@ -105,8 +106,8 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(find_task('jsonfiles/save_file_test.json', 5), None)
 
     def test_delete_session(self):
-        task = Task(1, "Title", "Description", 5, 0, date(2021, 10, 8), False, "category 1",
-                    "Morning (8:00-12:00)", True, 2, 'nofile')
+        task = Task(1, "Title", "Description", 5, 0, date(2021, 10, 8), False, 1,
+                    ["08:00:00", "12:00:00"], True, 2, 'nofile')
         task.export_task('jsonfiles/FileForTestingDeleteSession.json')
         delete_session('jsonfiles/FileForTestingDeleteSession.json', 1)
         self.assertTrue(filecmp.cmp('jsonfiles/FileForTestingDeleteSession.json', 'jsonfiles/FileForTestingOne.json', shallow=False))
@@ -115,17 +116,21 @@ class MyTestCase(unittest.TestCase):
             self.assertEqual('[]', file.read())
 
     def test_lt(self):
-        task1 = Task(-1, "Title", "Description", 10, 0, datetime(2021, 10, 20, 0, 0), False, "category 1",
-                     "Morning (8:00-12:00)", True, 1, 'nofile')
-        task2 = Task(-1, "Title", "Description", 5, 0, datetime(2021, 10, 20, 0, 0), False, "category 1",
-                     "Morning (8:00-12:00)", True, 1, 'nofile')
-        task3 = Task(-1, "Title", "Description", 15, 0, datetime(2021, 10, 20, 0, 0), False, "category 1",
-             "Morning (8:00-12:00)", True, 1, 'nofile')
+        task1 = Task(-1, "Title", "Description", 10, 0, datetime(2021, 10, 20, 0, 0), False, 1,
+                     ["08:00:00", "12:00:00"], True, 1, 'nofile')
+        task2 = Task(-1, "Title", "Description", 5, 0, datetime(2021, 10, 20, 0, 0), False, 1,
+                     ["08:00:00", "12:00:00"], True, 1, 'nofile')
+        task3 = Task(-1, "Title", "Description", 15, 0, datetime(2021, 10, 20, 0, 0), False, 1,
+             ["08:00:00", "12:00:00"], True, 1, 'nofile')
         self.assertTrue(task2 < task1)
         self.assertTrue(task1 < task3)
         self.assertFalse(task3 < task2)
 
 
+    def test_delete_all(self):
+        copyfile('jsonfiles/FileForTestingOne.json', 'jsonfiles/copy_file_2.json')
+        delete_all_tasks('jsonfiles/copy_file_2.json')
+        self.assertTrue(filecmp.cmp('jsonfiles/copy_file_2.json', "jsonfiles/TestIDempty.json", shallow=False))
 
 @patch('builtins.print')
 def test_no_file_to_import(mock_print):

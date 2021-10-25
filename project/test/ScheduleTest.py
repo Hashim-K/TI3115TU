@@ -60,18 +60,7 @@ def test_PrintPresets(mock_print):
     answer = (f"day_zero = '{pre['day_zero']}'\n"
               f"number_of_days = {pre['number_of_days']}\n"
               f"time_interval = {pre['time_interval']}\n"
-              f"alarm_time = '{pre['alarm_time']}'\n"
-              f"length_sleep = '{pre['length_sleep']}'\n"
               f"length_morning_routine = '{pre['length_morning_routine']}'\n"
-              f"lunch_time = '{pre['lunch_time']}'\n"
-              f"length_lunch = '{pre['length_lunch']}'\n"
-              f"dinner_time = '{pre['dinner_time']}'\n"
-              f"length_dinner = '{pre['length_dinner']}'\n"
-              f"sleep = {pre['sleep']}\n"
-              f"morning_routine = {pre['morning_routine']}\n"
-              f"lunch = {pre['lunch']}\n"
-              f"dinner = {pre['dinner']}\n"
-              f"import_google = {pre['import_google']}\n"
               f"dark_mode = {pre['dark_mode']}\n")
     trial = Presets()
     trial.PrintPresets()
@@ -82,18 +71,7 @@ def test_PrintPresets(mock_print):
     answer = (f"day_zero = '{pre['day_zero']}'\n"
               f"number_of_days = {pre['number_of_days']}\n"
               f"time_interval = {pre['time_interval']}\n"
-              f"alarm_time = '{pre['alarm_time']}'\n"
-              f"length_sleep = '{pre['length_sleep']}'\n"
               f"length_morning_routine = '{pre['length_morning_routine']}'\n"
-              f"lunch_time = '{pre['lunch_time']}'\n"
-              f"length_lunch = 'random text'\n"
-              f"dinner_time = '{pre['dinner_time']}'\n"
-              f"length_dinner = '{pre['length_dinner']}'\n"
-              f"sleep = {pre['sleep']}\n"
-              f"morning_routine = {pre['morning_routine']}\n"
-              f"lunch = {pre['lunch']}\n"
-              f"dinner = {pre['dinner']}\n"
-              f"import_google = {pre['import_google']}\n"
               f"dark_mode = {pre['dark_mode']}\n")
     mock_print.assert_called_with(answer)
 

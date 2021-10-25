@@ -7,8 +7,8 @@
             "Priority": 0,
             "Deadline": "2021-10-13",
             "Repeatable": false,
-            "Category": "category 1",
-            "Preferred": "None",
+            "Category": 1,
+            "Preferred": false,
             "Plan_on_same": false,
             "Session": 1
       },
@@ -20,8 +20,8 @@
             "Priority": 0,
             "Deadline": "2021-10-08",
             "Repeatable": false,
-            "Category": "category 1",
-            "Preferred": "Morning (8:00-12:00)",
+            "Category": 1,
+            "Preferred": ["08:00:00", "12:00:00"],
             "Plan_on_same": true,
             "Session": 1
       },
@@ -33,8 +33,8 @@
             "Priority": 3,
             "Deadline": "2021-10-14",
             "Repeatable": true,
-            "Category": "category 2",
-            "Preferred": "Evening (16:00-20:00)",
+            "Category": 2,
+            "Preferred": ["16:00:00", "20:00:00"],
             "Plan_on_same": true,
             "Session": 2
       }
