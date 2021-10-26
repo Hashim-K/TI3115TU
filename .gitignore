@@ -159,3 +159,5 @@ project/category.json
 project/schedule.jpg
 
 project/save_file.json
+
+*.pickle

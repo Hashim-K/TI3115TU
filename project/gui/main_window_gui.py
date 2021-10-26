@@ -608,7 +608,7 @@ class MainView(general_window_gui.GeneralWindow):
     def delete_all_tasks(self):
         """Deletes all tasks after prompt"""
         def delete_actual():
-            Task.delete_all_tasks(os.path.join(dirname, "../save_file.json"))
+            Task.delete_all_tasks(os.path.join(dirname, "../data/save_file.json"))
             self.populate_tasklist()    # Reload list
 
         dialog = dialog_window_gui.CustomDialog('Delete all tasks?', self.prefs, self)

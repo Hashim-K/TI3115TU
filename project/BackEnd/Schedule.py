@@ -4,7 +4,6 @@ from json import JSONDecodeError
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
-from project.BackEnd import GoogleImport
 from project.BackEnd.General import DayAndSlot, DateFormat, XDaysLater, CheckWhatDay, Slot2Time, TimeBetween, Slot
 import os
 import datetime
@@ -15,18 +14,18 @@ dirname = os.path.dirname(__file__)
 
 # This function initializes the stuff in GoogleImport and gets a list of the google events. Then for each event in
 # the list, it assigns a color and creates an event class object.
-def ImportGoogleEvents():
-    day_zero = presets.day_zero
-    time_interval = presets.time_interval
-    google_events = GoogleImport.Import(day_zero, presets.number_of_days)
-    colors = ['#DAF0C2', '#B0DC7A', '#7FBD32', '#649528', '#477114', '#CBBA01', '#B6A702', '#A39600', '#8A7C00']
-    color_id = 0
-    for event in google_events:
-        label = str(event[0])
-        time1 = DayAndSlot(event[1], day_zero, time_interval)
-        time2 = DayAndSlot(event[2], day_zero, time_interval)
-        Event(label, colors[color_id], [[time1, time2]])
-        color_id = color_id + 1
+# def ImportGoogleEvents():
+#     day_zero = presets.day_zero
+#     time_interval = presets.time_interval
+#     google_events = GoogleImport.Import(day_zero, presets.number_of_days)
+#     colors = ['#DAF0C2', '#B0DC7A', '#7FBD32', '#649528', '#477114', '#CBBA01', '#B6A702', '#A39600', '#8A7C00']
+#     color_id = 0
+#     for event in google_events:
+#         label = str(event[0])
+#         time1 = DayAndSlot(event[1], day_zero, time_interval)
+#         time2 = DayAndSlot(event[2], day_zero, time_interval)
+#         Event(label, colors[color_id], [[time1, time2]])
+#         color_id = color_id + 1
 
 
 # This function determines the start day and slot and end day and slot in the form used in event.Occurrences
@@ -221,7 +220,7 @@ def EmptySlots():
 
 
 def ClearEvents():
-    with open(os.path.join(dirname, 'events.json'), 'w') as file:
+    with open(os.path.join(dirname, '../data/events.json'), 'w') as file:
         file.write('')
     events.clear()
     PrepEvents()
@@ -246,7 +245,7 @@ def PrepEvents():
 
 
 def GetEvents():
-    with open(os.path.join(dirname, 'events.json'), 'r') as open_file:
+    with open(os.path.join(dirname, '../data/events.json'), 'r') as open_file:
         events_dict = json.load(open_file)
         for event in events_dict:
             Event(event['Label'], event['Color'], event['Occurrences'])
@@ -259,7 +258,7 @@ def StoreEvents():
         events_dict.append({'Label': event.Label,
                             'Color': event.Color,
                             'Occurrences': event.Occurrences})
-    with open(os.path.join(dirname, 'events.json'), 'w') as out_file:
+    with open(os.path.join(dirname, '../data/events.json'), 'w') as out_file:
             json.dump(events_dict, out_file, indent=4)
 
 
@@ -351,7 +350,7 @@ class Presets:
             date_as_string = XDaysLater(date_as_string, 1)
             date = [int(date_as_string.split('-')[2]), int(date_as_string.split('-')[1]), int(date_as_string.split('-')[0])]
 
-        with open(os.path.join(dirname, 'presets.json'), 'r') as openfile:
+        with open(os.path.join(dirname, '../data/presets.json'), 'r') as openfile:
             preset_dictionary = json.load(openfile)
             self.day_zero = date_as_string
             self.number_of_days = preset_dictionary['number_of_days']
@@ -372,7 +371,7 @@ class Presets:
                         'time_interval': self.time_interval,
                         'length_morning_routine': self.length_morning_routine,
                         'dark_mode': self.dark_mode}
-        with open(os.path.join(dirname, 'presets.json'), 'w') as out_file:
+        with open(os.path.join(dirname, '../data/presets.json'), 'w') as out_file:
             json.dump(presets_json, out_file, indent=6)
 
     # def update_day_zero(self):
