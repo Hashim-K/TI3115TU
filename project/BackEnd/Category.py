@@ -4,7 +4,7 @@ import os.path
 
 class Category:
     """ The category class is used to create, store and edit categories used by the software in a JSON format. """
-    highest_id = -1
+    highest_id = 0
 
 
     def __init__(self, category_id: int, title: str, colour: str, filename: str):
@@ -99,10 +99,5 @@ def delete_category(filename, category_id):
     except FileNotFoundError:
         print('File does not exist')
 
-def main():
-    filename = 'category.json'
-    cat1 = Category(-1, 'Test', '#FFFFFF', filename)
-    cat1.export_category(filename)
-    cat2 = find_category(filename, 2)
 
-main()
+

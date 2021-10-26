@@ -6,7 +6,7 @@ from PyQt5.QtWidgets import QLabel, QSlider, QComboBox, QCheckBox, QPushButton
 from PyQt5.QtCore import QRegExp, Qt, QDate, QTime
 from PyQt5.QtGui import QRegExpValidator, QIcon
 
-from project.BackEnd import Task
+from project.BackEnd import Task, Category
 from project.gui.general_window_gui import GeneralWindow
 import os
 dirname = os.path.dirname(__file__)
@@ -85,8 +85,10 @@ class TaskCreationWindow(GeneralWindow):
         # Category
         self.category_dropbox = QComboBox(self)
         self.category_dropbox.setStyleSheet("padding: 5px 10px;")
-        categories = ["category 1", "category 2"]
-        self.category_dropbox.addItems(categories)
+        self.category_dropbox.addItem("No category", 0)
+        self.update_categories_dropdown()
+        # categories = ["category 1", "category 2"]
+        # self.category_dropbox.addItems(categories)
         top_layout.addRow("Category", self.category_dropbox)
 
         # Preference
@@ -161,6 +163,14 @@ class TaskCreationWindow(GeneralWindow):
     def update_duration(self, val):
         self.duration_label.setText(str(15*val) + " minutes")
 
+    def update_categories_dropdown(self):
+        """Updates the categories dropdown under 'Preferences'"""
+        categories = Category.import_category(self.prefs.directory['categories'])
+        # print('clear')
+        for category in categories:
+            # Add To Dropdown
+            self.category_dropbox.addItem(category.title, category.category_id)
+
     def create_task(self):
         # Creat Task
         name = self.title_field.text()
@@ -172,7 +182,7 @@ class TaskCreationWindow(GeneralWindow):
         session_duration = self.sessionduration_slider.value()
         session_duration = int(session_duration)
         priority = self.priority_dropdown.currentIndex()
-        category = self.category_dropbox.currentText()
+        category = self.category_dropbox.currentData()
         onsameday = self.sameday_check.isChecked()
         repeat = self.repeat_check.isChecked()
         preferred_time = self.preference_check.isChecked()

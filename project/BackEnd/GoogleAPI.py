@@ -85,16 +85,16 @@ def import_events(service):
     list_events(service)
 
 
-def export_events(service):
+# def export_events(service):
 
 
 
-def main():
-    service = authenticate()
-    # create_calendar(service, 'I hate people')
-    # delete_calendar(service, '3eosiknkb75tu3cta6140ke5dg@group.calendar.google.com')
-    # list_calendars(service)
-    colorprofiles = service.colors().get().execute()
-    pprint(colorprofiles)
+# def main():
+#     service = authenticate()
+#     # create_calendar(service, 'I hate people')
+#     # delete_calendar(service, '3eosiknkb75tu3cta6140ke5dg@group.calendar.google.com')
+#     # list_calendars(service)
+#     colorprofiles = service.colors().get().execute()
+#     pprint(colorprofiles)
 
 # main()
