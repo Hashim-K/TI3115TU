@@ -4,7 +4,7 @@ import os.path
 
 class Category:
     """ The category class is used to create, store and edit categories used by the software in a JSON format. """
-    highest_id = -1
+    highest_id = 0
 
 
     def __init__(self, category_id: int, title: str, colour: str, filename: str):
@@ -25,7 +25,6 @@ class Category:
     def __str__(self):
         text_description = f"Category: \"{self.title}\" ({self.category_id}): {self.colour}.\n"
         return text_description
-
 
     def export_category(self, filename):
         """ Storing category in a JSON file. """
@@ -60,12 +59,22 @@ def import_category(filename):
         print('File does not exist')
     return category_list
 
+
 def find_category(filename, category_id):
     """ Seeks for a task by its taskID. """
     category_list = import_category(filename)
     for category in category_list:
         if category.category_id == category_id:
             return category
+    print('Category(' + str(category_id) + ') not Found')
+
+
+def get_colour(filename, category_id):
+    """ Seeks for a task by its taskID. """
+    category_list = import_category(filename)
+    for category in category_list:
+        if category.category_id == category_id:
+            return category.colour
     print('Category(' + str(category_id) + ') not Found')
 
 
@@ -90,10 +99,5 @@ def delete_category(filename, category_id):
     except FileNotFoundError:
         print('File does not exist')
 
-def main():
-    filename = 'category.json'
-    cat1 = Category(-1, 'Test', '#FFFFFF', filename)
-    cat1.export_category(filename)
-    cat2 = find_category(filename, 2)
 
-main()
+

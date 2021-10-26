@@ -1,6 +1,8 @@
 from project.BackEnd.Google import Create_Service
+from project.BackEnd.Task import Task
 from pprint import pprint
 import os
+import time
 dirname = os.path.dirname(__file__)
 
 
@@ -39,12 +41,61 @@ def list_calendars(service):
         if not page_token:
             break
 
+
+def list_events(service):
+    page_token = None
+    eventlist=[]
+    while True:
+        events = service.events().list(calendarId='primary', pageToken=page_token).execute()
+        for event in events['items']:
+            eventlist.append(event)
+            print(event['summary'])
+        page_token = events.get('nextPageToken')
+        if not page_token:
+            break
+
+
+def get_event(service, event_id):
+    event = service.events().get(calendarId='primary', eventId=event_id).execute()
+    print(event['summary'])
+
+
+def delete_event(service, event_id):
+    service.events().delete(calendarId='primary', eventId=event_id).execute()
+
+
+def insert_event(service, task):
+    event = {
+        'summary': task.name,
+        'description': task.description,
+        'start': {
+            'dateTime': '2015-05-28T09:00:00-07:00',
+            'timeZone': time.tzname[time.daylight],
+        },
+        'end': {
+            'dateTime': '2015-05-28T17:00:00-07:00',
+            'timeZone': time.tzname[time.daylight],
+        },
+    }
+
+    event = service.events().insert(calendarId='primary', body=event).execute()
+    print('Event created: %s' % (event.get('htmlLink')))
+
+
+def import_events(service):
+    list_events(service)
+
+
+def export_events(service):
+    print("hi")
+
 def main():
     service = authenticate()
     # create_calendar(service, 'I hate people')
     # delete_calendar(service, '3eosiknkb75tu3cta6140ke5dg@group.calendar.google.com')
     # list_calendars(service)
-    colorprofiles = service.colors().get().execute()
-    pprint(colorprofiles)
+    insert_event(service, Task.find_task())
+    # colorprofiles = service.colors().get().execute()
+    # pprint(colorprofiles)
 
-# main()
+main()
