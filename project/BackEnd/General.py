@@ -138,6 +138,13 @@ def XDaysLater(date, X):
         if month > 12:
             month = month - 12
             year = year + 1
+    while day < 0:
+        day = days_in_month[month] + day
+        month = month - 1
+        # If the month now exceeds the amount of months in a year, it adjusts for that and adds 1 to the year.
+        if month < 0:
+            month = 12 - month
+            year = year - 1
     return str(year) + '-' + str(month) + '-' + str(day)
 
 
