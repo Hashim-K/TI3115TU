@@ -57,7 +57,7 @@ class TaskInfo(general_window_gui.GeneralWindow):
 
         duration_prompt = QLabel('Duration')
         duration_prompt.setStyleSheet(self.prefs.style_sheets['text_mute_tight'])
-        duration = QLabel(f'{self.task.duration} minutes')
+        duration = QLabel(f'{self.task.duration * 15} minutes')
         duration.setStyleSheet(self.prefs.style_sheets['text_tight'])
         sub_layout.addRow(duration_prompt, duration)
 
