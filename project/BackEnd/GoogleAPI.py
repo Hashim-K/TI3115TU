@@ -2,6 +2,7 @@ from project.BackEnd.Google import Create_Service
 from project.BackEnd.Task import Task
 from pprint import pprint
 import os
+import time
 dirname = os.path.dirname(__file__)
 
 
@@ -69,11 +70,11 @@ def insert_event(service, task):
         'description': task.description,
         'start': {
             'dateTime': '2015-05-28T09:00:00-07:00',
-            'timeZone': 'America/Los_Angeles',
+            'timeZone': time.tzname[time.daylight],
         },
         'end': {
             'dateTime': '2015-05-28T17:00:00-07:00',
-            'timeZone': 'America/Los_Angeles',
+            'timeZone': time.tzname[time.daylight],
         },
     }
 
@@ -85,16 +86,16 @@ def import_events(service):
     list_events(service)
 
 
-# def export_events(service):
+def export_events(service):
+    print("hi")
 
+def main():
+    service = authenticate()
+    # create_calendar(service, 'I hate people')
+    # delete_calendar(service, '3eosiknkb75tu3cta6140ke5dg@group.calendar.google.com')
+    # list_calendars(service)
+    insert_event(service, Task.find_task())
+    # colorprofiles = service.colors().get().execute()
+    # pprint(colorprofiles)
 
-
-# def main():
-#     service = authenticate()
-#     # create_calendar(service, 'I hate people')
-#     # delete_calendar(service, '3eosiknkb75tu3cta6140ke5dg@group.calendar.google.com')
-#     # list_calendars(service)
-#     colorprofiles = service.colors().get().execute()
-#     pprint(colorprofiles)
-
-# main()
+main()
