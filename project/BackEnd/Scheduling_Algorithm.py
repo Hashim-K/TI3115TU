@@ -30,6 +30,7 @@ def obtain_day_zero(filename):
     date_zero = date(int(day_zero[0]), int(day_zero[1]), int(day_zero[2]))  # turns date into date objects
     return date_zero
 
+
 def obtain_time_interval(filename):
     with open(filename) as file:
         preset_dict = json.load(file)
@@ -40,8 +41,8 @@ def main(filename):
     """ Deciding which task to schedule next,
     and turning that task into an event an placing it in the schedule.
     """
-    copyfile(filename, '../copy_file.json')
-    filename = '../copy_file.json'
+    copyfile(filename, '../data/copy_file.json')
+    filename = '../data/copy_file.json'
     forbidden_slots = []
     timetable = create_timetable(filename, obtain_day_zero(os.path.join(dirname, '../data/presets.json')), forbidden_slots)
     print(len(timetable))
@@ -100,16 +101,17 @@ def create_timetable(filename, date_zero, forbidden_slots):
             start_time = timeslot[0][1]
             end_day = timeslot[1][0]
             end_time = timeslot[1][1]
-            current_day += timedelta(days=(end_day - saved_end_day))
-            while ((start_day * total_slots) + (start_time + task.duration) <= (end_day * total_slots) + end_time
+            temp_end_day = start_day
+            current_day += timedelta(days=(temp_end_day - saved_end_day))
+            while ((start_day * total_slots) + (start_time + task.duration - 1) <= (end_day * total_slots) + end_time
                     and current_day <= deadline_date):
-                if start_time + task.duration >= total_slots:
+                if start_time + task.duration - 1 >= total_slots:
                     temp_end_day = start_day + 1
-                    temp_end_time = start_time + task.duration - total_slots
+                    temp_end_time = start_time + task.duration - total_slots - 1
                 else:
                     temp_end_day = start_day
-                    temp_end_time = start_time + task.duration
-                entry = PossibleTime(task.taskID, [[start_day, start_time], [temp_end_day, temp_end_time]],
+                    temp_end_time = start_time + task.duration - 1
+                entry = PossibleTime(task.taskID, [[start_day, int(start_time)], [temp_end_day, int(temp_end_time)]],
                                      calc_score(task, start_time))
                 forbidden = False
                 for forbidden_task in forbidden_slots:
@@ -141,7 +143,7 @@ def overlap_check(tasks_list, empty_slots, event, date_zero, time_interval):
     print('emptyslots', empty_slots)
     tasks_list.sort(reverse=True)
     not_overlap = []
-    taken_slots = [(event.timeslots[0][0], event.timeslots[0][1], event.timeslots[1][1])]
+    taken_slots = [(event.timeslots[0][0], event.timeslots[1][0], event.timeslots[0][1], event.timeslots[1][1])]
     count = 0
     slot_in_one_day = 1440 / time_interval - 1
     passed_deadline = False
@@ -158,8 +160,8 @@ def overlap_check(tasks_list, empty_slots, event, date_zero, time_interval):
                 if timeslot[0] > days_between:
                     passed_deadline = True
                     break
-                if timeslot[0] != empty[1][0] or timeslot[1] + task.duration <= empty[1][1]:
-                    times.append([[timeslot[0], timeslot[1]], [timeslot[0], timeslot[1] + task.duration]])
+                if timeslot[0] != empty[1][0] or timeslot[1] + task.duration - 1 <= empty[1][1]:
+                    times.append([[timeslot[0], timeslot[1]], [timeslot[0], timeslot[1] + task.duration - 1]])
                 else:
                     break
                 if timeslot[1] == slot_in_one_day:
@@ -172,12 +174,17 @@ def overlap_check(tasks_list, empty_slots, event, date_zero, time_interval):
         while slot < len(times):
             available = True
             for taken_slot in taken_slots:
-                if not((times[slot][0][0] != taken_slot[0] or
-                        not(taken_slot[1] <= times[slot][0][1] <= taken_slot[2]
-                            or taken_slot[1] <= times[slot][1][1] <= taken_slot[2]))):
+                if ((times[slot][0][0] == taken_slot[0] and ((times[slot][0][0] == taken_slot[1] and
+                     taken_slot[2] <= times[slot][0][1] <= taken_slot[3]) or times[slot][0][0] < taken_slot[1]))
+                    or (times[slot][0][0] > taken_slot[0] and ((times[slot][0][0] == taken_slot[1] and
+                        times[slot][0][1] <= taken_slot[3]) or times[slot][0][0] < taken_slot[1]))
+                    or (times[slot][1][0] == taken_slot[0] and ((times[slot][1][0] == taken_slot[1] and
+                        taken_slot[2] <= times[slot][1][1] <= taken_slot[3]) or times[slot][1][0] < taken_slot[1]))
+                    or (times[slot][1][0] > taken_slot[0] and ((times[slot][1][0] == taken_slot[1] and
+                        times[slot][1][1] <= taken_slot[3]) or times[slot][1][0] < taken_slot[1]))):
                     available = False
             if available:
-                taken_slots.append((times[slot][0][0], times[slot][0][1], times[slot][1][1]))
+                taken_slots.append((times[slot][0][0], times[slot][1][0], times[slot][0][1], times[slot][1][1]))
                 if sessions == 1:
                     not_overlap.append(True)
                     break
@@ -187,7 +194,7 @@ def overlap_check(tasks_list, empty_slots, event, date_zero, time_interval):
             slot += 1
         if len(not_overlap) != count:
             not_overlap.append(False)
-    print(taken_slots)
+    #print(taken_slots)
     if False in not_overlap:
         return False
     return True
