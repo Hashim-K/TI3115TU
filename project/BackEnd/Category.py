@@ -26,7 +26,6 @@ class Category:
         text_description = f"Category: \"{self.title}\" ({self.category_id}): {self.colour}.\n"
         return text_description
 
-
     def export_category(self, filename):
         """ Storing category in a JSON file. """
         entry = {
@@ -60,12 +59,22 @@ def import_category(filename):
         print('File does not exist')
     return category_list
 
+
 def find_category(filename, category_id):
     """ Seeks for a task by its taskID. """
     category_list = import_category(filename)
     for category in category_list:
         if category.category_id == category_id:
             return category
+    print('Category(' + str(category_id) + ') not Found')
+
+
+def get_colour(filename, category_id):
+    """ Seeks for a task by its taskID. """
+    category_list = import_category(filename)
+    for category in category_list:
+        if category.category_id == category_id:
+            return category.colour
     print('Category(' + str(category_id) + ') not Found')
 
 
