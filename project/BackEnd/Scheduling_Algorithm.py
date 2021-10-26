@@ -60,7 +60,9 @@ def main(filename):
         else:
             entry = best_score_check(timetable)
             #print(entry)
-            if overlap_check(Task.import_task(filename), Schedule.EmptySlots(), entry, obtain_day_zero(os.path.join(dirname, 'presets.json'))):
+            if (overlap_check(Task.import_task(filename), Schedule.EmptySlots(), entry,
+                    obtain_day_zero(os.path.join(dirname, 'presets.json')),
+                    obtain_time_interval(os.path.join(dirname, 'presets.json')))):
                 print("Reason: best score")
                 task = Task.find_task(filename, entry.taskID)
                 #print(task)
@@ -134,22 +136,36 @@ def single_task_check(timetable):
     return pos
 
 
-def overlap_check(tasks_list, empty_slots, event, date_zero):
+def overlap_check(tasks_list, empty_slots, event, date_zero, time_interval):
     """ Checks if the allocated timeslot of event eliminates all the timeslots of another task. """
     tasks_list.sort(reverse=True)
     not_overlap = []
     taken_slots = [(event.timeslots[0][0], event.timeslots[0][1], event.timeslots[1][1])]
     count = 0
+    slot_in_one_day = 1440 / time_interval - 1
+    passed_deadline = False
     for task in tasks_list:
         sessions = task.session
         times = []
         count += 1
         days_between = calculate_days_till_deadline(task, date_zero)
-        for slot in empty_slots:
-            if slot[0][0] > days_between:
+        for empty in empty_slots:
+            if passed_deadline:
                 break
-            for i in range(slot[0][1], slot[1][1] - task.duration + 1):
-                times.append([[slot[0][0], i], [slot[0][0], i + task.duration]])
+            timeslot = empty[0].copy()
+            while True:
+                if timeslot[0] > days_between:
+                    passed_deadline = True
+                    break
+                if timeslot[0] != empty[1][0] or timeslot[1] + task.duration <= empty[1][1]:
+                    times.append([[timeslot[0], timeslot[1]], [timeslot[0], timeslot[1] + task.duration]])
+                else:
+                    break
+                if timeslot[1] == slot_in_one_day:
+                    timeslot[0] += 1
+                    timeslot[1] = 0
+                else:
+                    timeslot[1] += 1
         slot = 0
         while slot < len(times):
             available = True
@@ -206,11 +222,13 @@ def timeslot_pref(task, timeslot, time_interval):
         else:
             return 3
 
+
 def time2slot(timestr, time_interval):
     time = datetime.strptime(timestr, '%H:%M:%S')
     total = time.minute
     total += time.hour * 60
     return total / time_interval
+
 
 def calculate_days_till_deadline(task, date_zero):
     """" Calculating the days between two dates using datetime module,
