@@ -44,6 +44,7 @@ class TaskCreationWindow(GeneralWindow):
         self.datepicker = QDateEdit(calendarPopup=True)
         # self.datepicker.setStyleSheet("padding: 5px 10px;") > Breaks UI
         self.datepicker.setMinimumDate(QDate.currentDate())
+        self.datepicker.setMaximumDate(QDate.currentDate().addDays(7))
         top_layout.addRow("Deadline", self.datepicker)
 
         # Sessions
