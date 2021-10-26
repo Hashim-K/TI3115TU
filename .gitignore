@@ -153,4 +153,8 @@ graphics_low.pptx
 
 *.pickle
 
-project/data/
+project/data/categories.json
+project/data/events.json
+project/data/save_file.json
+project/data/copy_file.json
+project/data/schedule.jpg
