@@ -50,7 +50,7 @@ class TaskCreationWindow(GeneralWindow):
         self.numsessions_field = QLineEdit(self)
         self.numsessions_field.setStyleSheet(self.prefs.style_sheets['fill_line'])
         self.numsessions_field.setText("1")
-        self.numsessions_field.setValidator(QRegExpValidator(QRegExp(r'[0-9]+')))
+        self.numsessions_field.setValidator(QRegExpValidator(QRegExp(r'[1-9]')))
         top_layout.addRow("Number of sessions", self.numsessions_field)
 
         # Duration
