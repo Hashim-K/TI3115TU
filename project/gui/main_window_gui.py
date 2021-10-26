@@ -93,10 +93,37 @@ class MainView(general_window_gui.GeneralWindow):
         home_image_label.setPixmap(home_image)
         home_image_label.setAlignment(QtCore.Qt.AlignCenter)
 
+        # Sublayout
+        sublayout = QHBoxLayout()
+
+        prefs_button = QPushButton('→ Preferences')
+        prefs_button.setStyleSheet(self.prefs.style_sheets['home_special'])
+        prefs_button.clicked.connect(lambda:self.display(4))
+
+        routines_button = QPushButton('→ Routines')
+        routines_button.setStyleSheet(self.prefs.style_sheets['home_special'])
+        routines_button.clicked.connect(lambda:self.display(3))
+
+        tasks_button = QPushButton('→ Tasks')
+        tasks_button.setStyleSheet(self.prefs.style_sheets['home_special'])
+        tasks_button.clicked.connect(lambda:self.display(1))
+
+        schedule_button = QPushButton('→ Schedule')
+        schedule_button.setStyleSheet(self.prefs.style_sheets['home_special'])
+        schedule_button.clicked.connect(lambda:self.display(2))
+
+        # Sublayout adds
+        sublayout.setContentsMargins(75, 0, 75, 0)
+        sublayout.addWidget(prefs_button)
+        sublayout.addWidget(routines_button)
+        sublayout.addWidget(tasks_button)
+        sublayout.addWidget(schedule_button)
+
         # Main Layout
         layout.addStretch()
         layout.addWidget(title)
         layout.addWidget(home_image_label)
+        layout.addLayout(sublayout)
         layout.addStretch()
         self.stack_home.setLayout(layout)
 
@@ -549,12 +576,6 @@ class MainView(general_window_gui.GeneralWindow):
         self.preferences_button.clicked.connect(lambda:self.display(4))
         self.preferences_button.setFixedWidth(100)
 
-        # Generate schedule button
-        self.generate_button = QPushButton('Generate\nSchedule')
-        self.generate_button.setStyleSheet(self.prefs.style_sheets['button_priority_rect'])
-        self.generate_button.clicked.connect(self.add_schedule)
-        self.generate_button.setFixedWidth(100)
-
         layout.addWidget(self.home_button)
         layout.addWidget(line5)
         layout.addWidget(self.event_button)
@@ -566,7 +587,6 @@ class MainView(general_window_gui.GeneralWindow):
         layout.addWidget(self.preferences_button)
         layout.addWidget(line4)
         layout.addStretch()
-        layout.addWidget(self.generate_button)
 
         self.context.setLayout(layout)
 
@@ -704,6 +724,10 @@ class MainView(general_window_gui.GeneralWindow):
             self.update_schedule_image()
         if event_name == 'reload_categories':
             self.update_categories_dropdown()
+
+    # OnClose
+    def closeEvent(self, a0: QtGui.QCloseEvent) -> None:
+        sys.exit()
 
 class GoogleWorker(QThread):
     """

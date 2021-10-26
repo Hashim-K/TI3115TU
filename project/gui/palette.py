@@ -174,6 +174,17 @@ class Prefs():
                     "margin: 0px 0px;}" +
                     "*:hover{background: '#4069ED';}"
                     ),
+        # Special Home Buttons
+        'home_special': (
+                "*{border-radius: 2px;" +
+                "font-size: 14px;"
+                "color : 'white';" +
+                "padding: 10px 5px;" +
+                "margin: 0px 0px;}" +
+                "*:hover{background: '#363940';" +
+                "border-radius: 5px;" +
+                "border: 2px solid '#42464E';}"
+        ),
         # GroupBoxes
         'std_gbox' : (
             "*:title{color : 'white';}"
