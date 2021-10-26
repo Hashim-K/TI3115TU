@@ -236,7 +236,10 @@ def PrepEvents():
         SetSleep()
         SetLunch()
         SetDinner()
+        Event('Other', '#CAA0DA', [])
         StoreEvents()
+
+
 
     schedule.Update()
     SaveImage()
