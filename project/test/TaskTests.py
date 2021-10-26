@@ -138,7 +138,6 @@ class MyTestCase(unittest.TestCase):
         edit_task('jsonfiles/TaskListForTestingAlgo2.json', 2, "Deadline2", "Other task for testing", 1, 0,
                   "2021-10-20", False, 1, ["12:00:00", "16:00:00"], False, 1)
 
-
 @patch('builtins.print')
 def test_no_file_to_import(mock_print):
     import_task('NotExistingFile.json')
