@@ -1,5 +1,6 @@
 import json
 import os.path
+import random
 
 
 class Category:
@@ -100,4 +101,9 @@ def delete_category(filename, category_id):
         print('File does not exist')
 
 
+def random_colour():
+    random_number = random.randint(0, 16777215)
+    hex_number = str(hex(random_number))
+    hex_number = '#' + hex_number[2:]
+    return hex_number
 
