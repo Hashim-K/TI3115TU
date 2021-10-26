@@ -150,12 +150,11 @@ dmypy.json
 proj_graphics.afdesign
 graphics_low.pptx
 
-project/BackEnd/token files/
 
-project/token files/
+*.pickle
 
-project/category.json
-
-project/schedule.jpg
-
-project/save_file.json
+project/data/categories.json
+project/data/events.json
+project/data/save_file.json
+project/data/copy_file.json
+project/data/schedule.jpg

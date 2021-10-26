@@ -26,8 +26,8 @@ class Prefs():
     # SAVING DIRECTORIES
 
     directory = {
-        'tasks' : os.path.join(dirname, '../save_file.json'),
-        'categories' : os.path.join(dirname, '../categories.json')
+        'tasks' : os.path.join(dirname, '../data/save_file.json'),
+        'categories' : os.path.join(dirname, '../data/categories.json')
     }
 
     # STYLE SHEET

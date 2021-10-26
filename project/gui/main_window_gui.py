@@ -378,8 +378,8 @@ class MainView(general_window_gui.GeneralWindow):
         self.morning_routine.valueChanged.connect(self.update_morning_routine)
 
         mr_val = Schedule.presets.length_morning_routine
-        mr_val = int(mr_val[3:5])
-        self.morning_routine.setValue(int(mr_val)*15)
+        mr_val = 60*int(mr_val[:2]) + int(mr_val[3:5])
+        self.morning_routine.setValue(int(int(mr_val)/15))
         self.mr_text.setText(f"Morning Routine Duration: {mr_val} minutes")
 
         mr_descr = QLabel("When setting a sleep routine, a morning routine will automatically be added after the"
@@ -608,7 +608,7 @@ class MainView(general_window_gui.GeneralWindow):
     def delete_all_tasks(self):
         """Deletes all tasks after prompt"""
         def delete_actual():
-            Task.delete_all_tasks(os.path.join(dirname, "../save_file.json"))
+            Task.delete_all_tasks(self.prefs.directory['tasks'])
             self.populate_tasklist()    # Reload list
 
         dialog = dialog_window_gui.CustomDialog('Delete all tasks?', self.prefs, self)
@@ -677,7 +677,7 @@ class MainView(general_window_gui.GeneralWindow):
 
     # Schedule View Functions
     def update_schedule_image(self):
-        self.schedule_image = QPixmap(os.path.join(dirname, '../schedule.jpg'))
+        self.schedule_image = QPixmap(os.path.join(dirname, '../data/schedule.jpg'))
         self.schedule_label.setPixmap(self.schedule_image)
 
     def update_morning_routine(self):

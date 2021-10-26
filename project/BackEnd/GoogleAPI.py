@@ -7,7 +7,7 @@ dirname = os.path.dirname(__file__)
 
 
 def authenticate():
-    CLIENT_SECRET_FILE = os.path.join(dirname, '../new_client_secret.json')
+    CLIENT_SECRET_FILE = os.path.join(dirname, '../client_secret.json')
     API_NAME = 'calendar'
     API_VERSION = 'v3'
     SCOPES = ['https://www.googleapis.com/auth/calendar']
@@ -91,11 +91,12 @@ def export_events(service):
 
 def main():
     service = authenticate()
-    # create_calendar(service, 'I hate people')
+    create_calendar(service, 'I hate people')
     # delete_calendar(service, '3eosiknkb75tu3cta6140ke5dg@group.calendar.google.com')
     # list_calendars(service)
-    insert_event(service, Task.find_task())
+    # insert_event(service, Task.find_task())
     # colorprofiles = service.colors().get().execute()
     # pprint(colorprofiles)
 
-main()
+if __name__ == "__main__":
+    main()
