@@ -349,6 +349,15 @@ class MainView(general_window_gui.GeneralWindow):
 
         gb_layout.addWidget(prompt)
 
+        ### Button
+        button = QPushButton(' Import Google Events')
+        icon = QIcon(self.prefs.images['arrow_down'])
+        button.setIcon(icon)
+        button.setFixedWidth(200)
+        button.setStyleSheet(self.prefs.style_sheets['button_priority_rect'])
+
+        gb_layout.addWidget(button, alignment=QtCore.Qt.AlignCenter)
+
         google_box.setLayout(gb_layout)
 
         body_layout.addWidget(google_box, 0, 0, 1, 1)
@@ -400,6 +409,15 @@ class MainView(general_window_gui.GeneralWindow):
         title_categories.setStyleSheet(self.prefs.style_sheets['text_bubble_slim'])
 
         settings_layout.addWidget(title_categories)
+
+        ## Description Categories
+        desc_text = "These categories together with their respective colours " \
+                    "will be used in visual representations of the schedule."
+        desc = QLabel(desc_text)
+        desc.setWordWrap(True)
+        desc.setStyleSheet(self.prefs.style_sheets['text_mute'])
+
+        settings_layout.addWidget(desc)
 
         ## Categories Dropdown
         combo_row = QHBoxLayout()
