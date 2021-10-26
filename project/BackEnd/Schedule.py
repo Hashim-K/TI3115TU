@@ -7,6 +7,7 @@ import matplotlib.patches as patches
 from project.BackEnd import GoogleImport
 from project.BackEnd.General import DayAndSlot, DateFormat, XDaysLater, CheckWhatDay, Slot2Time, TimeBetween, Slot
 import os
+import datetime
 dirname = os.path.dirname(__file__)
 
 
@@ -197,33 +198,26 @@ def PrintEmpty():
 
 # This bit checks for empty slot in the schedule. It returns a list of the blocks of empty slots.
 def EmptySlots():
-    number_of_slots = schedule.number_of_slots
-    free_blocks = []
-    free_block = []
+    empty_slots = []
     for day in range(presets.number_of_days):
         for slot in range(schedule.number_of_slots):
-            if slot == number_of_slots -1:
-                free_block.append([day, slot])
-                free_blocks.append(free_block)
-                free_block = []
-            elif schedule.schedule[day][slot] == -1:
-                free_block.append([day, slot])
-            else:
-                # if slot == number_of_slots -1:
-                #     free_block.append([day, slot])
-                #     free_blocks.append(free_block)
-                #     free_block = []
-                if len(free_block) > 0 or (len(free_block) > 0 and slot == number_of_slots - 1):
-                    free_block.append([day, slot])
-                    free_blocks.append(free_block)
-                    free_block = []
-    for free_block in free_blocks:
-        while len(free_block) > 2:
-            free_block.pop(1)
-    for free_block in free_blocks:  # this code is a temporary fix
-        if len(free_block) < 2:
-            free_blocks.pop(free_blocks.index(free_block))
-    return free_blocks
+            if schedule.schedule[day][slot] == -1:
+                empty_slots.append([day, slot])
+    empty_blocks = []
+    start_slot = empty_slots[0]
+    for i in range(1, len(empty_slots)):
+        # Check if empty_slots[i] and empty_slots[i+1] are consecutive.
+        consecutive = False
+        if not (empty_slots[i][0] == presets.number_of_days - 1 and empty_slots[i][1] == schedule.number_of_slots - 1):
+            if empty_slots[i][0] == empty_slots[i + 1][0] and empty_slots[i][1] == empty_slots[i + 1][1] - 1:
+                consecutive = True
+            if empty_slots[i][1] == schedule.number_of_slots - 1 and empty_slots[i + 1][1] == 0 \
+                    and empty_slots[i][0] == empty_slots[i + 1][0] - 1:
+                consecutive = True
+        if not consecutive:
+            empty_blocks.append([start_slot, empty_slots[i]])
+            start_slot = empty_slots[i]
+    return empty_blocks
 
 
 def ClearEvents():
@@ -347,9 +341,16 @@ def SetMorningRoutine():
 
 class Presets:
     def __init__(self):
+        # Finds the first monday after today.
+        date_as_string = str(datetime.date.today())
+        date = [int(date_as_string.split('-')[2]), int(date_as_string.split('-')[1]), int(date_as_string.split('-')[0])]
+        while CheckWhatDay(date) != 0:
+            date_as_string = XDaysLater(date_as_string, 1)
+            date = [int(date_as_string.split('-')[2]), int(date_as_string.split('-')[1]), int(date_as_string.split('-')[0])]
+
         with open(os.path.join(dirname, 'presets.json'), 'r') as openfile:
             preset_dictionary = json.load(openfile)
-            self.day_zero = preset_dictionary['day_zero']
+            self.day_zero = date_as_string
             self.number_of_days = preset_dictionary['number_of_days']
             self.time_interval = preset_dictionary['time_interval']
             self.length_morning_routine = preset_dictionary['length_morning_routine']

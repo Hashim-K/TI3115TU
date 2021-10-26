@@ -349,6 +349,15 @@ class MainView(general_window_gui.GeneralWindow):
 
         gb_layout.addWidget(prompt)
 
+        ### Button
+        button = QPushButton(' Import Google Events')
+        icon = QIcon(self.prefs.images['arrow_down'])
+        button.setIcon(icon)
+        button.setFixedWidth(200)
+        button.setStyleSheet(self.prefs.style_sheets['button_priority_rect'])
+
+        gb_layout.addWidget(button, alignment=QtCore.Qt.AlignCenter)
+
         google_box.setLayout(gb_layout)
 
         body_layout.addWidget(google_box, 0, 0, 1, 1)
@@ -401,32 +410,45 @@ class MainView(general_window_gui.GeneralWindow):
 
         settings_layout.addWidget(title_categories)
 
+        ## Description Categories
+        desc_text = "These categories together with their respective colours " \
+                    "will be used in visual representations of the schedule."
+        desc = QLabel(desc_text)
+        desc.setWordWrap(True)
+        desc.setStyleSheet(self.prefs.style_sheets['text_mute'])
+
+        settings_layout.addWidget(desc)
+
         ## Categories Dropdown
         combo_row = QHBoxLayout()
 
         self.categories_dropdown = QComboBox(self)
-        self.categories_dropdown.setStyleSheet("padding: 5px 10px; color: 'white'")
-        self.update_categories_dropdown()     # Initial Init
+        self.categories_dropdown.setStyleSheet("padding: 5px 10px; color: 'white'; font-size: 13px;")
 
         combo_row.addWidget(self.categories_dropdown)
 
         ### Color Show
-        self.colour_piece = QPushButton('')
+        self.colour_piece = QPushButton('#FFFFFF')
         self.colour_piece.setFixedWidth(75)
-        self.colour_piece.setText('#FFFFF')
-        special_sheet = (
-                "*{border: 2px solid '#42464E';" +
+
+        # Placeholder styling
+        temp_sheet = (
+                "*{border: 2px solid '#FFFFFF';" +
                 "border-radius: 5px;" +
-                "background-color: '#42464E';" +
+                "background-color: '#FFFFFF';" +
                 "font-size: 13px;"
                 "color : rgba(0,0,0,0);" +
                 "padding: 5px 0px;" +
                 "margin: 0px 0px;}" +
-                "*:hover{background: '#4069ED'; color: 'black';}"
+                "*:hover{color: 'black';}"
         )
-        self.colour_piece.setStyleSheet(special_sheet)
+        self.colour_piece.setStyleSheet(temp_sheet)
 
+        # Signal Dropdown Change to Colour Preview Change
+        self.categories_dropdown.currentTextChanged.connect(self.local_update_colour_preview)
         combo_row.addWidget(self.colour_piece)
+
+        self.update_categories_dropdown()     # Fetch from JSON
 
         settings_layout.addLayout(combo_row)
 
@@ -445,12 +467,18 @@ class MainView(general_window_gui.GeneralWindow):
         edit_category_button = QPushButton('Edit')
         edit_category_button.setStyleSheet(self.prefs.style_sheets['button_low_priority_rect'])
         edit_category_button.setFixedWidth(75)
+        edit_category_button.clicked.connect(self.edit_current_category)
         button_row.addWidget(edit_category_button)
-        
+
         ### Delete Button
         delete_category_button = QPushButton('Delete')
         delete_category_button.setStyleSheet(self.prefs.style_sheets['button_exit_rect'])
         delete_category_button.setFixedWidth(75)
+            # Delete The Category
+        delete_category_button.clicked.connect(lambda:
+            Category.delete_category(self.prefs.directory['categories'], self.categories_dropdown.currentData()[1]))
+            # Reload the Dropdown
+        delete_category_button.clicked.connect(self.update_categories_dropdown)
         button_row.addWidget(delete_category_button)
 
         button_row.addStretch()
@@ -611,9 +639,41 @@ class MainView(general_window_gui.GeneralWindow):
         """Updates the categories dropdown under 'Preferences'"""
         categories = Category.import_category(self.prefs.directory['categories'])
         self.categories_dropdown.clear()  # Clear Dropdown
+        print('clear')
         for category in categories:
             # Add To Dropdown
-            self.categories_dropdown.addItem(category.title, category.category_id)
+            self.categories_dropdown.addItem(category.title, [category.colour, category.category_id])
+        self.local_update_colour_preview()
+
+    def local_update_colour_preview(self):
+        """Updates Colour Preview:
+        NOTE that the colours are stored as attributes under the QComboBox items. This allows
+        for quick fetching.
+
+        NOTE that the EMPTY check is done because the dropdown may be empty
+        """
+        if self.categories_dropdown.currentData() is not None:  # Check whether is empty
+            colour_hex = str(self.categories_dropdown.currentData()[0])     # Fetch Colour
+        else:
+            colour_hex = '#FFFFFF'
+        self.colour_piece.setText(colour_hex)                           # Set Text
+        # Set Style
+        new_sheet = (
+                "*{border: 2px solid '"+colour_hex+"';" +
+                "border-radius: 5px;" +
+                "background-color: '"+colour_hex+"';" +
+                "font-size: 13px;"
+                "color : rgba(0,0,0,0);" +
+                "padding: 5px 0px;" +
+                "margin: 0px 0px;}" +
+                "*:hover{color: 'black';}"
+        )
+        self.colour_piece.setStyleSheet(new_sheet)
+
+    def edit_current_category(self):
+        if self.categories_dropdown.currentData() is not None:
+            window = general_window_gui.GeneralWindow.pre_init(self.ls_w, self.prefs, CategoryCreationWindow)
+            window.init_ui_late(self.categories_dropdown.currentText(), *self.categories_dropdown.currentData())
 
     # Schedule View Functions
     def update_schedule_image(self):

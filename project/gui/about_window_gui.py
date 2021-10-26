@@ -48,7 +48,7 @@ class AboutWindow(general_window_gui.GeneralWindow):
         layout.addWidget(line_div)
 
         ### Text Lower
-        prompt = "© The Goop Company 2021 | All Rights Reserved"
+        prompt = "© Group 25 | All Rights Reserved"
         lower_text = QLabel(prompt)
         lower_text.setWordWrap(True)
         lower_text.setStyleSheet(self.prefs.style_sheets['text_mute'])

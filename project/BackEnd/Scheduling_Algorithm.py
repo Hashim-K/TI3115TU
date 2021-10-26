@@ -129,8 +129,7 @@ def single_task_check(timetable):
     for i in range(timetable[-1].taskID+1):
         if sum(t.taskID == i for t in timetable) == 1:
             for pos in range(len(timetable)):
-                if timetable[pos].taskID == i + 1:
-                    print(timetable[pos])
+                if timetable[pos].taskID == i:
                     return pos
     return pos
 
@@ -199,36 +198,19 @@ def timeslot_pref(task, timeslot, time_interval):
 
     # if timeslot length changes, this code needs to change as well !!!!
     t_avg = timeslot + task.duration / 2  # to know in which timeslot a task/timeslot combination falls we take the average time
-    preferenceRating = 2
-    if task.preferred == "Ungodly hours (0:00-8:00)":
-        if 0 <= t_avg <= 480 / time_interval - 1:
-            preferenceRating = 1
+    if not task.preferred:
+        return 2
+    else:
+        if time2slot(task.preferred[0], time_interval) <= t_avg <= time2slot(task.preferred[1], time_interval):
+            return 1
         else:
-            preferenceRating = 3
-    if task.preferred == "Morning (8:00-12:00)":
-        if 480 / time_interval <= t_avg <= 720 / time_interval - 1:
-            preferenceRating = 1
-        else:
-            preferenceRating = 3
-    if task.preferred == "Afternoon (12:00-16:00)":
-        if 720 / time_interval <= t_avg <= 960 / time_interval - 1:
-            preferenceRating = 1
-        else:
-            preferenceRating = 3
-    if task.preferred == "Evening (16:00-20:00)":
-        if 960 / time_interval <= t_avg <= 1200 / time_interval - 1:
-            preferenceRating = 1
-        else:
-            preferenceRating = 3
-    if task.preferred == "Night (20:00-23:59)":
-        if 1200 / time_interval <= t_avg <= 1440 / time_interval - 1:
-            preferenceRating = 1
-        else:
-            preferenceRating = 3
-    # if task.preferred == "No Preference":
-    #     preferenceRating = 2
-    return preferenceRating
+            return 3
 
+def time2slot(timestr, time_interval):
+    time = datetime.strptime(timestr, '%H:%M:%S')
+    total = time.minute
+    total += time.hour * 60
+    return total / time_interval
 
 def calculate_days_till_deadline(task, date_zero):
     """" Calculating the days between two dates using datetime module,

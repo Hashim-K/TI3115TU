@@ -17,6 +17,7 @@ class Prefs():
         'icon_warning': os.path.join(dirname, '../media/warning.png'),
         'bar_close': os.path.join(dirname, '../media/bar_close.png'),
         'home_image': os.path.join(dirname, '../media/home_image.png'),
+        'arrow_down': os.path.join(dirname, '../media/arrow_down.png'),
         'placeholder': os.path.join(dirname, '../media/slice4.png'),
         # FROM flaticon
         'algo_icon': os.path.join(dirname, '../media/algo_icon.png')   # @ Linector

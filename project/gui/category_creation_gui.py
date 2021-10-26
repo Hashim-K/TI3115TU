@@ -16,6 +16,18 @@ class CategoryCreationWindow(GeneralWindow):
 
         self.hex_col_selected = '#FFFFFF'
 
+    def init_ui_late(self, title, colour, id):
+        # CHANGE WINDOW ATTRIBUTES
+        self.setWindowTitle(f'Edit Category')
+        self.title.setText(f'Edit Category')
+        self.title_edit.setText(title)
+        self.change_colour_actual(colour)
+
+        # Change Button
+        self.add_button.setText('Edit')
+        self.add_button.clicked.disconnect(self.make_category)
+        self.add_button.clicked.connect(lambda: self.edit_category(id))
+
     def init_ui(self):
         # WINDOW
         self.setWindowTitle(f'Create Category')
@@ -32,10 +44,10 @@ class CategoryCreationWindow(GeneralWindow):
 
         # Main Layout Elements
             # Title
-        title = QLabel('Create New Category')
-        title.setContentsMargins(10, 0, 0, 5)
-        title.setStyleSheet(self.prefs.style_sheets['text_title'])
-        main_layout.addWidget(title)
+        self.title = QLabel('Create New Category')
+        self.title.setContentsMargins(10, 0, 0, 5)
+        self.title.setStyleSheet(self.prefs.style_sheets['text_title'])
+        main_layout.addWidget(self.title)
 
             # Description
         description = "The colour will be used as an identifier for the " \
@@ -84,13 +96,17 @@ class CategoryCreationWindow(GeneralWindow):
         sub_layout.setContentsMargins(10, 10, 0, 10)    # Rows margins
 
         # Add Button
-        add_button = QPushButton('Add')
-        add_button.setStyleSheet(self.prefs.style_sheets['button_priority_rect'])
-        add_button.clicked.connect(self.make_category)
+        self.add_button = QPushButton('Add')
+        self.add_button.setStyleSheet(self.prefs.style_sheets['button_priority_rect'])
+        self.add_button.clicked.connect(self.make_category)
 
         main_layout.addLayout(sub_layout)
-        main_layout.addWidget(add_button)
+        main_layout.addWidget(self.add_button)
         self.setLayout(main_layout)
+
+    def edit_category(self, category_id):
+        # Category.edit_category(category_id, self.title_edit.text(), self.hex_col_selected, self.prefs.directory['categories'])
+        print('Edit Category')
 
     def make_category(self):
         # Get Categories for Comparison
@@ -124,15 +140,20 @@ class CategoryCreationWindow(GeneralWindow):
         self.close()
 
     def change_colour(self):
+        """Pops up colour picker"""
         # Get Colour & Store
         color = QColorDialog.getColor()
-        self.hex_col_selected = color.name()
+        self.change_colour_actual(color.name())
+
+    def change_colour_actual(self, color):
+        """Changes colour based on hex provided"""
+        self.hex_col_selected = color
         # Change Preview
-        self.colour_piece.setText(color.name())
+        self.colour_piece.setText(color)
         new_sheet = (
-                "*{border: 2px solid '"+color.name()+"';" +
+                "*{border: 2px solid '"+color+"';" +
                 "border-radius: 5px;" +
-                "background-color: '"+color.name()+"';" +
+                "background-color: '"+color+"';" +
                 "font-size: 13px;"
                 "color : rgba(0,0,0,0);" +
                 "padding: 5px 0px;" +
