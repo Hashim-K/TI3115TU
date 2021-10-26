@@ -378,8 +378,8 @@ class MainView(general_window_gui.GeneralWindow):
         self.morning_routine.valueChanged.connect(self.update_morning_routine)
 
         mr_val = Schedule.presets.length_morning_routine
-        mr_val = int(mr_val[3:5])
-        self.morning_routine.setValue(int(mr_val)*15)
+        mr_val = 60*int(mr_val[:2]) + int(mr_val[3:5])
+        self.morning_routine.setValue(int(int(mr_val)/15))
         self.mr_text.setText(f"Morning Routine Duration: {mr_val} minutes")
 
         mr_descr = QLabel("When setting a sleep routine, a morning routine will automatically be added after the"
