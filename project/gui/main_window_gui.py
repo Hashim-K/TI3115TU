@@ -677,7 +677,7 @@ class MainView(general_window_gui.GeneralWindow):
 
     # Schedule View Functions
     def update_schedule_image(self):
-        self.schedule_image = QPixmap(os.path.join(dirname, '../schedule.jpg'))
+        self.schedule_image = QPixmap(os.path.join(dirname, '../data/schedule.jpg'))
         self.schedule_label.setPixmap(self.schedule_image)
 
     def update_morning_routine(self):
