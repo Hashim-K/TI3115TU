@@ -208,7 +208,8 @@ def EmptySlots():
     for i in range(1, len(empty_slots)):
         # Check if empty_slots[i] and empty_slots[i+1] are consecutive.
         consecutive = False
-        if not (empty_slots[i][0] == presets.number_of_days - 1 and empty_slots[i][1] == schedule.number_of_slots - 1):
+        if (not (empty_slots[i][0] == presets.number_of_days - 1 and empty_slots[i][1] == schedule.number_of_slots - 1)
+                and empty_slots[i] != empty_slots[-1]):
             if empty_slots[i][0] == empty_slots[i + 1][0] and empty_slots[i][1] == empty_slots[i + 1][1] - 1:
                 consecutive = True
             if empty_slots[i][1] == schedule.number_of_slots - 1 and empty_slots[i + 1][1] == 0 \
@@ -216,7 +217,8 @@ def EmptySlots():
                 consecutive = True
         if not consecutive:
             empty_blocks.append([start_slot, empty_slots[i]])
-            start_slot = empty_slots[i]
+            if empty_slots[i] != empty_slots[-1]:
+                start_slot = empty_slots[i + 1]
     return empty_blocks
 
 

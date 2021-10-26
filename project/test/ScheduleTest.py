@@ -35,26 +35,30 @@ class MyTestCase(unittest.TestCase):
 
     def test_preset_store(self):
         preset = Presets()
-        time_interval = preset.time_interval
-        preset.time_interval = 'random text'
+        day_zero = preset.day_zero
+        preset.day_zero = "random text"
         preset.Store()
         self.assertTrue(filecmp.cmp('../BackEnd/presets.json', 'jsonfiles/TestPresetsStore.json'))
-        preset.time_interval = time_interval
+        preset.day_zero = day_zero
         preset.Store()
 
-    # def test_empty_slots(self):
-    #     presets.number_of_days = 3
-    #     presets.time_interval = 60
-    #     schedule.number_of_slots = round(24 * 60 / presets.time_interval)
-    #     schedule.schedule = np.zeros(shape=(presets.number_of_days, round(24 * 60 / presets.time_interval))) - 1
-    #     answer = [[[0, 0], [0, 23]], [[1, 0], [1, 23]], [[2, 0], [2, 23]]]
+    def test_empty_slots(self):
+        presets.number_of_days = 3
+        presets.time_interval = 60
+        schedule.number_of_slots = round(24 * 60 / presets.time_interval)
+        schedule.schedule = np.zeros(shape=(presets.number_of_days, round(24 * 60 / presets.time_interval))) - 1
+        answer = [[[0, 0], [2, 23]]]
+        self.assertEqual(answer, EmptySlots())
+        for i in range(5):
+            schedule.schedule[1][10+i] = 3
+        answer = [[[0, 0], [1, 9]], [[1, 15], [2, 23]]]
+        self.assertEqual(answer, EmptySlots())
+        schedule.schedule = np.zeros(shape=(presets.number_of_days, round(24 * 60 / presets.time_interval))) - 1
+        schedule.schedule[2][-1] = 2
+        answer = [[[0, 0], [2, 22]]]
+        self.assertEqual(answer, EmptySlots())
     #     self.assertEqual(answer, EmptySlots())
-    #     schedule.schedule[2][-1] = 2
-    #     answer = [[[0, 0], [0, 23]], [[1, 0], [1, 23]], [[2, 0], [2, 23]]]
-    #     self.assertEqual(answer, EmptySlots())
-    #     # for i in range(5):
-    #     #     schedule.schedule[1][10+i] = 3
-    #     # answer = [[[0, 0], [0, 23]], [[1, 0], [1, 10]], [[1, 15], [1, 23]], [[2, 0], [2, 23]]]
+    #
     #     # self.assertEqual(answer, EmptySlots())
     #     # schedule.schedule[1][-1] = 1
     #     # answer = [[[0, 0], [0, 23]], [[1, 0], [1, 10]], [[1, 15], [1, 23]], [[2, 0], [2, 23]]]
