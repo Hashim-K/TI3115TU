@@ -14,12 +14,12 @@
       },
       {
             "TaskID": 2,
-            "Name": "Deadline2",
+            "Name": "Edited Title",
             "Description": "Other task for testing",
-            "Duration": 1,
+            "Duration": 3,
             "Priority": 0,
             "Deadline": "2021-10-20",
-            "Repeatable": false,
+            "Repeatable": true,
             "Category": 1,
             "Preferred": [
                   "12:00:00",
