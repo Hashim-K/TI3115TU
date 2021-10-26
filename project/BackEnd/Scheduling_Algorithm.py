@@ -43,7 +43,7 @@ def main(filename):
     copyfile(filename, '../copy_file.json')
     filename = '../copy_file.json'
     forbidden_slots = []
-    timetable = create_timetable(filename, obtain_day_zero(os.path.join(dirname, 'presets.json')), forbidden_slots)
+    timetable = create_timetable(filename, obtain_day_zero(os.path.join(dirname, '../data/presets.json')), forbidden_slots)
     print(len(timetable))
     while len(timetable) > 0:
         stc = single_task_check(timetable)
@@ -61,8 +61,8 @@ def main(filename):
             entry = best_score_check(timetable)
             #print(entry)
             if (overlap_check(Task.import_task(filename), Schedule.EmptySlots(), entry,
-                    obtain_day_zero(os.path.join(dirname, 'presets.json')),
-                    obtain_time_interval(os.path.join(dirname, 'presets.json')))):
+                    obtain_day_zero(os.path.join(dirname, '../data/presets.json')),
+                    obtain_time_interval(os.path.join(dirname, '../data/presets.json')))):
                 print("Reason: best score")
                 task = Task.find_task(filename, entry.taskID)
                 #print(task)
@@ -74,7 +74,7 @@ def main(filename):
             else:
                 forbidden_slots.append(entry)
                 print("Not planned: Overlap detected")
-        timetable = create_timetable(filename, obtain_day_zero(os.path.join(dirname, 'presets.json')), forbidden_slots)
+        timetable = create_timetable(filename, obtain_day_zero(os.path.join(dirname, '../data/presets.json')), forbidden_slots)
         print(len(timetable))
 
     Schedule.schedule.Update()
@@ -86,7 +86,7 @@ def create_timetable(filename, date_zero, forbidden_slots):
     of every task/timeslot combination and its corresponding score.
     """
     timetable = []
-    timeslot_duration = obtain_time_interval(os.path.join(dirname, 'presets.json'))
+    timeslot_duration = obtain_time_interval(os.path.join(dirname, '../data/presets.json'))
     total_slots = 1440/timeslot_duration
     tasks_list = Task.import_task(filename)
     Schedule.schedule.Update()
@@ -138,6 +138,7 @@ def single_task_check(timetable):
 
 def overlap_check(tasks_list, empty_slots, event, date_zero, time_interval):
     """ Checks if the allocated timeslot of event eliminates all the timeslots of another task. """
+    print('emptyslots', empty_slots)
     tasks_list.sort(reverse=True)
     not_overlap = []
     taken_slots = [(event.timeslots[0][0], event.timeslots[0][1], event.timeslots[1][1])]
@@ -166,6 +167,7 @@ def overlap_check(tasks_list, empty_slots, event, date_zero, time_interval):
                     timeslot[1] = 0
                 else:
                     timeslot[1] += 1
+        print(times)
         slot = 0
         while slot < len(times):
             available = True
@@ -185,6 +187,7 @@ def overlap_check(tasks_list, empty_slots, event, date_zero, time_interval):
             slot += 1
         if len(not_overlap) != count:
             not_overlap.append(False)
+    print(taken_slots)
     if False in not_overlap:
         return False
     return True
@@ -202,8 +205,8 @@ def calc_score(task, timeslot):
         priority = 7
     else:
         priority = task.priority
-    score = (priority * timeslot_pref(task, timeslot, obtain_time_interval(os.path.join(dirname, 'presets.json')))
-            + (calculate_days_till_deadline(task, obtain_day_zero(os.path.join(dirname, 'presets.json'))) - task.session))
+    score = (priority * timeslot_pref(task, timeslot, obtain_time_interval(os.path.join(dirname, '../data/presets.json')))
+            + (calculate_days_till_deadline(task, obtain_day_zero(os.path.join(dirname, '../data/presets.json'))) - task.session))
     return score
 
 
