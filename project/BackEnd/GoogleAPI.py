@@ -98,4 +98,5 @@ def main():
     # colorprofiles = service.colors().get().execute()
     # pprint(colorprofiles)
 
-# main()
+if __name__ = "__main__":
+    main()
