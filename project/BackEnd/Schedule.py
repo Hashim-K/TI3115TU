@@ -10,24 +10,6 @@ import datetime
 dirname = os.path.dirname(__file__)
 
 
-
-
-# This function initializes the stuff in GoogleImport and gets a list of the google events. Then for each event in
-# the list, it assigns a color and creates an event class object.
-# def ImportGoogleEvents():
-#     day_zero = presets.day_zero
-#     time_interval = presets.time_interval
-#     google_events = GoogleImport.Import(day_zero, presets.number_of_days)
-#     colors = ['#DAF0C2', '#B0DC7A', '#7FBD32', '#649528', '#477114', '#CBBA01', '#B6A702', '#A39600', '#8A7C00']
-#     color_id = 0
-#     for event in google_events:
-#         label = str(event[0])
-#         time1 = DayAndSlot(event[1], day_zero, time_interval)
-#         time2 = DayAndSlot(event[2], day_zero, time_interval)
-#         Event(label, colors[color_id], [[time1, time2]])
-#         color_id = color_id + 1
-
-
 # This function determines the start day and slot and end day and slot in the form used in event.Occurrences
 # ([[start_day, start_slot], [end_day, end_slot]]).
 def StartAndEnd(day, start_slot, duration):
@@ -172,7 +154,7 @@ def SaveImage():
     plt.grid(axis='y', color=display.text_color, linewidth=0.5, alpha=0.25, linestyle='dotted')
     plt.tight_layout()
 
-    plt.savefig('schedule.jpg')
+    plt.savefig(os.path.join(dirname, '../data/schedule.jpg'))
 
 
 def PrintBlockInfo(blocks):
