@@ -61,6 +61,7 @@ class CategoryCreationWindow(GeneralWindow):
         title = QLabel('Title')
         title.setStyleSheet(self.prefs.style_sheets['text_mute_tight'])
         self.title_edit = QLineEdit(self)
+        self.title_edit.setMaxLength(30)
         self.title_edit.setStyleSheet(self.prefs.style_sheets['fill_line'])
         sub_layout.addRow(title, self.title_edit)
 
