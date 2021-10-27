@@ -28,6 +28,8 @@ def StartAndEnd(day, start_slot, duration):
     if end_day >= presets.number_of_days:
         end_day = presets.number_of_days - 1
         end_slot = schedule.number_of_slots
+    if end_slot < start_slot:
+        end_day += 1
     return [[start_day, start_slot], [end_day, end_slot]]
 
 
@@ -53,17 +55,6 @@ def AppendEvents():
                     schedule.schedule[block[0][0]][slot] = event.ID
                 else:
                     schedule.overlap[block[0][0]][slot] = event.ID
-
-
-# Block index
-def BlockIndex(blocks, day, slot):
-    for block in blocks:
-        if block[0][0] == block[1][0]:
-            if block[0][0] == day and block[0][1] <= slot <= block[1][1]:
-                return blocks.index(block)
-        else:
-            if block[0][0] == day and block[0][1] <= slot or (block[1][0] == day and block[1][1] >= slot):
-                return blocks.index(block)
 
 
 # This bit goes through all slots in the schedule.overlap array to check whether overlap occurs. It returns
@@ -189,7 +180,8 @@ def EmptySlots():
     for i in range(1, len(empty_slots)):
         # Check if empty_slots[i] and empty_slots[i+1] are consecutive.
         consecutive = False
-        if not (empty_slots[i][0] == presets.number_of_days - 1 and empty_slots[i][1] == schedule.number_of_slots - 1):
+        if (not (empty_slots[i][0] == presets.number_of_days - 1 and empty_slots[i][1] == schedule.number_of_slots - 1)
+                and empty_slots[i] != empty_slots[-1]):
             if empty_slots[i][0] == empty_slots[i + 1][0] and empty_slots[i][1] == empty_slots[i + 1][1] - 1:
                 consecutive = True
             if empty_slots[i][1] == schedule.number_of_slots - 1 and empty_slots[i + 1][1] == 0 \
@@ -197,7 +189,8 @@ def EmptySlots():
                 consecutive = True
         if not consecutive:
             empty_blocks.append([start_slot, empty_slots[i]])
-            start_slot = empty_slots[i]
+            if empty_slots[i] != empty_slots[-1]:
+                start_slot = empty_slots[i + 1]
     return empty_blocks
 
 

@@ -1,7 +1,7 @@
 {
-      "day_zero": "2021-09-12",
+      "day_zero": "random text",
       "number_of_days": 7,
-      "time_interval": "random text",
+      "time_interval": 15,
       "length_morning_routine": "00:00:00",
       "dark_mode": true
 }

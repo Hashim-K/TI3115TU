@@ -29,18 +29,18 @@ class MyTestCase(unittest.TestCase):
         empty = [[[0, 5], [0, 25]]]
         event = PossibleTime(3, [[0, 6], [0, 24]], 1)
         date_zero = obtain_day_zero(os.path.join(dirname, 'jsonfiles/TestDatesTillDeadline.json'))
-        self.assertFalse(overlap_check(tasks_list, empty, event, date_zero))
+        self.assertFalse(overlap_check(tasks_list, empty, event, date_zero, 1))
         event = PossibleTime(3, [[0, 5], [0, 10]], 1)
-        self.assertTrue(overlap_check(tasks_list, empty, event, date_zero))
+        self.assertTrue(overlap_check(tasks_list, empty, event, date_zero, 1))
         tasks_list.append(Task(-1, "Title", "Description", 15, 0, datetime(2021, 11, 10, 0, 0), False, 1,
                                ["08:00:00", "12:00:00"], True, 1, 'nofile'))
-        self.assertFalse(overlap_check(tasks_list, empty, event, date_zero))
+        self.assertFalse(overlap_check(tasks_list, empty, event, date_zero, 1))
         task = Task(-1, "Title", "Description", 5, 0, datetime(2021, 11, 20, 0, 0), False, 1,
                                ["08:00:00", "12:00:00"], True, 4, 'nofile')
-        self.assertFalse(overlap_check([task], empty, event, date_zero))
+        self.assertFalse(overlap_check([task], empty, event, date_zero, 1))
         task = Task(-1, "Title", "Description", 3, 0, datetime(2021, 11, 21, 0, 0), False, 1,
                     ["08:00:00", "12:00:00"], True, 2, 'nofile')
-        self.assertTrue(overlap_check([task], empty, event, date_zero))
+        self.assertTrue(overlap_check([task], empty, event, date_zero, 1))
         empty = [[[0, 5], [0, 25]], [[0, 40], [0, 45]], [[3, 30], [3, 35]]]
         event = PossibleTime(3, [[0, 5], [0, 14]], 1)
         task1 = Task(1, "Title", "Description", 10, 0, datetime(2021, 11, 21, 0, 0), False, 1,
@@ -51,19 +51,31 @@ class MyTestCase(unittest.TestCase):
                             ["08:00:00", "12:00:00"], True, 1, 'nofile')
         task4 = Task(4, "Title", "Description", 5, 0, datetime(2021, 11, 25, 0, 0), False, 1,
                             ["08:00:00", "12:00:00"], True, 2, 'nofile')
-        self.assertTrue(overlap_check([task1, task2, task3], empty, event, date_zero))
-        self.assertFalse(overlap_check([task1, task2, task3, task4], empty, event, date_zero))
-        self.assertFalse(overlap_check([task1, task2, task4], empty, event, date_zero))
-        self.assertTrue(overlap_check([task3, task2, task1], empty, event, date_zero))
+        self.assertTrue(overlap_check([task1, task2, task3], empty, event, date_zero, 1))
+        self.assertFalse(overlap_check([task1, task2, task3, task4], empty, event, date_zero, 1))
+        self.assertFalse(overlap_check([task1, task2, task4], empty, event, date_zero, 1))
+        self.assertTrue(overlap_check([task3, task2, task1], empty, event, date_zero, 1))
         event = PossibleTime(3, [[0, 5], [0, 22]], 1)
-        empty = [[[0, 5], [0, 25]], [[0, 40], [0, 45]], [[3, 30], [3, 35]], [[4, 20], [4, 60]]]
+        empty = [[[0, 5], [0, 25]], [[0, 40], [0, 44]], [[3, 30], [3, 34]], [[4, 20], [4, 60]]]
         task5 = Task('pay att', "Title", "Description", 6, 0, datetime(2021, 10, 19, 0, 0), False, 1,
                      ["08:00:00", "12:00:00"], True, 1, 'nofile')
-        self.assertFalse(overlap_check([task5], empty, event, date_zero))
+        self.assertFalse(overlap_check([task5], empty, event, date_zero, 1))
+
+    def test_overlap_check2(self):
+        date_zero = obtain_day_zero(os.path.join(dirname, 'jsonfiles/TestDatesTillDeadline.json'))
+        event = PossibleTime(3, [[0, 20], [1, 8]], 2)
+        empty = [[[0, 23], [2, 23]]]
+        task1 = Task(1, "Title", "Description", 10, 0, datetime(2021, 11, 21, 0, 0), False, 1,
+                     ["08:00:00", "12:00:00"], True, 1, 'nofile')
+        task2 = Task(2, "Title", "Description", 5, 0, datetime(2021, 11, 23, 0, 0), False, 1,
+                     ["08:00:00", "12:00:00"], True, 1, 'nofile')
+        task_list = [task1, task2]
+        self.assertTrue(overlap_check(task_list, empty, event, date_zero, 60))
+        event = PossibleTime(3, [[0, 5], [2, 20]], 2)
+        self.assertFalse(overlap_check(task_list, empty, event, date_zero, 60))
 
 
     def test_timeslot_pref(self):
-
         task = Task(-1, "Title", "Description", 2, 0, datetime(2021, 10, 20, 0, 0), False, 1,
                     ["00:00:00", "08:00:00"], True, 1, 'nofile')
         timeslot = 4

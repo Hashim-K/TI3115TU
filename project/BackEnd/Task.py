@@ -133,3 +133,28 @@ def delete_session(filename, taskID):
     except FileNotFoundError:
         print('File does not exist')
 
+
+def edit_task(filename, taskID: int, name: str, description: str, duration: int, priority: int, deadline: str,
+                 repeatable: bool, category: str, preferred: str, plan_on_same: bool, session: int):
+    try:
+        with open(filename, 'r') as file:
+            task_dict = json.load(file)
+        for i in range(len(task_dict)):
+            if task_dict[i]['TaskID'] == taskID:
+                print('found')
+                task_dict[i]['Name'] = name
+                task_dict[i]['Description'] = description
+                task_dict[i]['Duration'] = duration
+                task_dict[i]['Priority'] = priority
+                task_dict[i]['Deadline'] = deadline
+                task_dict[i]['Repeatable'] = repeatable
+                task_dict[i]['Category'] = category
+                task_dict[i]['Preferred'] = preferred
+                task_dict[i]['Plan_on_same'] = plan_on_same
+                task_dict[i]['Session'] = session
+                break
+        with open(filename, 'w') as file:
+            json.dump(task_dict, file, indent=6)
+    except FileNotFoundError:
+        print('File does not exist')
+

@@ -1,5 +1,5 @@
 import unittest
-from project.BackEnd.Task import Task, import_task, delete_task, find_task, delete_session, delete_all_tasks
+from project.BackEnd.Task import Task, import_task, delete_task, find_task, delete_session, delete_all_tasks, edit_task
 import filecmp
 from datetime import date, datetime
 import os
@@ -126,11 +126,17 @@ class MyTestCase(unittest.TestCase):
         self.assertTrue(task1 < task3)
         self.assertFalse(task3 < task2)
 
-
     def test_delete_all(self):
         copyfile('jsonfiles/FileForTestingOne.json', 'jsonfiles/copy_file_2.json')
         delete_all_tasks('jsonfiles/copy_file_2.json')
         self.assertTrue(filecmp.cmp('jsonfiles/copy_file_2.json', "jsonfiles/TestIDempty.json", shallow=False))
+
+    def test_edit_task(self):
+        edit_task('jsonfiles/TaskListForTestingAlgo2.json', 2, "Edited Title", "Other task for testing", 3, 0,
+                    "2021-10-20", True, 1, ["12:00:00", "16:00:00"], False, 1)
+        self.assertTrue(filecmp.cmp('jsonfiles/TaskListForTestingAlgo2.json', 'jsonfiles/TestEditedFile.json'))
+        edit_task('jsonfiles/TaskListForTestingAlgo2.json', 2, "Deadline2", "Other task for testing", 1, 0,
+                  "2021-10-20", False, 1, ["12:00:00", "16:00:00"], False, 1)
 
 @patch('builtins.print')
 def test_no_file_to_import(mock_print):
@@ -139,6 +145,8 @@ def test_no_file_to_import(mock_print):
     delete_task('NotExistingFile.json', 1)
     mock_print.assert_called_with('File does not exist')
     delete_session('NotExistingFile.json', 1)
+    mock_print.assert_called_with('File does not exist')
+    edit_task('nofile', 1, 2, 2, 3, 4, 5, 6, 7, 8, 9, 1)
     mock_print.assert_called_with('File does not exist')
 
 @patch('builtins.print')
