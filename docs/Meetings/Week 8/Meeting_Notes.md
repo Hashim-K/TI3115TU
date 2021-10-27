@@ -18,7 +18,7 @@
 		-  Front End --> Robin & Achere
 		- Google Import --> Hashim
 - Reflection and Adaptation --> everyone
-- Conclusion --> Hashim
+- Conclusion --> Robin
 - Diagrams --> Hashim
 
 Deadline report Thursday evening
@@ -36,3 +36,34 @@ Presentation on Friday
 - Algorithm has been updated
 - More tests have been made
 
+
+# Meeting Notes | 2021-10-20 | Week 8
+
+*By N.I.M. Oosterlaar*
+
+## TA Meeting
+
+ - Presentation
+	 - Description of project and its purpose
+	 - Demo (recording)
+	 - Description of architecture/ code
+		 - libraries
+		 - frameworks
+	 - Structure
+	 - Other Topic
+		 - Progress
+		 - Interesting problems or issues
+		 - Testing
+- Pipeline failing is not an issue, mention in report
+- Write short readme file on how to use your code
+- In docs write a decription of an example of refactoring
+
+
+
+## Group Meeting
+
+- Hashim rewrote schedule
+- Testing needs to be updated
+- Teus will write about the refactoring
+- Pipeline failing under software testing
+- readme by Achere
