@@ -12,7 +12,7 @@ class Category:
         if category_id != -1:  # category_id is given in the initializer
             self.category_id = category_id
         else:
-            # calculating category_id from the already exisiting categories
+            # calculating category_id from the already existing categories
             if not os.path.exists(filename) or os.stat(filename).st_size < 4:
                 Category.highest_id += 1
                 self.category_id = Category.highest_id
@@ -101,9 +101,22 @@ def delete_category(filename, category_id):
         print('File does not exist')
 
 
+def edit_category(filename, category_id: int, title: str, colour: str):
+    try:
+        with open(filename, 'r') as file:
+            task_dict = json.load(file)
+        for i in range(len(task_dict)):
+            if task_dict[i]['category_id'] == category_id:
+                task_dict[i]['title'] = title
+                task_dict[i]['colour'] = colour
+        with open(filename, 'w') as file:
+            json.dump(task_dict, file, indent=6)
+    except FileNotFoundError:
+        print('File does not exist')
+
+
 def random_colour():
     random_number = random.randint(0, 16777215)
     hex_number = str(hex(random_number))
     hex_number = '#' + hex_number[2:]
     return hex_number
-

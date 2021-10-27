@@ -140,7 +140,6 @@ def single_task_check(timetable):
 
 def overlap_check(tasks_list, empty_slots, event, date_zero, time_interval):
     """ Checks if the allocated timeslot of event eliminates all the timeslots of another task. """
-    print('emptyslots', empty_slots)
     tasks_list.sort(reverse=True)
     not_overlap = []
     taken_slots = [(event.timeslots[0][0], event.timeslots[1][0], event.timeslots[0][1], event.timeslots[1][1])]
@@ -194,7 +193,6 @@ def overlap_check(tasks_list, empty_slots, event, date_zero, time_interval):
             slot += 1
         if len(not_overlap) != count:
             not_overlap.append(False)
-    #print(taken_slots)
     if False in not_overlap:
         return False
     return True
