@@ -6,7 +6,7 @@ from PyQt5.QtWidgets import QLabel, QSlider, QComboBox, QCheckBox, QPushButton
 from PyQt5.QtCore import QRegExp, Qt, QDate, QTime
 from PyQt5.QtGui import QRegExpValidator, QIcon
 
-from project.BackEnd import Task, Category
+from project.BackEnd import Task, Category, Schedule
 from project.gui.general_window_gui import GeneralWindow
 import os
 dirname = os.path.dirname(__file__)
@@ -43,8 +43,10 @@ class TaskCreationWindow(GeneralWindow):
         # Deadline
         self.datepicker = QDateEdit(calendarPopup=True)
         # self.datepicker.setStyleSheet("padding: 5px 10px;") > Breaks UI
-        self.datepicker.setMinimumDate(QDate.currentDate())
-        self.datepicker.setMaximumDate(QDate.currentDate().addDays(7))
+        date = Schedule.presets.day_zero.split("-")
+        date = [int(d) for d in date]
+        self.datepicker.setMinimumDate(QDate(date[0], date[1], date[2]))
+        self.datepicker.setMaximumDate(QDate(date[0], date[1], date[2]).addDays(7))
         top_layout.addRow("Deadline", self.datepicker)
 
         # Sessions
