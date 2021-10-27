@@ -2,9 +2,8 @@ import json
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
-from project.BackEnd.General import DateFormat, XDaysLater, CheckWhatDay, Slot2Time, TimeBetween, Slot
+from project.BackEnd.General import DateFormat, XDaysLater, CheckWhatDay, Slot2Time, TimeBetween, Slot, find_day_zero
 import os
-from project.BackEnd.Preset import Presets
 
 dirname = os.path.dirname(__file__)
 
@@ -302,6 +301,35 @@ def SetMorningRoutine():
         duration = Slot(presets.length_morning_routine, presets.time_interval)
         events[morning_routine_id].Occurrences.append(StartAndEnd(Occurrence[1][0], Occurrence[1][1], duration))
 
+class Presets:
+    def __init__(self):
+        with open(os.path.join(dirname, '../data/presets.json'), 'r') as openfile:
+            preset_dictionary = json.load(openfile)
+            self.day_zero = find_day_zero(0)
+            self.number_of_days = preset_dictionary['number_of_days']
+            self.time_interval = preset_dictionary['time_interval']
+            self.length_morning_routine = preset_dictionary['length_morning_routine']
+            self.dark_mode = preset_dictionary['dark_mode']
+
+    def PrintPresets(self):
+        print(f"day_zero = '{self.day_zero}'\n"
+              f"number_of_days = {self.number_of_days}\n"
+              f"time_interval = {self.time_interval}\n"
+              f"length_morning_routine = '{self.length_morning_routine}'\n"
+              f"dark_mode = {self.dark_mode}\n")
+
+    def Store(self):
+        presets_json = {'day_zero': self.day_zero,
+                        'number_of_days': self.number_of_days,
+                        'time_interval': self.time_interval,
+                        'length_morning_routine': self.length_morning_routine,
+                        'dark_mode': self.dark_mode}
+        with open(os.path.join(dirname, '../data/presets.json'), 'w') as out_file:
+            json.dump(presets_json, out_file, indent=6)
+
+    # def update_day_zero(self):
+    #     current_day =
+    #     # self.day_zero =
 
 
 class Main:
