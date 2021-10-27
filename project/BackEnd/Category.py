@@ -120,4 +120,3 @@ def random_colour():
     hex_number = str(hex(random_number))
     hex_number = '#' + hex_number[2:]
     return hex_number
-
