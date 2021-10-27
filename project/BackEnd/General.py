@@ -6,6 +6,7 @@ This function uses the following inputs:
 datetime (the date and time in the form '06-10-2021,17:21:00'), day_zero (the first day of the week)
 and time_interval (the length of a time slot).
 It's output is the index of the day and slot in the schedule ([day, slot])."""
+import datetime
 
 
 def DayAndSlot(datetime, day_zero, time_interval):
@@ -145,7 +146,11 @@ def XDaysLater(date, X):
         if month < 0:
             month = 12 - month
             year = year - 1
-    return str(year) + '-' + str(month) + '-' + str(day)
+    if day<10:
+        daystr="0"+str(day)
+    else:
+        daystr=str(day)
+    return str(year) + '-' + str(month) + '-' +daystr
 
 
 # Formats the date to be displayed in the form of 'January 1st'.
@@ -184,3 +189,12 @@ def TimeBetween(block, time_interval):
         minutes = f'0{minutes}'
     return f'{hours}:{minutes}:00'
 
+def find_day_zero(week):
+    # Finds the first monday after today.
+    date_as_string = str(datetime.date.today())
+    date = [int(date_as_string.split('-')[2]), int(date_as_string.split('-')[1]), int(date_as_string.split('-')[0])]
+    while CheckWhatDay(date) != 0:
+        date_as_string = XDaysLater(date_as_string, 1)
+        date = [int(date_as_string.split('-')[2]), int(date_as_string.split('-')[1]), int(date_as_string.split('-')[0])]
+
+    return XDaysLater(date_as_string, week*7)

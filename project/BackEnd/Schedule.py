@@ -4,7 +4,8 @@ from json import JSONDecodeError
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
-from project.BackEnd.General import DayAndSlot, DateFormat, XDaysLater, CheckWhatDay, Slot2Time, TimeBetween, Slot
+from project.BackEnd.General import DayAndSlot, DateFormat, XDaysLater, CheckWhatDay, Slot2Time, TimeBetween, Slot, \
+    find_day_zero
 import os
 import datetime
 dirname = os.path.dirname(__file__)
@@ -207,9 +208,10 @@ def PrepEvents():
     except:
         pass
     if not events:
-        SetSleep()
-        SetLunch()
-        SetDinner()
+        Event('Sleep', '#546fa8', [])
+        Event('Morning Routine', '#7b9adb', [])
+        Event('Lunch', '#e8b048', [])
+        Event('Dinner', '#ba8420', [])
         Event('Other', '#CAA0DA', [])
         StoreEvents()
 
@@ -294,19 +296,6 @@ class Display:
         self.face_color = '#DDDDDD'
 
 
-def SetSleep():
-    Event('Sleep', '#546fa8', [])
-    Event('Morning Routine', '#7b9adb', [])
-
-
-def SetLunch():
-    Event('Lunch', '#e8b048', [])
-
-
-def SetDinner():
-    Event('Dinner', '#ba8420', [])
-
-
 def SetMorningRoutine():
     morning_routine_id = id_dict['Morning Routine']
     sleep_id = id_dict['Sleep']
@@ -318,16 +307,9 @@ def SetMorningRoutine():
 
 class Presets:
     def __init__(self):
-        # Finds the first monday after today.
-        date_as_string = str(datetime.date.today())
-        date = [int(date_as_string.split('-')[2]), int(date_as_string.split('-')[1]), int(date_as_string.split('-')[0])]
-        while CheckWhatDay(date) != 0:
-            date_as_string = XDaysLater(date_as_string, 1)
-            date = [int(date_as_string.split('-')[2]), int(date_as_string.split('-')[1]), int(date_as_string.split('-')[0])]
-
         with open(os.path.join(dirname, '../data/presets.json'), 'r') as openfile:
             preset_dictionary = json.load(openfile)
-            self.day_zero = date_as_string
+            self.day_zero = find_day_zero(0)
             self.number_of_days = preset_dictionary['number_of_days']
             self.time_interval = preset_dictionary['time_interval']
             self.length_morning_routine = preset_dictionary['length_morning_routine']
@@ -368,6 +350,7 @@ class Main:
         self.EmptyArrays()
         AppendEvents()
         return ResolveOverlap()
+
 
 
 # Events, presets and the schedule instance.
