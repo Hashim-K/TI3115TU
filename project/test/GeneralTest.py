@@ -1,5 +1,5 @@
 import unittest
-from project.BackEnd.General import DaysSince2020, LeapYear,  CheckWhatDay, DayAndSlot
+from project.BackEnd.General import DaysSince2020, LeapYear,  CheckWhatDay, DayAndSlot, find_day_zero
 from project.BackEnd.General import Slot2Time, XDaysLater, DateFormat, Slot, TimeBetween
 
 
@@ -63,7 +63,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual('2021-7-12', XDaysLater('2021-07-12', 0))
         self.assertEqual('2020-12-17', XDaysLater('2020-12-12', 5))
         self.assertEqual('2021-12-12', XDaysLater('2020-12-12', 366))
-        self.assertEqual('2021-12-6', XDaysLater('2021-10-07', 60))
+        self.assertEqual('2021-12-06', XDaysLater('2021-10-07', 60))
 
     def test_time_between(self):
         block = [[2, 174], [2, 198]]
