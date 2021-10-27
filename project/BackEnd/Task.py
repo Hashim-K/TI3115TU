@@ -13,7 +13,7 @@ class Task:
 
 
     def __init__(self, taskID: int, name: str, description: str, duration: int, priority: int, deadline: str,
-                 repeatable: bool, category: str, preferred, plan_on_same: bool, session: int, filename: str):
+                 repeatable: bool, category: int, preferred, plan_on_same: bool, session: int, filename: str):
         if taskID != -1:  # taskID is given in the initializer
             self.taskID = taskID
         else:
