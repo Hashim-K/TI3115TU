@@ -25,7 +25,7 @@ class Routine:
         self.timeslots = timeslots
 
     def __str__(self):
-        text_description = f"routine \"{self.name}\" ({self.routine_id}):\n{self.timeslots} "
+        text_description = f"routine \"{self.name}\" ({self.routine_id}):\n{self.timeslots}"
         return text_description
 
 
@@ -99,15 +99,12 @@ def delete_routine(filename, routine_id):
 
 def delete_times(filename, routine_id, times):
     """ Delete a session from a JSON file. """
-    try:
-        rl = import_routine(filename)
-        delete_all_routines(filename)
-        for routine in rl:
-            if routine.routine_id == routine_id:
-                for i in range(len(times)):
-                    t=times[i]
-                    routine.timeslots.delete_time(t[0][0], t[0][1], t[1][0], t[1][1])
-            routine.export_routine(filename)
-    except FileNotFoundError:
-        print('File does not exist')
+    rl = import_routine(filename)
+    delete_all_routines(filename)
+    for routine in rl:
+        if routine.routine_id == routine_id:
+            for i in range(len(times)):
+                t = times[i]
+                routine.timeslots.delete_time(t[0][0], t[0][1], t[1][0], t[1][1])
+        routine.export_routine(filename)
 
