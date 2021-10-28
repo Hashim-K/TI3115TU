@@ -25,6 +25,16 @@ class TimeObject:
         self.dateTime = dt.strftime("%Y-%m-%dT"+h+":"+m)
         self.timeZone = time.strftime("%z", time.gmtime())
 
+    def dateTime_to_timeslot(self):
+        presets = Presets()
+        timeinterval = presets.time_interval
+        date = datetime.date.fromisoformat(self.dateTime[0:10])
+        time = datetime.time.fromisoformat(self.dateTime[11:16])
+        slot = int((time.hour*60+time.minute)/timeinterval)
+        day_zero = datetime.date.fromisoformat(presets.day_zero)
+        day = (date-day_zero).days
+        return [day, slot]
+
 
 def str_init(dateTime: str, timeZone: str):
     t = TimeObject(str(datetime.date.today()), 0, 0)
