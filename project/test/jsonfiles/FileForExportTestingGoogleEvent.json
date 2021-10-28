@@ -1,7 +1,7 @@
 [
       {
             "google_event_id": 1,
-            "Summary": "Summary",
+            "Name": "Summary",
             "Description": "Description",
             "Start": {
                   "dateTime": "2021-11-02T08:45",

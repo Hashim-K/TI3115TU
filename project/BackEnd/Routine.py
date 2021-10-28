@@ -1,7 +1,6 @@
 import json
 import os.path
 from datetime import datetime
-from project.BackEnd import Schedule
 from project.BackEnd.TimeList import TimeList
 
 dirname = os.path.dirname(__file__)
