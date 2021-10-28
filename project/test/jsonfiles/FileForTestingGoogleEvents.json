@@ -1,0 +1,15 @@
+[
+      {
+            "google_event_id": 1,
+            "Summary": "Summary",
+            "Description": "Description",
+            "Start": {
+                  "dateTime": "2021-11-02T08:45",
+                  "timeZone": "+0100"
+            },
+            "End": {
+                  "dateTime": "2021-11-02T09:45",
+                  "timeZone": "+0100"
+            }
+      }
+]

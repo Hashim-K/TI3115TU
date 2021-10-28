@@ -70,7 +70,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(colour, None)
 
     def test_delete_all_categories(self):
-        copyfile('jsonfiles/FileForTestingCategories.json', 'jsonfiles/copy_file_3.json')
+        copyfile('jsonfiles/TestingCategoriesID.json', 'jsonfiles/copy_file_3.json')
         delete_all_categories('jsonfiles/copy_file_3.json')
         self.assertTrue(filecmp.cmp('jsonfiles/copy_file_3.json', 'jsonfiles/TestIDempty.json'))
 

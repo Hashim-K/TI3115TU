@@ -8,6 +8,7 @@ dirname = os.path.dirname(__file__)
 
 class GoogleEvent:
     """ The google_event class is used to create, store and edit google_events used by the software in a JSON format. """
+
     highest_id = 0
 
     def __init__(self, google_event_id: int, summary: str, description: str, start: TimeObject, end: TimeObject, filename: str):
@@ -38,7 +39,6 @@ class GoogleEvent:
                             + f"    'timeZone': {self.end.timeZone}\n"\
                             + f"}}\n"
         return text_description
-
 
     def export_google_event(self, filename):
         """ Storing google_events in a JSON file. """
@@ -83,6 +83,7 @@ def import_google_event(filename):
         print('File does not exist')
     return google_events_list
 
+
 def find_google_event(filename, google_event_ID):
     """ Seeks for a google_event by its google_event_id. """
     google_events_list = import_google_event(filename)
@@ -91,11 +92,13 @@ def find_google_event(filename, google_event_ID):
             return google_event
     print('google_event: google_event not Found')
 
+
 def delete_all_google_events(filename):
     """Deletes all google_events from a JSON file."""
     google_events_list = import_google_event(filename)
     for google_event in google_events_list:
         delete_google_event(filename, google_event.google_event_id)
+
 
 def delete_google_event(filename, google_event_id):
     """ Delete a google_event from a JSON file. """
