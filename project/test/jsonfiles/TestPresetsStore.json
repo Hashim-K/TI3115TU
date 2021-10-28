@@ -2,5 +2,6 @@
       "day_zero": "a day",
       "number_of_days": 5,
       "time_interval": 30,
-      "length_morning_routine": "01:45:00"
+      "length_morning_routine": "01:45:00",
+      "calendar_id": 3
 }

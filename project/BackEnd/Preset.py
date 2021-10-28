@@ -13,7 +13,7 @@ class Presets:
             self.length_morning_routine = preset_dictionary['length_morning_routine']
             self.calendar_id = -1
             if preset_dictionary['calendar_id'] != -1:
-                self.calendar_id=preset_dictionary['calendar_id']
+                self.calendar_id = preset_dictionary['calendar_id']
 
     def __str__(self):
         return (f"day_zero = '{self.day_zero}'\n"
