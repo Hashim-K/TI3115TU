@@ -11,17 +11,22 @@ class Presets:
             self.number_of_days = preset_dictionary['number_of_days']
             self.time_interval = preset_dictionary['time_interval']
             self.length_morning_routine = preset_dictionary['length_morning_routine']
+            self.calendar_id = -1
+            if preset_dictionary['calendar_id'] != -1:
+                self.calendar_id=preset_dictionary['calendar_id']
 
     def __str__(self):
         return (f"day_zero = '{self.day_zero}'\n"
                 f"number_of_days = {self.number_of_days}\n"
                 f"time_interval = {self.time_interval}\n"
-                f"length_morning_routine = '{self.length_morning_routine}'\n")
+                f"length_morning_routine = '{self.length_morning_routine}'\n"
+                f"calendar_id = '{self.calendar_id}'\n")
 
     def Store(self):
         presets_json = {'day_zero': self.day_zero,
                         'number_of_days': self.number_of_days,
                         'time_interval': self.time_interval,
-                        'length_morning_routine': self.length_morning_routine}
+                        'length_morning_routine': self.length_morning_routine,
+                        'calendar_id': self.calendar_id}
         with open(os.path.join(dirname, '../data/presets.json'), 'w') as out_file:
             json.dump(presets_json, out_file, indent=6)
