@@ -50,6 +50,13 @@ class MyTestCase(unittest.TestCase):
         time_list.delete_duration(3, 90, 10)
         self.assertEqual([[[2, 5], [2, 10]]], time_list.timelist)
 
+    def test_str(self):
+        time_list = TimeList()
+        time_list.timelist = [[[2, 5], [2, 10]], [[3, 90], [4, 3]]]
+        answer = '[[2, 5], [2, 10]]\n[[3, 90], [4, 3]]\n'
+        self.assertEqual(answer, str(time_list))
+        time_list.timelist = [[[2, 5], [2, 10]]]
+        self.assertEqual('[[2, 5], [2, 10]]\n', str(time_list))
 
 if __name__ == '__main__':
     unittest.main()
