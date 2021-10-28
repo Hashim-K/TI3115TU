@@ -13,10 +13,10 @@ class Presets:
             self.length_morning_routine = preset_dictionary['length_morning_routine']
 
     def __str__(self):
-        print(f"day_zero = '{self.day_zero}'\n"
-              f"number_of_days = {self.number_of_days}\n"
-              f"time_interval = {self.time_interval}\n"
-              f"length_morning_routine = '{self.length_morning_routine}'\n")
+        return (f"day_zero = '{self.day_zero}'\n"
+                f"number_of_days = {self.number_of_days}\n"
+                f"time_interval = {self.time_interval}\n"
+                f"length_morning_routine = '{self.length_morning_routine}'\n")
 
     def Store(self):
         presets_json = {'day_zero': self.day_zero,
