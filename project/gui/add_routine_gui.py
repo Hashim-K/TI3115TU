@@ -7,8 +7,9 @@ from PyQt5.QtWidgets import QPushButton, QApplication, QStyleFactory
 from PyQt5.QtCore import QRegExp, Qt, QDate
 from PyQt5.QtGui import QRegExpValidator, QIcon
 
-from project.BackEnd import Task, Schedule
+from project.BackEnd import Task, Schedule, NewSchedule
 from project.BackEnd.General import DateFormat, XDaysLater
+from project.BackEnd.TimeList import TimeList
 from project.gui.general_window_gui import GeneralWindow
 from project.gui import palette
 
@@ -137,6 +138,7 @@ class AddRoutineWindow(GeneralWindow):
                         "Every day": range(7)}
 
         # add event to schedule
+        tl = TimeList()
         for i in day_dict[days]:
             Schedule.AddOccurrence(id, i, str(start), int(slots))
 

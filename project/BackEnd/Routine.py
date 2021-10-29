@@ -48,6 +48,9 @@ class Routine:
         with open(filename, 'w') as file: # write into file
             json.dump(data, file, indent=6)
 
+    def create_event(self):
+        pass
+
 
 def import_routine(filename):
     """ Creates a list of all the routines in a JSON file. """
