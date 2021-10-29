@@ -79,11 +79,11 @@ def get_colour(filename, category_id):
     print('Category(' + str(category_id) + ') not Found')
 
 
-def delete_all_categories(filename):
+def delete_all_categories(filename, filename2):
     """Deletes all tasks from a JSON file."""
     category_list = import_category(filename)
     for category in category_list:
-        delete_category(filename, category.category_id)
+        delete_category(filename, filename2, category.category_id)
 
 
 def delete_category(filename, filename2, category_id):
