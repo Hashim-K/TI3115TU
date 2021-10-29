@@ -55,6 +55,7 @@ class Presets:
             json.dump(presets_json, out_file, indent=6)
 
     def update(self):
+        self.data_path = os.path.join(dirname, '../data/')
         self.category_path = os.path.join(dirname, '../data/' + self.day_zero + '/categories.json')
         self.google_path = os.path.join(dirname, '../data/' + self.day_zero + '/google_events.json')
         self.routine_path = os.path.join(dirname, '../data/' + self.day_zero + '/routines.json')

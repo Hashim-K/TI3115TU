@@ -9,6 +9,9 @@ import gui.landing_window_gui
 
 # ADDITIONAL Exception Tracebacks (keeps GUI from crashing)
 import cgitb
+
+from project.BackEnd.Preset import Presets
+
 cgitb.enable(format = 'text')
 
 # MAIN attributes
@@ -20,7 +23,8 @@ google_credentials = None       # Lookup token
 # STARTUP functions
 def on_startup():
     # Obtain Google account IF it is there
-
+    presets = Presets()
+    presets.update()
     # Init landing GUI
     GeneralWindow.pre_init(window_list, prefs, gui.landing_window_gui.LandingView)
 
