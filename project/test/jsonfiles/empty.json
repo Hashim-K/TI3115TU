@@ -1,18 +1,28 @@
 [
       {
-            "TaskID": 1,
-            "Name": "Title",
-            "Description": "Description",
-            "Duration": 5,
-            "Priority": 0,
-            "Deadline": "2021-10-08",
-            "Repeatable": false,
-            "Category": 1,
-            "Preferred": [
-                  "08:00:00",
-                  "12:00:00"
-            ],
-            "Plan_on_same": true,
-            "Session": 1
+            "routine_id": 1,
+            "Name": "Example",
+            "Times": [
+                  [
+                        [
+                              2,
+                              5
+                        ],
+                        [
+                              2,
+                              10
+                        ]
+                  ],
+                  [
+                        [
+                              3,
+                              10
+                        ],
+                        [
+                              4,
+                              28
+                        ]
+                  ]
+            ]
       }
 ]

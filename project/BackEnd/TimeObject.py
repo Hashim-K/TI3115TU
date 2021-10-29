@@ -17,9 +17,9 @@ class TimeObject:
         else:
             h = str(h_remaining)
         if m_remaining < 10:
-            m = "0"+str(m_remaining)
+            m = "0"+str(int(m_remaining))
         else:
-            m = str(m_remaining)
+            m = str(int(m_remaining))
         d = datetime.timedelta(days=day, minutes=timeinterval*timeslot)
         dt = datetime.date.fromisoformat(dayzero) + d
         self.dateTime = dt.strftime("%Y-%m-%dT"+h+":"+m)
@@ -35,6 +35,9 @@ class TimeObject:
         day = (date-day_zero).days
         return [day, slot]
 
+    def __str__(self):
+        string = self.dateTime+":00" + self.timeZone[0:3]+":"+self.timeZone[3:5]
+        return string
 
 def str_init(dateTime: str, timeZone: str):
     t = TimeObject(str(datetime.date.today()), 0, 0)

@@ -3,7 +3,7 @@ from project.BackEnd.Task import Task, import_task, delete_task, find_task, dele
 import filecmp
 from datetime import date, datetime
 import os
-from project.BackEnd import Schedule
+#from project.BackEnd import Schedule
 from unittest.mock import patch
 from shutil import copyfile
 
@@ -74,10 +74,7 @@ class MyTestCase(unittest.TestCase):
         self.assertTrue(filecmp.cmp('jsonfiles/FileForTestingOne.json', "jsonfiles/empty.json", shallow=False))
 
     def test_correct_taskID(self):
-        try:
-            highest_id = Schedule.events[-1].ID
-        except IndexError:
-            highest_id = 0
+        highest_id = 0
         task = Task(-1, "Title", "Description", 5, 0, datetime(2021, 10, 8, 0, 0), False, 1,
                     ["08:00:00", "12:00:00"], True, 1, 'jsonfiles/TestID.json')
         self.assertEqual(9, task.taskID)

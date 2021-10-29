@@ -79,14 +79,14 @@ def get_colour(filename, category_id):
     print('Category(' + str(category_id) + ') not Found')
 
 
-def delete_all_categories(filename):
+def delete_all_categories(filename, filename2):
     """Deletes all tasks from a JSON file."""
     category_list = import_category(filename)
     for category in category_list:
-        delete_category(filename, category.category_id)
+        delete_category(filename, filename2, category.category_id)
 
 
-def delete_category(filename, category_id):
+def delete_category(filename, filename2, category_id):
     """ Delete a category from a JSON file. """
     try:
         with open(filename, 'r') as file:
@@ -97,6 +97,20 @@ def delete_category(filename, category_id):
                 break
         with open(filename, 'w') as file:
             json.dump(cat_dict, file, indent=6)
+        reset_task_categories(filename2, category_id)
+    except FileNotFoundError:
+        print('File does not exist')
+
+
+def reset_task_categories(filename, category_id):
+    try:
+        with open(filename, 'r') as file:
+            task_dict = json.load(file)
+        for i in range(len(task_dict)):
+            if task_dict[i]['Category'] == category_id:
+                task_dict[i]['Category'] = 0
+        with open(filename, 'w') as file:
+            json.dump(task_dict, file, indent=6)
     except FileNotFoundError:
         print('File does not exist')
 

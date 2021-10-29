@@ -29,7 +29,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(category.category_id, import_category('jsonfiles/FileForTestingCategories.json')[0].category_id)
 
     def test_delete_and_export(self):
-        delete_category('jsonfiles/FileForTestingCategories.json', 1)
+        delete_category('jsonfiles/FileForTestingCategories.json', 'nofile',1)
         with open('jsonfiles/FileForTestingCategories.json') as file:
             self.assertEqual('[]', file.read())
         category = Category(1, 'Example', "#87edca", 'nofile')
@@ -71,7 +71,7 @@ class MyTestCase(unittest.TestCase):
 
     def test_delete_all_categories(self):
         copyfile('jsonfiles/TestingCategoriesID.json', 'jsonfiles/copy_file_3.json')
-        delete_all_categories('jsonfiles/copy_file_3.json')
+        delete_all_categories('jsonfiles/copy_file_3.json', 'nofile')
         self.assertTrue(filecmp.cmp('jsonfiles/copy_file_3.json', 'jsonfiles/TestIDempty.json'))
 
     def test_edit_category(self):
@@ -83,7 +83,7 @@ class MyTestCase(unittest.TestCase):
 def test_no_file_found(mock_print):
     import_category('No file')
     mock_print.assert_called_with('File does not exist')
-    delete_category('nofile', 3)
+    delete_category('nofile', 'nofile', 3)
     mock_print.assert_called_with('File does not exist')
     edit_category('nofile', 3, 'hi', 'bye')
     mock_print.assert_called_with('File does not exist')
