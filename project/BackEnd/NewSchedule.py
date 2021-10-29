@@ -6,36 +6,20 @@ import numpy as np
 from matplotlib import pyplot as plt, patches
 
 from project.BackEnd.Display import Display
-from project.BackEnd.GoogleEvent import find_google_event
 from project.BackEnd.Preset import Presets
-from project.BackEnd.Routine import find_routine
-from project.BackEnd.Task import find_task
 
-from project.BackEnd.General import CheckWhatDay, XDaysLater, find_day_zero, DateFormat
+from project.BackEnd.General import XDaysLater, DateFormat
 from project.BackEnd.TimeList import TimeList
 
 dirname = os.path.dirname(__file__)
+
 
 class Event:
     def __init__(self, type: str, id: int, color:str, times: TimeList,):
         self.type = type
         self.id = id
-        self.color=color
-        self.times=times
-
-    def return_event(self):
-        if self.type == "Task":
-            task = find_task(os.path.join(dirname, '../data/save_file.json'), self.id)
-            return task
-        elif self.type == "GoogleEvent":
-            google_event = find_google_event(os.path.join(dirname, '../data/google_events.json'), self.id)
-            return google_event
-        elif self.type == "Routine":
-            routine = find_routine(os.path.join(dirname, '../data/google_events.json'), self.id)
-            return routine
-        else:
-            print("Type does not exist")
-
+        self.color = color
+        self.times = times
 
 
 class Schedule:
@@ -79,6 +63,26 @@ class Schedule:
                 if start_time >= number_of_slots:
                     start_time -= number_of_slots
                     start_day += 1
+
+    def check_overlap(self, event):
+        presets = Presets()
+        ti = presets.time_interval
+        number_of_slots = int(1440 / ti)
+        for time in event.times.times():
+            start_day = time[0][0]
+            start_time = time[0][1]
+            end_day = time[1][0]
+            end_time = time[1][1]
+            while start_day * number_of_slots + start_time <= end_day * number_of_slots + end_time:
+                if not isinstance(self.schedule[start_day, start_time], int):
+                    self.overlap.append(event)
+                    return True
+                else:
+                    start_time += 1
+                    if start_time >= number_of_slots:
+                        start_time -= number_of_slots
+                        start_day += 1
+        return False
 
     def export_schedule(self, filename):
         """ Storing events in a JSON file. """
