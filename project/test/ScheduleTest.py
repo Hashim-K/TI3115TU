@@ -35,7 +35,6 @@ class MyTestCase(unittest.TestCase):
         presets.number_of_days = 2
         presets.schedule_path = 'jsonfiles/TestSchedule.json'
         presets.Store()
-        schedule = Schedule()
         answer = "Day 1: [GoogleEvent: (3), GoogleEvent: (3), GoogleEvent: (3), GoogleEvent: (3), GoogleEvent: (3),\n" \
                     "GoogleEvent: (3), GoogleEvent: (3), GoogleEvent: (3), GoogleEvent: (3), GoogleEvent: (3), -1, -1,\n"\
                     "-1, -1, -1, -1, -1, -1, -1, -1, Routine: (2), Routine: (2), Routine: (2), Routine: (2)]\n"\

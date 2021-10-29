@@ -1,5 +1,5 @@
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QDialog, QDialogButtonBox, QLabel, QVBoxLayout, QPushButton, QHBoxLayout
+from PyQt5.QtWidgets import QDialog, QLabel, QVBoxLayout, QPushButton, QHBoxLayout
 
 
 class CustomDialog(QDialog):

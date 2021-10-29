@@ -3,7 +3,7 @@ from PyQt5 import QtCore
 
 from project.BackEnd import General, Routine
 from project.BackEnd.Routine import import_routine
-from project.BackEnd.Schedule import import_schedule, generate_image
+from project.BackEnd.Schedule import import_schedule
 from project.BackEnd.TimeList import TimeList
 from project.gui.general_window_gui import GeneralWindow
 
@@ -38,7 +38,6 @@ class RoutinesList(QListWidget):
                 self.addItem(item)
                 item_widget = item.generate_widget()
                 self.setItemWidget(item, item_widget)
-        
 
 class RoutineItem(QListWidgetItem):
     def __init__(self, name, start_day, start_time, end_time, tl,  id, window_list, prefs):
@@ -55,7 +54,7 @@ class RoutineItem(QListWidgetItem):
 
         # UI
         self.setSizeHint(QtCore.QSize(200, 75))  # Size hint for Items
-        
+
     # generateWidget
     def generate_widget(self):
 
@@ -91,4 +90,3 @@ class RoutineItem(QListWidgetItem):
         schedule = import_schedule()
         schedule.delete_times("Routine", self.id, self.tl.times())
         GeneralWindow.raise_event(self.ls_w, 'reload_routines')
-        pass

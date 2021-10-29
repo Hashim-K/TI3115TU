@@ -1,9 +1,6 @@
-# DEPRECATED IMPORTS
-import sys
-
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QApplication, QVBoxLayout, QFormLayout, QLabel, QPushButton
-from project.gui import palette
+from PyQt5.QtWidgets import QVBoxLayout, QFormLayout, QLabel, QPushButton
+
 
 # IMPORTS
 from project.gui import general_window_gui

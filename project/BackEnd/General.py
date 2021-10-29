@@ -9,18 +9,18 @@ It's output is the index of the day and slot in the schedule ([day, slot])."""
 import datetime
 
 
-def DayAndSlot(datetime, day_zero, time_interval):
+def day_and_slot(date, day_zero, time_interval):
     # This bit creates a list of the date of the first day of the week (day_zero). day_zero_lst = [day, month, year]
     day_zero_lst = [int(day_zero.split('-')[2]),
                     int(day_zero.split('-')[1]),
                     int(day_zero.split('-')[0])]
     # This bit creates a list of the date in the 'datetime' variable. date_lst = [day, month, year]
-    date_lst = [int(datetime.split(',')[0].split('-')[0]),
-                int(datetime.split(',')[0].split('-')[1]),
-                int(datetime.split(',')[0].split('-')[2])]
+    date_lst = [int(date.split(',')[0].split('-')[0]),
+                int(date.split(',')[0].split('-')[1]),
+                int(date.split(',')[0].split('-')[2])]
     # This bit creates a list of the time in the 'datetime' variable. time_lst = [hour, minute]
-    time_lst = [int(datetime.split(',')[1].split(':')[0]),
-                int(datetime.split(',')[1].split(':')[1])]
+    time_lst = [int(date.split(',')[1].split(':')[0]),
+                int(date.split(',')[1].split(':')[1])]
     # This bit uses the function DaysSince2020 to see how many days are in between the first day of the week (day_zero)
     # and the date from the input to determine the index of the day in the schedule.
     day = DaysSince2020(date_lst) - DaysSince2020(day_zero_lst)
@@ -101,10 +101,10 @@ def DaysSince2020(date):
 
 
 # Checks what day of the week a date is.
-'''This function checks what day of the week a certain date is and is used by the function CreateXTicks(). 
-It does this by calculating the difference in days between the date (date) and a date know to be monday (mondate). 
-It then calculates the remainder of this difference divided by 7. It follows that this remainder represents the day of 
-the week (starting at 0 being Monday, 1 being Tuesday and so forth). The output is this number.'''
+# This function checks what day of the week a certain date is and is used by the function CreateXTicks().
+# It does this by calculating the difference in days between the date (date) and a date know to be monday (mondate).
+# It then calculates the remainder of this difference divided by 7. It follows that this remainder represents the day of
+# the week (starting at 0 being Monday, 1 being Tuesday and so forth). The output is this number.
 
 
 def CheckWhatDay(date):

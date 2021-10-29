@@ -1,11 +1,11 @@
 import sys
 
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QVBoxLayout, QFormLayout, QLabel, QApplication, QLineEdit, QPushButton, QHBoxLayout, \
+from PyQt5.QtWidgets import QVBoxLayout, QFormLayout, QLabel, QLineEdit, QPushButton, QHBoxLayout, \
     QColorDialog
 
 from project.BackEnd import Category
-from project.gui import palette, dialog_window_gui
+from project.gui import dialog_window_gui
 from project.gui.general_window_gui import GeneralWindow
 
 

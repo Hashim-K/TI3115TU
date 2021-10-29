@@ -1,13 +1,10 @@
 import datetime
-import getpass
 import sys
-import time
 
 from PyQt5.QtCore import QThread, Qt
-from PyQt5.QtWidgets import QApplication, QGroupBox, QHBoxLayout, QLabel, QListWidget, QListWidgetItem, QScrollArea, \
-    QAction, QMainWindow, QPushButton, QStackedLayout, QStackedWidget, QToolBar, QVBoxLayout, QWidget, QFileDialog, \
-    QGridLayout, QLineEdit, QFrame, QSlider, QComboBox
-from PyQt5.QtGui import QColor, QIcon, QPixmap, QCursor, QFont
+from PyQt5.QtWidgets import QGroupBox, QHBoxLayout, QLabel, QPushButton, QStackedWidget,\
+    QVBoxLayout, QWidget, QGridLayout, QFrame, QSlider, QComboBox
+from PyQt5.QtGui import QIcon, QPixmap
 from PyQt5 import QtGui, QtCore
 import os
 
@@ -18,10 +15,7 @@ from project.gui.category_creation_gui import CategoryCreationWindow
 
 dirname = os.path.dirname(__file__)
 
-# TO DELETE
-import string, random
-
-from project.BackEnd import Task, Schedule, GoogleAPI, Category, Routine
+from project.BackEnd import Task, Schedule, GoogleAPI, Category
 from project.BackEnd.Preset import Presets
 from project.gui import general_window_gui, task_list, task_creation_gui, routines_list, add_routine_gui, dialog_window_gui
 

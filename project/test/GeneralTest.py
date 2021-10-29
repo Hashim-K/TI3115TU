@@ -1,5 +1,5 @@
 import unittest
-from project.BackEnd.General import DaysSince2020, LeapYear,  CheckWhatDay, DayAndSlot, find_day_zero
+from project.BackEnd.General import DaysSince2020, LeapYear,  CheckWhatDay, day_and_slot
 from project.BackEnd.General import Slot2Time, XDaysLater, DateFormat, Slot, TimeBetween
 
 
@@ -33,12 +33,12 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(6, CheckWhatDay([17, 10, 2021]))
 
     def test_DayAndSlot(self):
-        self.assertEqual([2, 208], DayAndSlot('06-10-2021,17:21:00', '2021-10-04', 5))
-        self.assertEqual([0, 208], DayAndSlot('04-10-2021,17:21:00', '2021-10-04', 5))
-        self.assertEqual([0, 0], DayAndSlot('04-10-2021,00:00:00', '2021-10-04', 5))
-        self.assertEqual([0, 0], DayAndSlot('04-10-2021,00:00:00', '2021-10-04', 5))
-        self.assertEqual([0, 17], DayAndSlot('04-10-2021,17:00:00', '2021-10-04', 60))
-        self.assertEqual([0, 209], DayAndSlot('04-10-2021,17:23:00', '2021-10-04', 5))
+        self.assertEqual([2, 208], day_and_slot('06-10-2021,17:21:00', '2021-10-04', 5))
+        self.assertEqual([0, 208], day_and_slot('04-10-2021,17:21:00', '2021-10-04', 5))
+        self.assertEqual([0, 0], day_and_slot('04-10-2021,00:00:00', '2021-10-04', 5))
+        self.assertEqual([0, 0], day_and_slot('04-10-2021,00:00:00', '2021-10-04', 5))
+        self.assertEqual([0, 17], day_and_slot('04-10-2021,17:00:00', '2021-10-04', 60))
+        self.assertEqual([0, 209], day_and_slot('04-10-2021,17:23:00', '2021-10-04', 5))
 
     def test_Slot(self):
         self.assertEqual(208, Slot('17:21:00', 5))

@@ -1,9 +1,9 @@
 import sys
 import datetime
 
-from PyQt5.QtWidgets import QWidget, QFormLayout, QLineEdit, QDateEdit, QVBoxLayout, QHBoxLayout, QTimeEdit
+from PyQt5.QtWidgets import QFormLayout, QLineEdit, QDateEdit, QVBoxLayout, QHBoxLayout
 from PyQt5.QtWidgets import QLabel, QSlider, QComboBox, QCheckBox, QPushButton
-from PyQt5.QtCore import QRegExp, Qt, QDate, QTime
+from PyQt5.QtCore import QRegExp, Qt, QDate
 from PyQt5.QtGui import QRegExpValidator, QIcon
 
 from project.BackEnd import Task, Category, Schedule

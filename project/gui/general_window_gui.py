@@ -1,7 +1,5 @@
-import sys
-from PyQt5.QtWidgets import QApplication, QLabel, QPushButton, QVBoxLayout, QWidget, QFileDialog, QGridLayout, QLineEdit
-from PyQt5.QtGui import QIcon, QPixmap, QCursor
-from PyQt5 import QtGui, QtCore
+from PyQt5.QtWidgets import QWidget
+from PyQt5 import QtGui
 
 class GeneralWindow(QWidget):
     '''General window skeleton; initializes window UI and adds it to passed window_list'''

@@ -5,7 +5,6 @@ from project.BackEnd.Task import Task, import_task
 from project.BackEnd.Schedule import schedule, presets, ClearEvents, events
 import os
 from datetime import datetime
-import numpy as np
 dirname = os.path.dirname(__file__)
 
 class MyTestCase(unittest.TestCase):

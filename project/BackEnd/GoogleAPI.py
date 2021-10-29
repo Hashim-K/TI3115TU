@@ -1,14 +1,8 @@
-import datetime
-
 from project.BackEnd.Google import Create_Service
-from project.BackEnd.GoogleEvent import GoogleEvent, find_google_event
+from project.BackEnd.GoogleEvent import GoogleEvent
 from project.BackEnd.Schedule import import_schedule, Event
 from project.BackEnd.Preset import Presets
-from project.BackEnd.Routine import find_routine
-from project.BackEnd.Task import Task, find_task
-from pprint import pprint
 import os
-import time
 
 from project.BackEnd.TimeObject import str_init, TimeObject
 

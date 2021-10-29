@@ -1,8 +1,8 @@
 import sys, getpass
 
-from PyQt5.QtWidgets import QApplication, QLabel, QPushButton, QVBoxLayout, QWidget, QFileDialog, QGridLayout, QLineEdit
+from PyQt5.QtWidgets import QLabel, QPushButton, QGridLayout
 from PyQt5.QtGui import QIcon, QPixmap, QCursor
-from PyQt5 import QtGui, QtCore
+from PyQt5 import QtCore
 
 from project.gui import general_window_gui, main_window_gui, about_window_gui
 
