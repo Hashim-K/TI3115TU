@@ -86,7 +86,7 @@ def delete_all_categories(filename):
         delete_category(filename, category.category_id)
 
 
-def delete_category(filename, category_id):
+def delete_category(filename, filename2, category_id):
     """ Delete a category from a JSON file. """
     try:
         with open(filename, 'r') as file:
@@ -97,8 +97,16 @@ def delete_category(filename, category_id):
                 break
         with open(filename, 'w') as file:
             json.dump(cat_dict, file, indent=6)
+        reset_task_categories(filename2, category_id)
     except FileNotFoundError:
         print('File does not exist')
+
+def reset_task_categories(filename, category_id):
+    try:
+        with open(filename, 'r') as file:
+            task_dict = json.load(file)
+        for i in range(len(task_dict)):
+            if task_dict[i]['']
 
 
 def edit_category(filename, category_id: int, title: str, colour: str):

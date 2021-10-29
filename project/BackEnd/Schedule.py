@@ -350,8 +350,8 @@ class Main:
 
 
 # Events, presets and the schedule instance.
-id_dict = {}
-events = []
-presets = Presets()
-display = Display()
-schedule = Main()
+# id_dict = {}
+# events = []
+# presets = Presets()
+# display = Display()
+# schedule = Main()
