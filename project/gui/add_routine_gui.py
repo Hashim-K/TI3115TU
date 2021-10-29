@@ -149,6 +149,13 @@ class AddRoutineWindow(GeneralWindow):
         routine = Routine(-1, name, tl)
         vars = routine.create_event()
         event = Event(vars[0], vars[1], vars[2], vars[3])
+        if routine.name == "Sleep":
+            tl1 = TimeList()
+            tl1.add_duration()
+            routine1 = Routine(-1, "Morning Routine", )
+            vars1 = routine.create_event()
+            event1 = Event(vars[0], vars[1], vars[2], vars[3])
+
         schedule = import_schedule()
 
         # Check overlap
