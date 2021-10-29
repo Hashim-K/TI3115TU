@@ -1,0 +1,53 @@
+[
+    {
+        "Type": "Task",
+        "ID": 1,
+        "Color": "#FFFFFF",
+        "Times": [
+            [
+                [
+                    1,
+                    1
+                ],
+                [
+                    1,
+                    20
+                ]
+            ]
+        ]
+    },
+    {
+        "Type": "Routine",
+        "ID": 2,
+        "Color": "#FFFFFF",
+        "Times": [
+            [
+                [
+                    0,
+                    20
+                ],
+                [
+                    1,
+                    0
+                ]
+            ]
+        ]
+    },
+    {
+        "Type": "GoogleEvent",
+        "ID": 3,
+        "Color": "#FFFFFF",
+        "Times": [
+            [
+                [
+                    0,
+                    0
+                ],
+                [
+                    0,
+                    9
+                ]
+            ]
+        ]
+    }
+]

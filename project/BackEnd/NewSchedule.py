@@ -17,7 +17,7 @@ from project.BackEnd.TimeList import TimeList
 dirname = os.path.dirname(__file__)
 
 class Event:
-    def __init__(self, type: str, id: int, color:str, times: TimeList,):
+    def __init__(self, type: str, id: int, color: str, times: TimeList,):
         self.type = type
         self.id = id
         self.color=color
