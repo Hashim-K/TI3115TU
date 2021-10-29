@@ -59,7 +59,7 @@ class Task:
             "Plan_on_same": self.plan_on_same,
             "Session": self.session
         }
-        if not os.path.exists():  # if filename does not exist create a list to fill
+        if not os.path.exists(presets.task_path):  # if filename does not exist create a list to fill
             data = []
         else:
             if os.stat(presets.task_path).st_size == 0: # if filename is empty make new one
