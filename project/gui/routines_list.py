@@ -3,7 +3,7 @@ from PyQt5 import QtCore
 
 from project.BackEnd import General, Routine
 from project.BackEnd.Routine import import_routine
-from project.BackEnd.Schedule import import_schedule
+from project.BackEnd.Schedule import import_schedule, generate_image
 from project.BackEnd.TimeList import TimeList
 from project.gui.general_window_gui import GeneralWindow
 
@@ -27,19 +27,21 @@ class RoutinesList(QListWidget):
             name = routine.name
             for time in routine.timeslots.times():
                 [[start_day, start_time], [end_day, end_time]] = time
+                tl = TimeList()
+                tl.add_time(start_day, start_time, end_day, end_time)
                 days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
                 start_day = days[start_day]
                 start_time = General.Slot2Time(start_time, 15)
                 end_time = General.Slot2Time(end_time, 15)
                 id = routine.routine_id
-                item = RoutineItem(name, start_day, start_time, end_day, end_time, id, self.ls_w, self.prefs)
+                item = RoutineItem(name, start_day, start_time, end_time, tl, id, self.ls_w, self.prefs)
                 self.addItem(item)
                 item_widget = item.generate_widget()
                 self.setItemWidget(item, item_widget)
         
 
 class RoutineItem(QListWidgetItem):
-    def __init__(self, name, start_day, start_time, end_day, end_time, id, window_list, prefs):
+    def __init__(self, name, start_day, start_time, end_time, tl,  id, window_list, prefs):
         super().__init__()
         self.prefs = prefs
         self.ls_w = window_list
@@ -47,8 +49,8 @@ class RoutineItem(QListWidgetItem):
         self.name = name
         self.start_day = start_day
         self.start_time = start_time
-        self.end_day = end_day
         self.end_time = end_time
+        self.tl = tl
         self.id = id
 
         # UI
@@ -85,10 +87,8 @@ class RoutineItem(QListWidgetItem):
         return widget
 
     def delete_routine_time(self):
-        tl = TimeList()
-        tl.add_time(self.start_day, self.start_time, self.end_day, self.end_time)
-        Routine.delete_times(self.id, tl.times())
+        Routine.delete_times(self.id, self.tl.times())
         schedule = import_schedule()
-        schedule.delete_times(self.type, self.id, tl.times())
+        schedule.delete_times("Routine", self.id, self.tl.times())
         GeneralWindow.raise_event(self.ls_w, 'reload_routines')
         pass

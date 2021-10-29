@@ -12,7 +12,7 @@ from PyQt5 import QtGui, QtCore
 import os
 
 from project.BackEnd.Routine import delete_routine, import_routine
-from project.BackEnd.Schedule import import_schedule
+from project.BackEnd.Schedule import import_schedule, generate_image
 from project.BackEnd.Scheduling_Algorithm import scheduling_algorithm
 from project.gui.category_creation_gui import CategoryCreationWindow
 
@@ -714,6 +714,7 @@ class MainView(general_window_gui.GeneralWindow):
     # Schedule View Functions
     def update_schedule_image(self):
         presets = Presets()
+        generate_image()
         self.schedule_image = QPixmap(presets.schedule_image)
         self.schedule_label.setPixmap(self.schedule_image)
 
