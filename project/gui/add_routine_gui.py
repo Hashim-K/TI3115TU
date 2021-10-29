@@ -147,7 +147,8 @@ class AddRoutineWindow(GeneralWindow):
                 end_day = start_day+1
             tl.add_time(start_day, start_time, end_day, end_time)
         routine = Routine(-1, name, tl)
-        event = Event(routine.create_event())
+        vars = routine.create_event()
+        event = Event(vars[0], vars[1], vars[2], vars[3])
         schedule = import_schedule()
 
         # Check overlap
@@ -155,10 +156,10 @@ class AddRoutineWindow(GeneralWindow):
             # display info
             self.notify_overlap()
         else:
+            routine.export_routine()
             schedule.add_event(event)
             schedule.export_schedule()
             generate_image()
-            routine.export_routine()
             GeneralWindow.raise_event(self.ls_w, 'reload_routines')
             self.close()
 

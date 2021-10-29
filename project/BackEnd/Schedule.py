@@ -155,23 +155,17 @@ class Schedule:
         except FileNotFoundError:
             print('File does not exist')
 
-    def delete_time(self, type: str, id : int, times):
-        """ Delete a task from a JSON file. """
-        presets = Presets()
-        try:
-            with open(presets.schedule_path, 'r') as file:
-                schedule_dict = json.load(file)
-            for i in range(len(schedule_dict)):
-                if schedule_dict[i]['ID'] == id and schedule_dict[i]['Type'] == type:
-                    for j in range(len(times)):
-                        t = times[j]
-                        print(t)
-                    del schedule_dict[i]
-                    break
-            with open(presets.schedule_path, 'w') as file:
-                json.dump(schedule_dict, file, indent=6)
-        except FileNotFoundError:
-            print('File does not exist')
+    def delete_times(self, type: str, id : int, times):
+        schedule = import_schedule()
+        new_schedule = Schedule()
+        for event in schedule.events_list:
+            if event.id == id and event.type == type:
+                for i in range(len(times)):
+                    t = times[i]
+                    event.times.delete_time(t[0][0], t[0][1], t[1][0], t[1][1])
+            new_schedule.add_event(event)
+        new_schedule.export_schedule()
+
 
 def import_schedule():
     """ Creates a list of all the routines in a JSON file. """
@@ -236,7 +230,7 @@ def generate_image():
 
     legend_elements = []
     for event in schedule.events_list:
-        event_type = return_event(event)
+        event_type = event.return_event()
         legend_elements.append(patches.Patch(facecolor=event.color, label=event_type.name))
     legend = axes.legend(handles=legend_elements, bbox_to_anchor=(1.01, 1.0), loc='upper left', frameon=False)
     plt.setp(legend.get_texts(), color=display.text_color)
@@ -244,4 +238,3 @@ def generate_image():
     plt.grid(axis='y', color=display.text_color, linewidth=0.5, alpha=0.25, linestyle='dotted')
     plt.tight_layout()
     plt.savefig(presets.schedule_image)
-

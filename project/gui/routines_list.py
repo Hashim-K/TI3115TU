@@ -3,6 +3,7 @@ from PyQt5 import QtCore
 
 from project.BackEnd import General, Routine
 from project.BackEnd.Routine import import_routine
+from project.BackEnd.Schedule import import_schedule
 from project.BackEnd.TimeList import TimeList
 from project.gui.general_window_gui import GeneralWindow
 
@@ -86,6 +87,8 @@ class RoutineItem(QListWidgetItem):
     def delete_routine_time(self):
         tl = TimeList()
         tl.add_time(self.start_day, self.start_time, self.end_day, self.end_time)
-        Routine.delete_times(self.id, tl)
+        Routine.delete_times(self.id, tl.times())
+        schedule = import_schedule()
+        schedule.delete_times(self.type, self.id, tl.times())
         GeneralWindow.raise_event(self.ls_w, 'reload_routines')
         pass

@@ -607,7 +607,7 @@ class MainView(general_window_gui.GeneralWindow):
         self.list_widget.clear()
         # Repopulate
         try:
-            tasks = Task.import_task(self.prefs.directory['tasks'])
+            tasks = Task.import_task()
             self.list_widget.load_task_list(tasks)
 
             # Changing number of tasks
