@@ -171,22 +171,16 @@ def import_schedule():
     """ Creates a list of all the routines in a JSON file. """
     presets = Presets()
     events_list = []
-    if not os.path.exists(presets.schedule_path):  # if filename does not exist create a list to fill
-        data = []
-    else:
-        if os.stat(presets.schedule_path).st_size == 0:  # if filename is empty make new one
-            os.remove(presets.schedule_path)
-        else:
-            try:
-                with open(presets.schedule_path, 'r') as file:
-                    event_dict = json.load(file)
-                    for event in event_dict:
-                        tl = TimeList()
-                        for time in event['Times']:
-                            tl.add_time(time[0][0], time[0][1], time[1][0], time[1][1])
-                        events_list.append(Event(event['Type'], event['ID'], event['Color'], tl))
-            except FileNotFoundError:
-                print('File does not exist')
+    try:
+        with open(presets.schedule_path, 'r') as file:
+            event_dict = json.load(file)
+            for event in event_dict:
+                tl = TimeList()
+                for time in event['Times']:
+                    tl.add_time(time[0][0], time[0][1], time[1][0], time[1][1])
+                events_list.append(Event(event['Type'], event['ID'], event['Color'], tl))
+    except FileNotFoundError:
+        print('File does not exist')
     schedule = Schedule()
     for event in events_list:
         schedule.add_event(event)

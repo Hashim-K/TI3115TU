@@ -21,6 +21,8 @@ class Presets:
             self.task_path = preset_dictionary['task_path']
             self.schedule_path = preset_dictionary['schedule_path']
             self.schedule_image = preset_dictionary['schedule_image']
+            if not os.path.exists(self.data_path + "/" + self.day_zero):
+                os.makedirs(self.data_path + "/" + self.day_zero)
 
     def __str__(self):
         return (f"day_zero = '{self.day_zero}'\n"
