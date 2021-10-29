@@ -1,7 +1,7 @@
 import unittest
 from project.BackEnd.Schedule import Schedule, import_schedule, Event
 from project.BackEnd.Preset import Presets
-from project.BackEnd.Category import random_colour
+from project.BackEnd.Category import random_color
 from project.BackEnd.TimeList import TimeList
 import numpy as np
 
@@ -54,16 +54,16 @@ class MyTestCase(unittest.TestCase):
         preset.routine_path = 'jsonfiles/FileForTestingRoutines.json'
         preset.Store()
         time = TimeList()
-        event = Event("Task", 1, random_colour(), time)
+        event = Event("Task", 1, random_color(), time)
         task = event.return_event()
         self.assertFalse(task.repeatable)
-        event = Event("GoogleEvent", 1, random_colour(), time)
+        event = Event("GoogleEvent", 1, random_color(), time)
         google = event.return_event()
         self.assertEqual("Summary", google.name)
-        event = Event("Routine", 1, random_colour(), time)
+        event = Event("Routine", 1, random_color(), time)
         routine = event.return_event()
         self.assertEqual("Example", routine.name)
-        event = Event("Event", 1, random_colour(), time).return_event()
+        event = Event("Event", 1, random_color(), time).return_event()
         self.assertEqual(None, event)
         preset.update()
 

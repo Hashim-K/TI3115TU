@@ -1,102 +1,144 @@
 import unittest
 from project.BackEnd.Category import Category, import_category, edit_category, delete_category
-from project.BackEnd.Category import random_colour, find_category, get_colour, delete_all_categories
+from project.BackEnd.Category import random_color, find_category, get_color, delete_all_categories
 import os
 import filecmp
 from shutil import copyfile
 from unittest.mock import patch
-
 from project.BackEnd.Preset import Presets
+
 
 
 class MyTestCase(unittest.TestCase):
 
     def test_string(self):
-        colour = random_colour()
-        category = Category(1, "Name", colour, 'nofile')
-        self.assertEqual(f"Category: \"Name\" (1): {colour}.\n", str(category))
+        presets = Presets()
+        presets.category_path = 'nofile'
+        presets.Store()
+        color = random_color()
+        category = Category(1, "Name", color)
+        self.assertEqual(f"Category: \"Name\" (1): {color}.\n", str(category))
+        presets.update()
 
     def test_export(self):
-        category = Category(1, 'Example', "#87edca", 'nofile')
+        presets = Presets()
+        presets.category_path = 'jsonfiles/FileForExportTestingCategories.json'
+        presets.Store()
+        category = Category(1, 'Example', "#87edca")
         if os.path.exists('jsonfiles/FileForExportTestingCategories.json'):
             os.remove('jsonfiles/FileForExportTestingCategories.json')
-        category.export_category('jsonfiles/FileForExportTestingCategories.json')
+        category.export_category()
         self.assertTrue(filecmp.cmp('jsonfiles/FileForExportTestingCategories.json',
                                     'jsonfiles/FileForTestingCategories.json'))
+        presets.update()
 
     def test_import(self):
-        category = Category(1, 'Example', "#87edca", 'nofile')
-        self.assertEqual(category.title, import_category('jsonfiles/FileForTestingCategories.json')[0].title)
-        self.assertEqual(category.colour, import_category('jsonfiles/FileForTestingCategories.json')[0].colour)
-        self.assertEqual(category.category_id, import_category('jsonfiles/FileForTestingCategories.json')[0].category_id)
+        presets = Presets()
+        presets.category_path = 'jsonfiles/FileForTestingCategories.json'
+        presets.Store()
+        category = Category(1, 'Example', "#87edca")
+        self.assertEqual(category.title, import_category()[0].title)
+        self.assertEqual(category.color, import_category()[0].color)
+        self.assertEqual(category.category_id, import_category()[0].category_id)
+        presets.update()
 
     def test_delete_and_export(self):
-        delete_category('jsonfiles/FileForTestingCategories.json', 'nofile',1)
+        presets = Presets()
+        presets.category_path = 'jsonfiles/FileForTestingCategories.json'
+        presets.task_path = 'nofile'
+        presets.Store()
+        delete_category(1)
         with open('jsonfiles/FileForTestingCategories.json') as file:
             self.assertEqual('[]', file.read())
-        category = Category(1, 'Example', "#87edca", 'nofile')
-        category.export_category('jsonfiles/FileForTestingCategories.json')
+        category = Category(1, 'Example', "#87edca")
+        category.export_category()
         self.assertTrue(filecmp.cmp('jsonfiles/FileForExportTestingCategories.json',
                                     'jsonfiles/FileForTestingCategories.json'))
+        presets.update()
 
     def test_empty_file(self):
+        presets = Presets()
+        presets.category_path = "jsonfiles/empty.json"
+        presets.Store()
         file = open("jsonfiles/empty.json", "w")
         file.close()
-        category = Category(1, 'Example', "#87edca", 'nofile')
-        category.export_category('jsonfiles/empty.json')
+        category = Category(1, 'Example', "#87edca")
+        category.export_category()
         self.assertTrue(filecmp.cmp("jsonfiles/empty.json",
                                     'jsonfiles/FileForTestingCategories.json'))
+        presets.update()
 
     def test_ID(self):
         presets = Presets()
-        presets.category_path='jsonfiles/TestingCategoriesID.json'
+        presets.category_path = 'jsonfiles/TestingCategoriesID.json'
         presets.Store()
-        category = Category(-1, 'Example', "#87edca", 'jsonfiles/TestingCategoriesID.json')
+        category = Category(-1, 'Example', "#87edca")
         self.assertEqual(5, category.category_id)
-        presets.task_path='jsonfiles/TestIDempty.json'
+        presets.category_path = 'jsonfiles/TestIDempty.json'
         presets.Store()
-        category = Category(-1, 'Example', "#87edca", 'jsonfiles/TestIDempty.json')
-        self.assertEqual(1, category.category_id)
-        presets.task_path='jsonfiles/nofile.json'
+        category1 = Category(-1, 'Example', "#87edca")
+        self.assertEqual(1, category1.category_id)
+        presets.category_path = 'jsonfiles/nofile.json'
         presets.Store()
-        category = Category(-1, 'Example', "#87edca", 'nofile.json')
-        self.assertEqual(2, category.category_id)
+        category2 = Category(-1, 'Example', "#87edca")
+        self.assertEqual(2, category2.category_id)
         presets.update()
 
     def test_find_category(self):
-        found = find_category('jsonfiles/TestingCategoriesID.json', 4)
-        category = Category(4, 'Example', "#87edca", 'nofile')
+        presets = Presets()
+        presets.category_path = 'jsonfiles/TestingCategoriesID.json'
+        presets.Store()
+        found = find_category(4)
+        category = Category(4, 'Example', "#87edca")
         self.assertEqual(category.category_id, found.category_id)
         self.assertEqual(category.title, found.title)
-        self.assertEqual("Colour", found.colour)
-        self.assertEqual(find_category('jsonfiles/TestingCategoriesID.json', 5), None)
+        self.assertEqual("color", found.color)
+        self.assertEqual(find_category(5), None)
+        presets.update()
 
-    def test_get_colour(self):
-        colour = get_colour('jsonfiles/TestingCategoriesID.json', 4)
-        self.assertEqual(colour, "Colour")
-        colour = get_colour('jsonfiles/TestingCategoriesID.json', 3)
-        self.assertEqual(colour, "#87edca")
-        colour = get_colour('jsonfiles/TestingCategoriesID.json', 5)
-        self.assertEqual(colour, None)
+    def test_get_color(self):
+        presets = Presets()
+        presets.category_path = 'jsonfiles/TestingCategoriesID.json'
+        presets.Store()
+        color = get_color(4)
+        self.assertEqual(color, "color")
+        color = get_color(3)
+        self.assertEqual(color, "#87edca")
+        color = get_color(5)
+        self.assertEqual(color, None)
+        presets.update()
 
     def test_delete_all_categories(self):
+        presets = Presets()
+        presets.task_path = 'jsonfiles/FileForTestingOne.json'
+        presets.category_path = 'jsonfiles/copy_file_3.json'
+        presets.Store()
         copyfile('jsonfiles/TestingCategoriesID.json', 'jsonfiles/copy_file_3.json')
-        delete_all_categories('jsonfiles/copy_file_3.json', 'nofile')
+        delete_all_categories()
         self.assertTrue(filecmp.cmp('jsonfiles/copy_file_3.json', 'jsonfiles/TestIDempty.json'))
+        presets.update()
 
     def test_edit_category(self):
-        edit_category("jsonfiles/TestingCategoriesID.json", 4, "new name", "new colour")
+        presets = Presets()
+        presets.category_path = 'jsonfiles/TestingCategoriesIDCopyForEditing.json'
+        presets.Store()
+        edit_category(4, "Example", "color")
         self.assertTrue(filecmp.cmp("jsonfiles/TestingCategoriesID.json", 'jsonfiles/TestingCategoriesIDCopyForEditing.json'))
-        edit_category("jsonfiles/TestingCategoriesID.json", 4, "Example", "Colour")
+        edit_category(4, "new name", "new color")
+        presets.update()
 
 @patch('builtins.print')
 def test_no_file_found(mock_print):
-    import_category('No file')
+    presets = Presets()
+    presets.category_path = "jsonfriesID.json"
+    presets.Store()
+    import_category()
     mock_print.assert_called_with('File does not exist')
-    delete_category('nofile', 'nofile', 3)
+    delete_category(3)
     mock_print.assert_called_with('File does not exist')
-    edit_category('nofile', 3, 'hi', 'bye')
+    edit_category(3, 'hi', 'bye')
     mock_print.assert_called_with('File does not exist')
+    presets.update()
 
 if __name__ == '__main__':
     unittest.main()
