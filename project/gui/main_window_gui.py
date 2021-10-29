@@ -11,6 +11,8 @@ from PyQt5.QtGui import QColor, QIcon, QPixmap, QCursor, QFont
 from PyQt5 import QtGui, QtCore
 import os
 
+from project.BackEnd.Routine import delete_routine, import_routine
+from project.BackEnd.Schedule import import_schedule
 from project.BackEnd.Scheduling_Algorithm import scheduling_algorithm
 from project.gui.category_creation_gui import CategoryCreationWindow
 
@@ -649,7 +651,11 @@ class MainView(general_window_gui.GeneralWindow):
         """Clears all routines after prompt"""
         dialog = dialog_window_gui.CustomDialog('Delete all routines?', self.prefs, self)
         if dialog.exec():
-            Routine.delete_all_routines()
+            routines_list = import_routine()
+            schedule = import_schedule()
+            for routine in routines_list:
+                delete_routine(routine.routine_id)
+                schedule.delete_event("Routine", routine.routine_id)
             general_window_gui.GeneralWindow.raise_event(self.ls_w, 'reload_routines')
         else:
             pass

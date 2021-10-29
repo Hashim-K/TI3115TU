@@ -1,6 +1,5 @@
 import json
 import os.path
-from datetime import datetime
 
 from project.BackEnd.Preset import Presets
 from project.BackEnd.TimeList import TimeList
@@ -92,7 +91,6 @@ def find_routine(routine_ID):
 
 def delete_all_routines():
     """Deletes all routines from a JSON file."""
-    presets = Presets()
     routines_list = import_routine()
     for routine in routines_list:
         delete_routine(routine.routine_id)
