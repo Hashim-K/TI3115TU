@@ -2,7 +2,6 @@ import json
 import os.path
 import datetime
 
-from project.BackEnd.NewSchedule import Event
 from project.BackEnd.Preset import Presets
 from project.BackEnd.TimeList import TimeList
 from project.BackEnd.TimeObject import TimeObject, str_init
@@ -77,8 +76,7 @@ class GoogleEvent:
         [end_day, end_slot] = self.end.dateTime_to_timeslot()
         timelist = TimeList()
         timelist.add_time(start_day, start_slot, end_day, end_slot)
-        event = Event("GoogleEvent", self.google_event_id, "#027CB7", timelist)
-        return event
+        return ["GoogleEvent", self.google_event_id, "#027CB7", timelist]
 
 def import_google_event(filename):
     """ Creates a list of all the google_events in a JSON file. """

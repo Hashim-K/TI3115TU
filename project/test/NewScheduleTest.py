@@ -1,5 +1,5 @@
 import unittest
-from project.BackEnd.NewSchedule import Schedule, import_schedule
+from project.BackEnd.Schedule import Schedule, import_schedule
 from project.BackEnd.Preset import Presets
 import numpy as np
 

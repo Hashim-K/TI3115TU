@@ -4,6 +4,8 @@ from datetime import date, datetime, timedelta
 from shutil import copyfile
 import os
 
+from project.BackEnd.Preset import Presets
+
 dirname = os.path.dirname(__file__)
 
 # duration is in number of timeslots
@@ -37,14 +39,15 @@ def obtain_time_interval(filename):
     return preset_dict['time_interval']
 
 
-def main(filename):
+def scheduling_algorithm():
     """ Deciding which task to schedule next,
     and turning that task into an event an placing it in the schedule.
     """
-    copyfile(filename, '../data/copy_file.json')
-    filename = '../data/copy_file.json'
+    presets = Presets()
+    copyfile(presets.task_path, '../data/temp/task.json')
+    filename = '../data/temp/task.json'
     forbidden_slots = []
-    timetable = create_timetable(filename, obtain_day_zero(os.path.join(dirname, '../data/presets.json')), forbidden_slots)
+    timetable = create_timetable(filename, presets.day_zero, forbidden_slots)
     print(len(timetable))
     while len(timetable) > 0:
         stc = single_task_check(timetable)
