@@ -49,7 +49,7 @@ class MyTestCase(unittest.TestCase):
 
     def test_ID(self):
         presets = Presets()
-        presets.task_path='jsonfiles/TestingCategoriesID.json'
+        presets.category_path='jsonfiles/TestingCategoriesID.json'
         presets.Store()
         category = Category(-1, 'Example', "#87edca", 'jsonfiles/TestingCategoriesID.json')
         self.assertEqual(5, category.category_id)

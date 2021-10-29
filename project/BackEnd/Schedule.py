@@ -16,19 +16,18 @@ from project.BackEnd.TimeList import TimeList
 
 
 class Event:
-    def __init__(self, type: str, id: int, color: str, times: TimeList,):
+    def __init__(self, type: str, id: int, color: str, times: TimeList):
         self.type = type
         self.id = id
         self.color = color
         self.times = times
 
     def return_event(self):
-        presets = Presets()
         if self.type == "Task":
-            task = find_task(presets.task_path)
+            task = find_task(self.id)
             return task
         elif self.type == "GoogleEvent":
-            google_event = find_google_event(presets.google_path, self.id)
+            google_event = find_google_event(self.id)
             return google_event
         elif self.type == "Routine":
             routine = find_routine(self.id)
