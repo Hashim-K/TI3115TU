@@ -12,11 +12,18 @@ from project.gui.general_window_gui import GeneralWindow
 class CategoryCreationWindow(GeneralWindow):
 
     def __init__(self, window_list, prefs):
+        self.edit = False  # Editing Mode is off
         super().__init__(window_list, prefs)
 
-        self.hex_col_selected = '#FFFFFF'
+        self.hex_col_selected = '#FFFFFF'   # Hex of Colour Selected
+
 
     def init_ui_late(self, title, colour, id):
+        """For Editing UI"""
+        # Turn Editing Mode on
+        self.edit = True
+        self.id = id    # Store ID for referencing in 'maker'
+
         # CHANGE WINDOW ATTRIBUTES
         self.setWindowTitle(f'Edit Category')
         self.title.setText(f'Edit Category')
@@ -25,8 +32,8 @@ class CategoryCreationWindow(GeneralWindow):
 
         # Change Button
         self.add_button.setText('Edit')
-        self.add_button.clicked.disconnect(self.make_category)
-        self.add_button.clicked.connect(lambda: self.edit_category(id))
+        #self.add_button.clicked.disconnect(self.make_category)
+        #self.add_button.clicked.connect(lambda: self.edit_category(id))
 
     def init_ui(self):
         # WINDOW
@@ -99,34 +106,47 @@ class CategoryCreationWindow(GeneralWindow):
         # Add Button
         self.add_button = QPushButton('Add')
         self.add_button.setStyleSheet(self.prefs.style_sheets['button_priority_rect'])
-        self.add_button.clicked.connect(self.make_category)
+        if self.edit:
+            self.add_button.clicked.connect(self.make_category)
+        else:
+            self.add_button.clicked.connect(self.make_category)
 
         main_layout.addLayout(sub_layout)
         main_layout.addWidget(self.add_button)
         self.setLayout(main_layout)
 
-    def edit_category(self, category_id):
-        # Category.edit_category(category_id, self.title_edit.text(), self.hex_col_selected, self.prefs.directory['categories'])
-        print('Edit Category')
-
     def make_category(self):
-        # Get Categories for Comparison
-        existing_categories = Category.import_category(self.prefs.directory['categories'])
-        # Check for existence
-        current_name = self.title_edit.text()
-        id_of_found = None    # For overwriting old one
+        # 1) Do Edit Check
+        if not self.edit:
+            # Get Categories for Comparison
+            existing_categories = Category.import_category(self.prefs.directory['categories'])
+            # Check for existence of name or id
+            current_name = self.title_edit.text()
+            id_of_found = None    # For overwriting old one
 
-        for category in existing_categories:
-            if category.title == current_name:
-                id_of_found = category.category_id
-                break
+            for category in existing_categories:
+                if category.title == current_name:
+                    id_of_found = category.category_id
+                    break
+        else:
+            id_of_found = self.id
 
-        # CHANGE: To Edit Old
+        # 2) Edit if Required
         if id_of_found is not None:     # If Already exists
-            dialog = dialog_window_gui.CustomDialog('Category with title already exists, override?', self.prefs, self)
+            dialog = dialog_window_gui.CustomDialog('Category with signature already exists, edit?', self.prefs, self)
             if dialog.exec():
                 # Delete category
-                Category.delete_category(self.prefs.directory['categories'], id_of_found)
+                # Category.delete_category(self.prefs.directory['categories'], id_of_found)
+                Category.edit_category(
+                        self.prefs.directory['categories'],
+                        id_of_found,
+                        self.title_edit.text(),
+                        self.hex_col_selected
+                        )
+                GeneralWindow.raise_event(self.ls_w, 'reload_tasks')       # Reload tasks
+                GeneralWindow.raise_event(self.ls_w, 'reload_categories')   # Reload Categories
+                self.close()       # Close Window
+                return             # Stop Function
             else:
                 return  # Stop making category
         # Create

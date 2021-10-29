@@ -75,7 +75,12 @@ class TaskInfo(general_window_gui.GeneralWindow):
 
         category_prompt = QLabel('Category')
         category_prompt.setStyleSheet(self.prefs.style_sheets['text_mute_tight'])
-        cat_name = Category.find_category(self.prefs.directory['categories'], self.task.category).title
+        # Category Load
+        category = Category.find_category(self.prefs.directory['categories'], self.task.category)
+        if category is None:
+            cat_name = 'No Category'
+        else:
+            cat_name = category.title
         category = QLabel(f'{cat_name}')
         category.setStyleSheet(self.prefs.style_sheets['text_tight'])
         sub_layout.addRow(category_prompt, category)
