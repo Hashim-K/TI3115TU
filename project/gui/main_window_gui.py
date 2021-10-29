@@ -216,8 +216,8 @@ class MainView(general_window_gui.GeneralWindow):
         tbw_layout = QHBoxLayout()
         tbw_layout.addWidget(title)
         tbw_layout.addStretch(1)
-        tbw_layout.addWidget(generate_schedule_button)
         tbw_layout.addWidget(export_schedule_button)
+        tbw_layout.addWidget(generate_schedule_button)
         top_block_widget.setLayout(tbw_layout)
 
         self.schedule_label = QLabel()
