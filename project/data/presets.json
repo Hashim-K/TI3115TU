@@ -4,6 +4,7 @@
       "time_interval": 15,
       "length_morning_routine": "00:15:00",
       "calendar_id": -1,
+      "data_path": "C:\\Users\\hashi\\Documents\\TU Delft\\Y3\\Q1\\SEM\\group-25\\project\\BackEnd\\../data/",
       "category_path": "C:\\Users\\hashi\\Documents\\TU Delft\\Y3\\Q1\\SEM\\group-25\\project\\BackEnd\\../data/2021-11-01/categories.json",
       "google_path": "C:\\Users\\hashi\\Documents\\TU Delft\\Y3\\Q1\\SEM\\group-25\\project\\BackEnd\\../data/2021-11-01/google_events.json",
       "routine_path": "C:\\Users\\hashi\\Documents\\TU Delft\\Y3\\Q1\\SEM\\group-25\\project\\BackEnd\\../data/2021-11-01/routines.json",
