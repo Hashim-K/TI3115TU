@@ -77,6 +77,8 @@ class Schedule:
                 if start_time >= number_of_slots:
                     start_time -= number_of_slots
                     start_day += 1
+                    if start_day>=7:
+                        break
 
     def check_overlap(self, event):
         presets = Presets()
@@ -96,6 +98,8 @@ class Schedule:
                     if start_time >= number_of_slots:
                         start_time -= number_of_slots
                         start_day += 1
+                        if start_day>=7:
+                            break
         return False
 
     def export_schedule(self):
@@ -210,12 +214,12 @@ def generate_image():
     axes.set_ylim([0, number_of_slots])
     axes.invert_yaxis()
     plt.xticks(np.arange(number_of_days), xticks, ha="left", color=display.text_color)
-    plt.yticks(np.arange(0, number_of_slots, step=number_of_slots / 24), yticks, color=display.text_color)
+    plt.yticks(np.arange(0, number_of_slots, step= number_of_slots/ 24), yticks, color=display.text_color)
     plt.title(f'Schedule for {DateFormat(day_zero)} till {DateFormat(XDaysLater(day_zero, number_of_days - 1))}',
               color=display.text_color)
 
     for j in range(number_of_days):
-        for k in range(number_of_slots):
+        for k in range(number_of_slots-1):
             event = schedule.schedule[j][k]
             whitespace = j + 0.05
             if not isinstance(schedule.schedule[j][k], int):
@@ -225,7 +229,7 @@ def generate_image():
     legend_elements = []
     for event in schedule.events_list:
         event_type = event.return_event()
-        if len(event.times.times())>0:
+        if len(event.times.times()) > 0:
             legend_elements.append(patches.Patch(facecolor=event.color, label=event_type.name))
     legend = axes.legend(handles=legend_elements, bbox_to_anchor=(1.01, 1.0), loc='upper left', frameon=False)
     plt.setp(legend.get_texts(), color=display.text_color)
