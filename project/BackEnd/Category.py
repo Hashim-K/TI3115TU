@@ -9,7 +9,6 @@ class Category:
     """ The category class is used to create, store and edit categories used by the software in a JSON format. """
     highest_id = 0
 
-
     def __init__(self, category_id: int, title: str, color: str):
         presets = Presets()
         if category_id != -1:  # category_id is given in the initializer
@@ -38,17 +37,17 @@ class Category:
             "title": self.title,
             "color": self.color
         }
-        if not os.path.exists(presets.category_path):  # if filename does not exist create a list to fill
+        if not os.path.exists(presets.category_path):   # if filename does not exist create a list to fill
             data = []
         else:
-            if os.stat(presets.category_path).st_size == 0: # if filename is empty make new one
+            if os.stat(presets.category_path).st_size == 0:  # if filename is empty make new one
                 os.remove(presets.category_path)
                 data = []
             else:
-                with open(presets.category_path, 'r') as file: # if filename exists load the data
+                with open(presets.category_path, 'r') as file:  # if filename exists load the data
                     data = json.load(file)
         data.append(entry)
-        with open(presets.category_path, 'w') as file: # write into file
+        with open(presets.category_path, 'w') as file:  # write into file
             json.dump(data, file, indent=6)
 
 
@@ -68,7 +67,6 @@ def import_category():
 
 def find_category(category_id):
     """ Seeks for a task by its taskID. """
-    presets = Presets()
     category_list = import_category()
     for category in category_list:
         if category.category_id == category_id:
