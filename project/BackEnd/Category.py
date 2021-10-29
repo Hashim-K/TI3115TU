@@ -101,12 +101,18 @@ def delete_category(filename, filename2, category_id):
     except FileNotFoundError:
         print('File does not exist')
 
+
 def reset_task_categories(filename, category_id):
     try:
         with open(filename, 'r') as file:
             task_dict = json.load(file)
         for i in range(len(task_dict)):
-            if task_dict[i]['']
+            if task_dict[i]['Category'] == category_id:
+                task_dict[i]['Category'] = 0
+        with open(filename, 'w') as file:
+            json.dump(task_dict, file, indent=6)
+    except FileNotFoundError:
+        print('File does not exist')
 
 
 def edit_category(filename, category_id: int, title: str, colour: str):
