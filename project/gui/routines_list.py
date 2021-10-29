@@ -68,9 +68,13 @@ class RoutineItem(QListWidgetItem):
         li_day.setStyleSheet(self.prefs.style_sheets['text_tight'])
         li_times = QLabel(f'<b>{self.start_time}</b> - <b>{self.end_time}</b>')
         li_times.setStyleSheet(self.prefs.style_sheets['text_tight'])
+        delete_button = QPushButton("Delete")
+        delete_button.setStyleSheet(self.prefs.style_sheets['button_exit_rect'])
+        delete_button.setFixedWidth(100)
 
         layout.addWidget(li_name)
         layout.addWidget(li_day)
         layout.addWidget(li_times)
+        layout.addWidget(delete_button)
 
         return widget
