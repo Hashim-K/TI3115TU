@@ -7,7 +7,7 @@ from project.gui import palette
 
 # IMPORTS
 from project.gui import general_window_gui
-from project.BackEnd import Task
+from project.BackEnd import Task, Category
 
 
 class TaskInfo(general_window_gui.GeneralWindow):
@@ -75,7 +75,8 @@ class TaskInfo(general_window_gui.GeneralWindow):
 
         category_prompt = QLabel('Category')
         category_prompt.setStyleSheet(self.prefs.style_sheets['text_mute_tight'])
-        category = QLabel(f'{self.task.category}')
+        cat_name = Category.find_category(self.prefs.directory['categories'], self.task.category).title
+        category = QLabel(f'{cat_name}')
         category.setStyleSheet(self.prefs.style_sheets['text_tight'])
         sub_layout.addRow(category_prompt, category)
 

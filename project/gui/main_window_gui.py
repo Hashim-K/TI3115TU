@@ -502,8 +502,7 @@ class MainView(general_window_gui.GeneralWindow):
         delete_category_button.setStyleSheet(self.prefs.style_sheets['button_exit_rect'])
         delete_category_button.setFixedWidth(75)
             # Delete The Category
-        delete_category_button.clicked.connect(lambda:
-            Category.delete_category(self.prefs.directory['categories'], self.categories_dropdown.currentData()[1]))
+        delete_category_button.clicked.connect(self.delete_category)
             # Reload the Dropdown
         delete_category_button.clicked.connect(self.update_categories_dropdown)
         button_row.addWidget(delete_category_button)
@@ -694,6 +693,12 @@ class MainView(general_window_gui.GeneralWindow):
         if self.categories_dropdown.currentData() is not None:
             window = general_window_gui.GeneralWindow.pre_init(self.ls_w, self.prefs, CategoryCreationWindow)
             window.init_ui_late(self.categories_dropdown.currentText(), *self.categories_dropdown.currentData())
+
+    def delete_category(self):
+        # Delete Category
+        Category.delete_category(self.prefs.directory['categories'], self.categories_dropdown.currentData()[1])
+        # Reload TaskList (correct colours, etc)
+        general_window_gui.GeneralWindow.raise_event(self.ls_w, 'reload_tasks')
 
     # Schedule View Functions
     def update_schedule_image(self):
