@@ -14,6 +14,7 @@ class Presets:
             self.calendar_id = -1
             if preset_dictionary['calendar_id'] != -1:
                 self.calendar_id = preset_dictionary['calendar_id']
+            self.data_path = os.path.join(dirname, '../data/')
             self.category_path = preset_dictionary['category_path']
             self.google_path = preset_dictionary['google_path']
             self.routine_path = preset_dictionary['routine_path']
@@ -27,6 +28,7 @@ class Presets:
                 f"time_interval = {self.time_interval}\n"
                 f"length_morning_routine = '{self.length_morning_routine}'\n"
                 f"calendar_id = '{self.calendar_id}'\n"
+                f"data_path = '{self.data_path}'\n"
                 f"category_path = '{self.category_path}'\n"
                 f"google_path = '{self.google_path}'\n"
                 f"routine_path = '{self.routine_path}'\n"
@@ -40,6 +42,7 @@ class Presets:
                         'time_interval': self.time_interval,
                         'length_morning_routine': self.length_morning_routine,
                         'calendar_id': self.calendar_id,
+                        'data_path': self.data_path,
                         'category_path': self.category_path,
                         'google_path': self.google_path,
                         'routine_path': self.routine_path,
