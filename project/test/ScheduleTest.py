@@ -66,6 +66,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual("Example", routine.name)
         event = Event("Event", 1, random_colour(), time).return_event()
         self.assertEqual(None, event)
+        preset.update()
 
 
 
