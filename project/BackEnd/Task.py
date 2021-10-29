@@ -10,7 +10,6 @@ class Task:
 
     highest_id = 0
 
-
     def __init__(self, taskID: int, name: str, description: str, duration: int, priority: int, deadline: str,
                  repeatable: bool, category: int, preferred, plan_on_same: bool, session: int):
         presets = Presets()
@@ -44,8 +43,9 @@ class Task:
     def __lt__(self, other):
         return self.duration < other.duration
 
-    def export_task(self, filename):
+    def export_task(self):
         """ Storing tasks in a JSON file. """
+        presets = Presets()
         entry = {
             "TaskID": self.taskID,
             "Name": self.name,
@@ -59,25 +59,26 @@ class Task:
             "Plan_on_same": self.plan_on_same,
             "Session": self.session
         }
-        if not os.path.exists(filename):  # if filename does not exist create a list to fill
+        if not os.path.exists():  # if filename does not exist create a list to fill
             data = []
         else:
-            if os.stat(filename).st_size == 0: # if filename is empty make new one
-                os.remove(filename)
+            if os.stat(presets.task_path).st_size == 0: # if filename is empty make new one
+                os.remove(presets.task_path)
                 data = []
             else:
-                with open(filename, 'r') as file: # if filename exists load the data
+                with open(presets.task_path, 'r') as file: # if filename exists load the data
                     data = json.load(file)
         data.append(entry)
-        with open(filename, 'w') as file: # write into file
+        with open(presets.task_path, 'w') as file: # write into file
             json.dump(data, file, indent=6)
 
 
-def import_task(filename):
+def import_task():
     """ Creates a list of all the tasks in a JSON file. """
+    presets = Presets()
     tasks_list = []
     try:
-        with open(filename, 'r') as file:
+        with open(presets.task_path, 'r') as file:
             task_dict = json.load(file)
             for tasks in task_dict:
                 tasks_list.append(Task(tasks['TaskID'], tasks['Name'], tasks['Description'], tasks['Duration'],
