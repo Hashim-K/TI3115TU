@@ -2,7 +2,7 @@ import datetime
 
 from project.BackEnd.Google import Create_Service
 from project.BackEnd.GoogleEvent import GoogleEvent, find_google_event
-from project.BackEnd.NewSchedule import import_schedule
+from project.BackEnd.Schedule import import_schedule, Event
 from project.BackEnd.Preset import Presets
 from project.BackEnd.Routine import find_routine
 from project.BackEnd.Task import Task, find_task
@@ -74,20 +74,6 @@ def list_events(service, primary):
     return eventlist
 
 
-def return_event(event):
-    if event.type == "Task":
-        task = find_task(os.path.join(dirname, '../data/save_file.json'), event.id)
-        return task
-    elif event.type == "GoogleEvent":
-        google_event = find_google_event(os.path.join(dirname, '../data/google_events.json'), event.id)
-        return google_event
-    elif event.type == "Routine":
-        routine = find_routine(os.path.join(dirname, '../data/routines.json'), event.id)
-        return routine
-    else:
-        print("Type does not exist")
-
-
 def get_event(service, event_id):
     event = service.events().get(calendarId='primary', eventId=event_id).execute()
     print(event['summary'])
@@ -100,7 +86,7 @@ def delete_event(service, event_id):
 def insert_event(service, event):
     presets = Presets()
     dayzero=presets.day_zero
-    ev = return_event(event)
+    ev = event.return_event()
     desc = ""
     if event.type == "Task":
         desc = ev.description
@@ -126,7 +112,7 @@ def insert_event(service, event):
 
 
 def import_events(service, eventfile, schedulefile):
-    schedule = import_schedule(schedulefile)
+    schedule = import_schedule()
     for event in list_events(service, True):
         if event['status'] == 'confirmed':
             startTime=str_init(event['start']['dateTime'],event['start']['timeZone'])
@@ -137,7 +123,7 @@ def import_events(service, eventfile, schedulefile):
                 desc = ""
             ge = GoogleEvent(-1, event['summary'], desc, startTime, endTime, eventfile)
             ge.export_google_event(eventfile)
-            event = ge.create_event()
+            event = Event(ge.create_event())
             schedule.add_event(event)
     schedule.export_schedule(schedulefile)
 

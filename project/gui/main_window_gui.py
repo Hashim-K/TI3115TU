@@ -11,6 +11,9 @@ from PyQt5.QtGui import QColor, QIcon, QPixmap, QCursor, QFont
 from PyQt5 import QtGui, QtCore
 import os
 
+from project.BackEnd.Routine import delete_routine, import_routine
+from project.BackEnd.Schedule import import_schedule, generate_image
+from project.BackEnd.Scheduling_Algorithm import scheduling_algorithm
 from project.gui.category_creation_gui import CategoryCreationWindow
 
 dirname = os.path.dirname(__file__)
@@ -18,7 +21,8 @@ dirname = os.path.dirname(__file__)
 # TO DELETE
 import string, random
 
-from project.BackEnd import Task, Schedule, GoogleAPI, Category
+from project.BackEnd import Task, Schedule, GoogleAPI, Category, Routine
+from project.BackEnd.Preset import Presets
 from project.gui import general_window_gui, task_list, task_creation_gui, routines_list, add_routine_gui, dialog_window_gui
 
 
@@ -205,6 +209,7 @@ class MainView(general_window_gui.GeneralWindow):
         generate_schedule_button.setToolTip('Make 25/8 generate a schedule')   # TO DELETE
         generate_schedule_button.setStyleSheet(self.prefs.style_sheets['button_priority_rect'])
         generate_schedule_button.setFixedWidth(150)
+        generate_schedule_button.clicked.connect(self.get_schedule)
 
         ## Export Schedule Button
         export_schedule_button = QPushButton("Export to Calendar")
@@ -282,9 +287,6 @@ class MainView(general_window_gui.GeneralWindow):
         layout.addWidget(self.routine_list)
 
         self.stack_routines.setLayout(layout)
-
-        # prep schedule
-        Schedule.PrepEvents()
 
         # Update schedule
         self.populate_routine_list()
@@ -404,7 +406,8 @@ class MainView(general_window_gui.GeneralWindow):
         self.morning_routine.setMaximum(8)
         self.morning_routine.valueChanged.connect(self.update_morning_routine)
 
-        mr_val = Schedule.presets.length_morning_routine
+        presets = Presets()
+        mr_val = presets.length_morning_routine
         mr_val = 60*int(mr_val[:2]) + int(mr_val[3:5])
         self.morning_routine.setValue(int(int(mr_val)/15))
         self.mr_text.setText(f"Morning Routine Duration: {mr_val} minutes")
@@ -606,7 +609,7 @@ class MainView(general_window_gui.GeneralWindow):
         self.list_widget.clear()
         # Repopulate
         try:
-            tasks = Task.import_task(self.prefs.directory['tasks'])
+            tasks = Task.import_task()
             self.list_widget.load_task_list(tasks)
 
             # Changing number of tasks
@@ -648,7 +651,11 @@ class MainView(general_window_gui.GeneralWindow):
         """Clears all routines after prompt"""
         dialog = dialog_window_gui.CustomDialog('Delete all routines?', self.prefs, self)
         if dialog.exec():
-            Schedule.ClearEvents()
+            routines_list = import_routine()
+            schedule = import_schedule()
+            for routine in routines_list:
+                delete_routine(routine.routine_id)
+                schedule.delete_event("Routine", routine.routine_id)
             general_window_gui.GeneralWindow.raise_event(self.ls_w, 'reload_routines')
         else:
             pass
@@ -700,9 +707,15 @@ class MainView(general_window_gui.GeneralWindow):
         # Reload TaskList (correct colours, etc)
         general_window_gui.GeneralWindow.raise_event(self.ls_w, 'reload_tasks')
 
+    def get_schedule(self):
+        scheduling_algorithm()
+        self.update_schedule_image()
+
     # Schedule View Functions
     def update_schedule_image(self):
-        self.schedule_image = QPixmap(os.path.join(dirname, '../data/schedule.jpg'))
+        presets = Presets()
+        generate_image()
+        self.schedule_image = QPixmap(presets.schedule_image)
         self.schedule_label.setPixmap(self.schedule_image)
 
     def update_morning_routine(self):

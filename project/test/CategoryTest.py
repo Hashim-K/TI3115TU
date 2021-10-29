@@ -6,6 +6,8 @@ import filecmp
 from shutil import copyfile
 from unittest.mock import patch
 
+from project.BackEnd.Preset import Presets
+
 
 class MyTestCase(unittest.TestCase):
 
@@ -46,12 +48,20 @@ class MyTestCase(unittest.TestCase):
                                     'jsonfiles/FileForTestingCategories.json'))
 
     def test_ID(self):
+        presets = Presets()
+        presets.category_path='jsonfiles/TestingCategoriesID.json'
+        presets.Store()
         category = Category(-1, 'Example', "#87edca", 'jsonfiles/TestingCategoriesID.json')
         self.assertEqual(5, category.category_id)
+        presets.task_path='jsonfiles/TestIDempty.json'
+        presets.Store()
         category = Category(-1, 'Example', "#87edca", 'jsonfiles/TestIDempty.json')
         self.assertEqual(1, category.category_id)
+        presets.task_path='jsonfiles/nofile.json'
+        presets.Store()
         category = Category(-1, 'Example', "#87edca", 'nofile.json')
         self.assertEqual(2, category.category_id)
+        presets.update()
 
     def test_find_category(self):
         found = find_category('jsonfiles/TestingCategoriesID.json', 4)

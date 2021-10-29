@@ -1,14 +1,15 @@
 import datetime
 import sys
 
-from PyQt5.QtWidgets import QWidget, QFormLayout, QLineEdit, QDateEdit, QVBoxLayout, QHBoxLayout
-from PyQt5.QtWidgets import QLabel, QSlider, QComboBox, QCheckBox, QTimeEdit
-from PyQt5.QtWidgets import QPushButton, QApplication, QStyleFactory
-from PyQt5.QtCore import QRegExp, Qt, QDate
-from PyQt5.QtGui import QRegExpValidator, QIcon
+from PyQt5.QtWidgets import QFormLayout, QHBoxLayout
+from PyQt5.QtWidgets import QLabel, QComboBox
+from PyQt5.QtWidgets import QPushButton, QApplication
+from PyQt5.QtGui import QIcon
 
-from project.BackEnd import Task, Schedule
-from project.BackEnd.General import DateFormat, XDaysLater
+from project.BackEnd.Preset import Presets
+from project.BackEnd.Routine import Routine
+from project.BackEnd.Schedule import import_schedule, generate_image, Event
+from project.BackEnd.TimeList import TimeList
 from project.gui.general_window_gui import GeneralWindow
 from project.gui import palette
 
@@ -117,17 +118,17 @@ class AddRoutineWindow(GeneralWindow):
         # get all values
         # start = self.start_time.time().toString()
         # dur = self.duration.value()  # slots
-
+        presets = Presets()
         start = datetime.time(int(self.start_hour.currentText()), int(self.start_min.currentText()))
         end = datetime.time(int(self.end_hour.currentText()), int(self.end_min.currentText()))
-        dummydate = datetime.date(1, 1, 1)
-        start_dum = datetime.datetime.combine(dummydate, start)
-        end = datetime.datetime.combine(dummydate, end)
-        duration = end - start_dum
-        slots = divmod(duration.total_seconds(), 900)[0]
+        # dummydate = datetime.date(1, 1, 1)
+        # start_dum = datetime.datetime.combine(dummydate, start)
+        # end = datetime.datetime.combine(dummydate, end)
+        # duration = end - start_dum
+        # slots = divmod(duration.total_seconds(), 900)[0]
 
-        cat = self.category.currentText()
-        id = Schedule.id_dict[cat]
+        name = self.category.currentText()
+
 
         days = self.recurrence.currentText()
 
@@ -137,31 +138,40 @@ class AddRoutineWindow(GeneralWindow):
                         "Every day": range(7)}
 
         # add event to schedule
-        for i in day_dict[days]:
-            Schedule.AddOccurrence(id, i, str(start), int(slots))
+        tl = TimeList()
+        for start_day in day_dict[days]:
+            start_time = int((start.hour*60+start.minute)/presets.time_interval)
+            end_time = int((end.hour*60+end.minute)/presets.time_interval)
+            end_day = start_day
+            if end_time < start_time:
+                end_day = start_day+1
+            tl.add_time(start_day, start_time, end_day, end_time)
+        routine = Routine(-1, name, tl)
+        vars = routine.create_event()
+        event = Event(vars[0], vars[1], vars[2], vars[3])
+        if routine.name == "Sleep":
+            tl1 = TimeList()
+            tl1.add_duration()
+            routine1 = Routine(-1, "Morning Routine", )
+            vars1 = routine.create_event()
+            event1 = Event(vars[0], vars[1], vars[2], vars[3])
+
+        schedule = import_schedule()
 
         # Check overlap
-        if Schedule.schedule.Update():
+        if schedule.check_overlap(event):
             # display info
-            overlap_set = Schedule.schedule.Update()
-            self.notify_overlap(overlap_set)
-            # clear event
-            Schedule.events.clear()
-            Schedule.GetEvents()
+            self.notify_overlap()
         else:
-            # No overlap, Update schedule
-            Schedule.StoreEvents()
-            Schedule.SaveImage()
+            routine.export_routine()
+            schedule.add_event(event)
+            schedule.export_schedule()
+            generate_image()
             GeneralWindow.raise_event(self.ls_w, 'reload_routines')
             self.close()
 
-    def notify_overlap(self, info):
-        text = ""
-        while info:
-            overlap = info.pop()
-            text += f"{Schedule.events[overlap[0]].Label} overlaps with {Schedule.events[overlap[1]].Label} on " \
-                    f"{DateFormat(XDaysLater(Schedule.presets.day_zero, overlap[2]))}.\n"
-        print(text)
+    def notify_overlap(self):
+        text = "The new routine overlaps with an existing routine."
         self.overlap_text.setText(text)
 
 

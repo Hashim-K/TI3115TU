@@ -2,6 +2,7 @@ import json
 import os.path
 from datetime import datetime
 
+from project.BackEnd.Preset import Presets
 
 
 class Task:
@@ -9,17 +10,17 @@ class Task:
 
     highest_id = 0
 
-
     def __init__(self, taskID: int, name: str, description: str, duration: int, priority: int, deadline: str,
-                 repeatable: bool, category: int, preferred, plan_on_same: bool, session: int, filename: str):
+                 repeatable: bool, category: int, preferred, plan_on_same: bool, session: int):
+        presets = Presets()
         if taskID != -1:  # taskID is given in the initializer
             self.taskID = taskID
         else:
-            if not os.path.exists(filename) or os.stat(filename).st_size < 4:  # calculating taskID from the already exisiting events
+            if not os.path.exists(presets.task_path) or os.stat(presets.task_path).st_size < 4:  # calculating taskID from the already exisiting events
                 Task.highest_id += 1
                 self.taskID = Task.highest_id
             else:
-                with open(filename) as file: # calculating taskID from an already existing JSON file with tasks
+                with open(presets.task_path) as file: # calculating taskID from an already existing JSON file with tasks
                     task_dict = json.load(file)
                     self.taskID = task_dict[-1]['TaskID'] + 1
         self.name = name
@@ -42,8 +43,9 @@ class Task:
     def __lt__(self, other):
         return self.duration < other.duration
 
-    def export_task(self, filename):
+    def export_task(self):
         """ Storing tasks in a JSON file. """
+        presets = Presets()
         entry = {
             "TaskID": self.taskID,
             "Name": self.name,
@@ -57,70 +59,73 @@ class Task:
             "Plan_on_same": self.plan_on_same,
             "Session": self.session
         }
-        if not os.path.exists(filename):  # if filename does not exist create a list to fill
+        if not os.path.exists(presets.task_path):  # if filename does not exist create a list to fill
             data = []
         else:
-            if os.stat(filename).st_size == 0: # if filename is empty make new one
-                os.remove(filename)
+            if os.stat(presets.task_path).st_size == 0: # if filename is empty make new one
+                os.remove(presets.task_path)
                 data = []
             else:
-                with open(filename, 'r') as file: # if filename exists load the data
+                with open(presets.task_path, 'r') as file: # if filename exists load the data
                     data = json.load(file)
         data.append(entry)
-        with open(filename, 'w') as file: # write into file
+        with open(presets.task_path, 'w') as file: # write into file
             json.dump(data, file, indent=6)
 
 
-def import_task(filename):
+def import_task():
     """ Creates a list of all the tasks in a JSON file. """
+    presets = Presets()
     tasks_list = []
     try:
-        with open(filename, 'r') as file:
+        with open(presets.task_path, 'r') as file:
             task_dict = json.load(file)
             for tasks in task_dict:
                 tasks_list.append(Task(tasks['TaskID'], tasks['Name'], tasks['Description'], tasks['Duration'],
                         tasks['Priority'], datetime.fromisoformat(tasks['Deadline']), tasks['Repeatable'],
-                        tasks['Category'], tasks['Preferred'], tasks['Plan_on_same'], tasks['Session'], filename))
+                        tasks['Category'], tasks['Preferred'], tasks['Plan_on_same'], tasks['Session']))
     except FileNotFoundError:
         print('File does not exist')
     return tasks_list
 
 
-def find_task(filename, task_ID):
+def find_task(task_ID):
     """ Seeks for a task by its taskID. """
-    tasks_list = import_task(filename)
+    tasks_list = import_task()
     for task in tasks_list:
         if task.taskID == task_ID:
             return task
     print('Task: Task not Found')
 
 
-def delete_all_tasks(filename):
+def delete_all_tasks():
     """Deletes all tasks from a JSON file."""
-    tasks_list = import_task(filename)
+    tasks_list = import_task()
     for task in tasks_list:
-        delete_task(filename, task.taskID)
+        delete_task(task.taskID)
 
 
-def delete_task(filename, taskID):
+def delete_task(taskID):
+    presets = Presets()
     """ Delete a task from a JSON file. """
     try:
-        with open(filename, 'r') as file:
+        with open(presets.task_path, 'r') as file:
             task_dict = json.load(file)
         for i in range(len(task_dict)):
             if task_dict[i]['TaskID'] == taskID:
                 del task_dict[i]
                 break
-        with open(filename, 'w') as file:
+        with open(presets.task_path, 'w') as file:
             json.dump(task_dict, file, indent = 6)
     except FileNotFoundError:
         print('File does not exist')
 
 
-def delete_session(filename, taskID):
+def delete_session(taskID):
     """ Delete a session from a JSON file. """
+    presets = Presets()
     try:
-        with open(filename, 'r') as file:
+        with open(presets.task_path, 'r') as file:
             task_dict = json.load(file)
         for i in range(len(task_dict)):
             if task_dict[i]['TaskID'] == taskID:
@@ -129,16 +134,17 @@ def delete_session(filename, taskID):
                 else:
                     task_dict[i]['Session'] -= 1
                 break
-        with open(filename, 'w') as file:
+        with open(presets.task_path, 'w') as file:
             json.dump(task_dict, file, indent = 6)
     except FileNotFoundError:
         print('File does not exist')
 
 
-def edit_task(filename, taskID: int, name: str, description: str, duration: int, priority: int, deadline: str,
+def edit_task(taskID: int, name: str, description: str, duration: int, priority: int, deadline: str,
                  repeatable: bool, category: str, preferred, plan_on_same: bool, session: int):
+    presets = Presets()
     try:
-        with open(filename, 'r') as file:
+        with open(presets.task_path, 'r') as file:
             task_dict = json.load(file)
         for i in range(len(task_dict)):
             if task_dict[i]['TaskID'] == taskID:
@@ -153,7 +159,7 @@ def edit_task(filename, taskID: int, name: str, description: str, duration: int,
                 task_dict[i]['Plan_on_same'] = plan_on_same
                 task_dict[i]['Session'] = session
                 break
-        with open(filename, 'w') as file:
+        with open(presets.task_path, 'w') as file:
             json.dump(task_dict, file, indent=6)
     except FileNotFoundError:
         print('File does not exist')
