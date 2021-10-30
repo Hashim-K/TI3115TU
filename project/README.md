@@ -6,7 +6,7 @@
 
 <h4 align="center">by Group 25</h4>
 
-> 25/8 relieves you of all the daunting aspects of scheduling. By simply providing it with basic outlines of what you have to do and when it has to be done, 25/8 will generate a weekly schedule.
+> 25/8 relieves you of all the daunting aspects of scheduling. By simply providing it with basic outlines of what you have to do and when it has to be done, 25/8 will generate your weekly schedule.
 
 
 
@@ -38,11 +38,9 @@ $ git clone https://gitlab.ewi.tudelft.nl/ti3115tu/2021-2022/group-25.git
 
 With the clone present locally, we still have to handle the dependencies. These are listed under `/requirements.txt` in the root folder of the clone and must be installed into the virtual environment that you wish to use to run 25/8. 
 
-## :pen: How to Use
+## :writing_hand: How to Use
 
 Upon opening 25/8 you will be greeted with a 'Home Window' that explains the basic steps in going from a bunch of tasks that each have their own deadline to a neat schedule that can be exported to your Google Calendar.
-
-
 
 ## :cop: Security
 
