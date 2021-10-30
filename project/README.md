@@ -1,4 +1,4 @@
-<img src="C:\Users\acher\Desktop\CS_local\group-25\project\readme_files\readme_logo.png" style="zoom: 25%;" />
+<img src="\readme_files\readme_logo.png" style="zoom: 25%;" />
 
 
 
