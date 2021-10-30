@@ -4,7 +4,11 @@ from datetime import date, datetime, timedelta
 from shutil import copyfile
 import os
 
+from project.BackEnd.Category import get_color
 from project.BackEnd.Preset import Presets
+from project.BackEnd.Schedule import import_schedule, Event
+from project.BackEnd.Task import find_task
+from project.BackEnd.TimeList import TimeList
 
 dirname = os.path.dirname(__file__)
 
@@ -25,29 +29,27 @@ class PossibleTime:
         return self.taskID == other.taskID and self.timeslots == other.timeslots
 
 
-def obtain_day_zero(filename):
-    with open(filename) as file:
-        preset_dict = json.load(file)
-    day_zero = preset_dict['day_zero'].split('-')  # get the date of day_zero so first date of the planner
+def obtain_day_zero():
+    presets = Presets()
+    day_zero = presets.day_zero.split('-')  # get the date of day_zero so first date of the planner
     date_zero = date(int(day_zero[0]), int(day_zero[1]), int(day_zero[2]))  # turns date into date objects
     return date_zero
-
-
-def obtain_time_interval(filename):
-    with open(filename) as file:
-        preset_dict = json.load(file)
-    return preset_dict['time_interval']
 
 
 def scheduling_algorithm():
     """ Deciding which task to schedule next,
     and turning that task into an event an placing it in the schedule.
     """
+    schedule = import_schedule()
+    for event in schedule.events_list:
+        if event.type == "Task":
+            schedule.delete_event(event.type, event.id)
     presets = Presets()
-    copyfile(presets.task_path, '../data/temp/task.json')
-    filename = '../data/temp/task.json'
+    copyfile(presets.task_path, os.path.join(dirname, '../data/temp/task.json'))
+    presets.task_path = os.path.join(dirname, '../data/temp/task.json')
+    presets.Store()
     forbidden_slots = []
-    timetable = create_timetable(filename, presets.day_zero, forbidden_slots)
+    timetable = create_timetable(forbidden_slots)
     print(len(timetable))
     while len(timetable) > 0:
         stc = single_task_check(timetable)
@@ -55,49 +57,49 @@ def scheduling_algorithm():
             entry = timetable[stc]
             print(entry)
             print("Reason: one timeslot remaining")
-            task = Task.find_task(filename, entry.taskID)
-            if task.name not in Schedule.id_dict:
-                Schedule.Event(task.name, '#FFFFFF', [])
-            Schedule.events[Schedule.id_dict[task.name]].Occurrences.append(entry.timeslots)
-            Schedule.StoreEvents()
-            Task.delete_session(filename, entry.taskID)
+            add_task(entry)
         else:
             entry = best_score_check(timetable)
             #print(entry)
-            if (overlap_check(Task.import_task(filename), Schedule.EmptySlots(), entry,
-                    obtain_day_zero(os.path.join(dirname, '../data/presets.json')),
-                    obtain_time_interval(os.path.join(dirname, '../data/presets.json')))):
+            # print("Reason: best score")
+            # add_task(entry)
+            if overlap_check(Task.import_task(), import_schedule().empty_slots(), entry):
                 print("Reason: best score")
-                task = Task.find_task(filename, entry.taskID)
-                #print(task)
-                if task.name not in Schedule.id_dict:
-                    Schedule.Event(task.name, '#FFFFFF', [])
-                Schedule.events[Schedule.id_dict[task.name]].Occurrences.append(entry.timeslots)
-                Schedule.StoreEvents()
-                Task.delete_session(filename, entry.taskID)
+                add_task(entry)
             else:
                 forbidden_slots.append(entry)
                 print("Not planned: Overlap detected")
-        timetable = create_timetable(filename, obtain_day_zero(os.path.join(dirname, '../data/presets.json')), forbidden_slots)
+        timetable = create_timetable(forbidden_slots)
         print(len(timetable))
-
-    Schedule.schedule.Update()
-    Schedule.SaveImage()
+    presets.update()
 
 
-def create_timetable(filename, date_zero, forbidden_slots):
+def add_task(entry):
+    task = find_task(entry.taskID)
+    [[start_day, start_time], [end_day, end_time]] = entry.timeslots
+    tl = TimeList()
+    tl.add_time(start_day, start_time, end_day, end_time)
+    schedule = import_schedule()
+    event = Event("Task", task.taskID, get_color(task.category), tl)
+    schedule.add_event(event)
+    schedule.export_schedule()
+    Task.delete_session(entry.taskID)
+
+
+def create_timetable(forbidden_slots):
     """ Creates a list of all PossibleTime objects by making a PossibleTime object
     of every task/timeslot combination and its corresponding score.
     """
+    presets = Presets()
     timetable = []
-    timeslot_duration = obtain_time_interval(os.path.join(dirname, '../data/presets.json'))
+    timeslot_duration = presets.time_interval
     total_slots = 1440/timeslot_duration
-    tasks_list = Task.import_task(filename)
-    Schedule.schedule.Update()
-    schedule_slots = Schedule.EmptySlots()
+    tasks_list = Task.import_task()
+    schedule = import_schedule()
+    schedule_slots = schedule.empty_slots()
     for task in tasks_list:
         saved_end_day = 0
-        current_day = date_zero
+        current_day = obtain_day_zero()
         deadline_date = datetime.date(task.deadline)
         for timeslot in schedule_slots:
             start_day = timeslot[0][0]
@@ -141,19 +143,20 @@ def single_task_check(timetable):
     return pos
 
 
-def overlap_check(tasks_list, empty_slots, event, date_zero, time_interval):
+def overlap_check(tasks_list, empty_slots, event):
     """ Checks if the allocated timeslot of event eliminates all the timeslots of another task. """
+    presets = Presets()
     tasks_list.sort(reverse=True)
     not_overlap = []
     taken_slots = [(event.timeslots[0][0], event.timeslots[1][0], event.timeslots[0][1], event.timeslots[1][1])]
     count = 0
-    slot_in_one_day = 1440 / time_interval - 1
+    slot_in_one_day = 1440 / presets.time_interval - 1
     passed_deadline = False
     for task in tasks_list:
         sessions = task.session
         times = []
         count += 1
-        days_between = calculate_days_till_deadline(task, date_zero)
+        days_between = calculate_days_till_deadline(task)
         for empty in empty_slots:
             if passed_deadline:
                 break
@@ -171,7 +174,6 @@ def overlap_check(tasks_list, empty_slots, event, date_zero, time_interval):
                     timeslot[1] = 0
                 else:
                     timeslot[1] += 1
-        print(times)
         slot = 0
         while slot < len(times):
             available = True
@@ -213,42 +215,47 @@ def calc_score(task, timeslot):
         priority = 7
     else:
         priority = task.priority
-    score = (priority * timeslot_pref(task, timeslot, obtain_time_interval(os.path.join(dirname, '../data/presets.json')))
-            + (calculate_days_till_deadline(task, obtain_day_zero(os.path.join(dirname, '../data/presets.json'))) - task.session))
+    score = (priority * timeslot_pref(task, timeslot)
+            + (calculate_days_till_deadline(task) - task.session))
     return score
 
 
-def timeslot_pref(task, timeslot, time_interval):
+def timeslot_pref(task, timeslot):
     """ Comparing if a timeslot fits well with the preference of a task,
     if it corresponds the score is 1 and if it doesn't the score is 3.
     """
-
+    presets = Presets()
     # if timeslot length changes, this code needs to change as well !!!!
     t_avg = timeslot + task.duration / 2  # to know in which timeslot a task/timeslot combination falls we take the average time
     if not task.preferred:
         return 2
     else:
-        if time2slot(task.preferred[0], time_interval) <= t_avg <= time2slot(task.preferred[1], time_interval):
+        start = time2slot(task.preferred[0])
+        end = time2slot(task.preferred[1])
+        if end < start:
+            end += 1440/presets.time_interval
+        if (time2slot(task.preferred[0]) <= t_avg <= time2slot(task.preferred[1])
+            or time2slot(task.preferred[0]) <= t_avg + 1440/presets.time_interval <= time2slot(task.preferred[1])):
             return 1
         else:
             return 3
 
-
-def time2slot(timestr, time_interval):
+def time2slot(timestr):
+    presets = Presets()
     time = datetime.strptime(timestr, '%H:%M:%S')
     total = time.minute
     total += time.hour * 60
-    return total / time_interval
+    return total / presets.time_interval
 
 
-def calculate_days_till_deadline(task, date_zero):
+def calculate_days_till_deadline(task):
     """" Calculating the days between two dates using datetime module,
     Needed to calculate the score of task/timeslot combination.
     """
     deadline_date = datetime.date(task.deadline)  # turns datetime object into date object
-    if str(deadline_date - date_zero).split(' ') == ['0:00:00']:
+    if str(deadline_date - obtain_day_zero()).split(' ') == ['0:00:00']:
         return 0
-    return int(str(deadline_date - date_zero).split(' ')[0])  # gets the difference of the two dates from the datetime module
+    return int(str(deadline_date - obtain_day_zero()).split(' ')[0])  # gets the difference of the two dates from the datetime module
 
 # #testing if it runs
 #main('../save_file.json')
