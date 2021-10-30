@@ -119,7 +119,7 @@ class CategoryCreationWindow(GeneralWindow):
         # 1) Do Edit Check
         if not self.edit:
             # Get Categories for Comparison
-            existing_categories = Category.import_category(self.prefs.directory['categories'])
+            existing_categories = Category.import_category()
             # Check for existence of name or id
             current_name = self.title_edit.text()
             id_of_found = None    # For overwriting old one
@@ -138,7 +138,6 @@ class CategoryCreationWindow(GeneralWindow):
                 # Delete category
                 # Category.delete_category(self.prefs.directory['categories'], id_of_found)
                 Category.edit_category(
-                        self.prefs.directory['categories'],
                         id_of_found,
                         self.title_edit.text(),
                         self.hex_col_selected
@@ -151,9 +150,9 @@ class CategoryCreationWindow(GeneralWindow):
                 return  # Stop making category
         # Create
         category = Category.Category(
-            -1, self.title_edit.text(), self.hex_col_selected, self.prefs.directory['categories'])
+            -1, self.title_edit.text(), self.hex_col_selected)
         # Export
-        category.export_category(self.prefs.directory['categories'])
+        category.export_category()
 
         # Reload Main GUI
         GeneralWindow.raise_event(self.ls_w, 'reload_categories')

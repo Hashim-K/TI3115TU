@@ -76,6 +76,8 @@ def find_category(category_id):
 
 def get_color(category_id):
     """ Seeks for a task by its taskID. """
+    if category_id == 0:
+        return "#FFFFFF"
     category_list = import_category()
     for category in category_list:
         if category.category_id == category_id:

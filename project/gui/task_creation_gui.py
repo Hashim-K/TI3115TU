@@ -7,6 +7,7 @@ from PyQt5.QtCore import QRegExp, Qt, QDate
 from PyQt5.QtGui import QRegExpValidator, QIcon
 
 from project.BackEnd import Task, Category, Schedule
+from project.BackEnd.Preset import Presets
 from project.gui.general_window_gui import GeneralWindow
 import os
 dirname = os.path.dirname(__file__)
@@ -18,6 +19,7 @@ class TaskCreationWindow(GeneralWindow):
 
     def init_ui(self):
         # Window Styling
+        presets = Presets()
         self.setWindowTitle("Create new task")
         self.setStyleSheet("color: 'white';" +
                         "font-size: 13px;" +
@@ -43,7 +45,7 @@ class TaskCreationWindow(GeneralWindow):
         # Deadline
         self.datepicker = QDateEdit(calendarPopup=True)
         # self.datepicker.setStyleSheet("padding: 5px 10px;") > Breaks UI
-        date = Schedule.presets.day_zero.split("-")
+        date = presets.day_zero.split("-")
         date = [int(d) for d in date]
         self.datepicker.setMinimumDate(QDate(date[0], date[1], date[2]))
         self.datepicker.setMaximumDate(QDate(date[0], date[1], date[2]).addDays(7))
@@ -167,7 +169,7 @@ class TaskCreationWindow(GeneralWindow):
 
     def update_categories_dropdown(self):
         """Updates the categories dropdown under 'Preferences'"""
-        categories = Category.import_category(self.prefs.directory['categories'])
+        categories = Category.import_category()
         # print('clear')
         for category in categories:
             # Add To Dropdown
@@ -194,11 +196,11 @@ class TaskCreationWindow(GeneralWindow):
             preferred_time = (pref_start, pref_end)
 
         new_task = Task.Task(-1, name, description, session_duration, priority, deadline,
-                        repeat, category, preferred_time, onsameday, num_sessions, self.prefs.directory['tasks'])
+                        repeat, category, preferred_time, onsameday, num_sessions)
         print(new_task)
 
         # Export Task to Save File
-        Task.Task.export_task(new_task, self.prefs.directory['tasks'])
+        Task.Task.export_task(new_task)
         GeneralWindow.raise_event(self.ls_w, 'reload_tasks')
 
         # then close task creation GUI

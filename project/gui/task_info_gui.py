@@ -13,7 +13,7 @@ class TaskInfo(general_window_gui.GeneralWindow):
 
     def get_task(self, task_ID):
         """Fetch the task for data"""
-        self.task = Task.find_task(self.prefs.directory['tasks'], task_ID)
+        self.task = Task.find_task(task_ID)
         self.init_ui_late()
 
     def init_ui_late(self):
@@ -73,7 +73,7 @@ class TaskInfo(general_window_gui.GeneralWindow):
         category_prompt = QLabel('Category')
         category_prompt.setStyleSheet(self.prefs.style_sheets['text_mute_tight'])
         # Category Load
-        category = Category.find_category(self.prefs.directory['categories'], self.task.category)
+        category = Category.find_category(self.task.category)
         if category is None:
             cat_name = 'No Category'
         else:

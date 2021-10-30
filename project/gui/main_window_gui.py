@@ -624,7 +624,7 @@ class MainView(general_window_gui.GeneralWindow):
     def delete_all_tasks(self):
         """Deletes all tasks after prompt"""
         def delete_actual():
-            Task.delete_all_tasks(self.prefs.directory['tasks'])
+            Task.delete_all_tasks()
             self.populate_tasklist()    # Reload list
 
         dialog = dialog_window_gui.CustomDialog('Delete all tasks?', self.prefs, self)
@@ -657,12 +657,12 @@ class MainView(general_window_gui.GeneralWindow):
     # Preferences View Functions
     def update_categories_dropdown(self):
         """Updates the categories dropdown under 'Preferences'"""
-        categories = Category.import_category(self.prefs.directory['categories'])
+        categories = Category.import_category()
         self.categories_dropdown.clear()  # Clear Dropdown
         print('clear')
         for category in categories:
             # Add To Dropdown
-            self.categories_dropdown.addItem(category.title, [category.colour, category.category_id])
+            self.categories_dropdown.addItem(category.title, [category.color, category.category_id])
         self.local_update_colour_preview()
 
     def local_update_colour_preview(self):
@@ -697,7 +697,7 @@ class MainView(general_window_gui.GeneralWindow):
 
     def delete_category(self):
         # Delete Category
-        Category.delete_category(self.prefs.directory['categories'], self.categories_dropdown.currentData()[1])
+        Category.delete_category(self.categories_dropdown.currentData()[1])
         # Reload TaskList (correct colours, etc)
         general_window_gui.GeneralWindow.raise_event(self.ls_w, 'reload_tasks')
 
@@ -731,6 +731,7 @@ class MainView(general_window_gui.GeneralWindow):
     def catch_event(self, event_name):
         if event_name == 'reload_tasks':
             self.populate_tasklist()
+            self.update_schedule_image()
         if event_name == 'reload_routines':
             self.populate_routine_list()
             self.update_schedule_image()

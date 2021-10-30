@@ -2,6 +2,8 @@ from PyQt5.QtWidgets import QListWidget, QListWidgetItem, QWidget, QVBoxLayout, 
 from PyQt5 import QtCore
 
 from project.BackEnd import Task, Category
+from project.BackEnd.Schedule import import_schedule
+
 from project.gui.task_info_gui import TaskInfo
 from project.gui.general_window_gui import GeneralWindow
 
@@ -46,14 +48,14 @@ class TaskListItem(QListWidgetItem):
         task_deadline = self.task.deadline
         task_duration = self.task.duration
         task_sessions = self.task.session
-        category_obj = Category.find_category(self.prefs.directory['categories'], self.task.category)
+        category_obj = Category.find_category(self.task.category)
         # Category check
         if category_obj is None:    # No category
             task_category = 'No Category'
             colour_hex = '#FFFFFF'
         else:   # Category
             task_category = category_obj.title
-            colour_hex = category_obj.colour
+            colour_hex = category_obj.color
         task_priority = self.task.priority
 
         # WIDGET
@@ -136,5 +138,7 @@ class TaskListItem(QListWidgetItem):
         window.get_task(self.task.taskID)   # Fetches task using its class
 
     def delete_task(self):
-        Task.delete_task(self.prefs.directory['tasks'], self.task.taskID)
+        schedule = import_schedule()
+        Task.delete_task(self.task.taskID)
+        schedule.delete_event("Task", self.task.taskID)
         GeneralWindow.raise_event(self.ls_w, 'reload_tasks')
