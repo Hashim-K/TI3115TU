@@ -1,5 +1,4 @@
-<img src="\readme_files\readme_logo.png" style="zoom: 25%;" />
-
+![](<project/readme_files/258_logo.png>)
 
 
 <h1 align="center">25/8</h1>
