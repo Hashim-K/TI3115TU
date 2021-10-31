@@ -4,11 +4,11 @@
       "time_interval": 15,
       "length_morning_routine": "00:15:00",
       "calendar_id": "mrg7pifh0bh6s79ca185dhaobc@group.calendar.google.com",
-      "data_path": "C:\\Users\\acher\\Desktop\\CS_local\\group-25\\project\\BackEnd\\../data/",
-      "category_path": "C:\\Users\\acher\\Desktop\\CS_local\\group-25\\project\\BackEnd\\../data/2021-11-01/categories.json",
-      "google_path": "C:\\Users\\acher\\Desktop\\CS_local\\group-25\\project\\BackEnd\\../data/2021-11-01/google_events.json",
-      "routine_path": "C:\\Users\\acher\\Desktop\\CS_local\\group-25\\project\\BackEnd\\../data/2021-11-01/routines.json",
-      "task_path": "C:\\Users\\acher\\Desktop\\CS_local\\group-25\\project\\BackEnd\\../data/2021-11-01/tasks.json",
-      "schedule_path": "C:\\Users\\acher\\Desktop\\CS_local\\group-25\\project\\BackEnd\\../data/2021-11-01/schedule.json",
-      "schedule_image": "C:\\Users\\acher\\Desktop\\CS_local\\group-25\\project\\BackEnd\\../data/2021-11-01/schedule.jpg"
+      "data_path": "C:\\Users\\hashi\\Documents\\TU Delft\\Y3\\Q1\\SEM\\group-25\\project\\BackEnd\\../data/",
+      "category_path": "C:\\Users\\hashi\\Documents\\TU Delft\\Y3\\Q1\\SEM\\group-25\\project\\BackEnd\\../data/2021-11-01/categories.json",
+      "google_path": "C:\\Users\\hashi\\Documents\\TU Delft\\Y3\\Q1\\SEM\\group-25\\project\\BackEnd\\../data/2021-11-01/google_events.json",
+      "routine_path": "C:\\Users\\hashi\\Documents\\TU Delft\\Y3\\Q1\\SEM\\group-25\\project\\BackEnd\\../data/2021-11-01/routines.json",
+      "task_path": "C:\\Users\\hashi\\Documents\\TU Delft\\Y3\\Q1\\SEM\\group-25\\project\\BackEnd\\../data/2021-11-01/tasks.json",
+      "schedule_path": "C:\\Users\\hashi\\Documents\\TU Delft\\Y3\\Q1\\SEM\\group-25\\project\\BackEnd\\../data/2021-11-01/schedule.json",
+      "schedule_image": "C:\\Users\\hashi\\Documents\\TU Delft\\Y3\\Q1\\SEM\\group-25\\project\\BackEnd\\../data/2021-11-01/schedule.jpg"
 }

@@ -8,6 +8,7 @@ from PyQt5.QtGui import QIcon, QPixmap
 from PyQt5 import QtGui, QtCore
 import os
 
+from project.BackEnd.GoogleEvent import import_google_event, delete_google_event
 from project.BackEnd.Routine import delete_routine, import_routine
 from project.BackEnd.Schedule import import_schedule, generate_image
 from project.BackEnd.Scheduling_Algorithm import scheduling_algorithm
@@ -393,8 +394,7 @@ class MainView(general_window_gui.GeneralWindow):
         del_google_button = QPushButton('Discard Google Events')
         del_google_button.setFixedWidth(200)
         del_google_button.setStyleSheet(self.prefs.style_sheets['button_exit_rect'])
-
-        # del_google_button.clicked.connect()
+        del_google_button.clicked.connect(self.discard_changes)
 
         google_import_sublayout.addWidget(del_google_button, alignment=QtCore.Qt.AlignCenter)
         google_import_sublayout.addStretch()
@@ -657,6 +657,14 @@ class MainView(general_window_gui.GeneralWindow):
             delete_actual()
         else:
             pass
+
+    def discard_changes(self):
+        schedule = import_schedule()
+        googleevent = import_google_event()
+        for ge in googleevent:
+            schedule.delete_event("GoogleEvent", ge.google_event_id)
+            delete_google_event(ge.google_event_id)
+        self.update_schedule_image()
 
     # Routine View Functions
     def populate_routine_list(self):

@@ -218,8 +218,13 @@ def generate_image():
     legend_elements = []
     for event in schedule.events_list:
         event_type = event.return_event()
+        contained = False
         if len(event.times.times()) > 0:
-            legend_elements.append(patches.Patch(facecolor=event.color, label=event_type.name))
+            for legend_el in legend_elements:
+                if event_type.name == legend_el.get_label():
+                    contained = True
+            if not contained:
+                legend_elements.append(patches.Patch(facecolor=event.color, label=event_type.name))
     legend = axes.legend(handles=legend_elements, bbox_to_anchor=(1.01, 1.0), loc='upper left', frameon=False)
     plt.setp(legend.get_texts(), color=display.text_color)
     plt.grid(axis='x', color=display.text_color, linewidth=0.5, alpha=0.25, linestyle='dotted')
