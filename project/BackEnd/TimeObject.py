@@ -33,7 +33,7 @@ class TimeObject:
         slot = int((time.hour*60+time.minute)/timeinterval)
         day_zero = datetime.date.fromisoformat(presets.day_zero)
         day = (date-day_zero).days
-        return [day, slot]
+        return [day, slot-1]
 
     def __str__(self):
         string = self.dateTime+":00" + self.timeZone[0:3]+":"+self.timeZone[3:5]
