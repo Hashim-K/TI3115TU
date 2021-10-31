@@ -199,11 +199,11 @@ class MainView(general_window_gui.GeneralWindow):
         title.setStyleSheet(self.prefs.style_sheets['text_title'])
 
         # Generate Schedule Button
-        generate_schedule_button = QPushButton("Generate Schedule")
-        generate_schedule_button.setToolTip('Make 25/8 generate a schedule')   # TO DELETE
-        generate_schedule_button.setStyleSheet(self.prefs.style_sheets['button_priority_rect'])
-        generate_schedule_button.setFixedWidth(150)
-        generate_schedule_button.clicked.connect(self.get_schedule)
+        self.generate_schedule_button = QPushButton("Generate Schedule")
+        self.generate_schedule_button.setToolTip('Make 25/8 generate a schedule')   # TO DELETE
+        self.generate_schedule_button.setStyleSheet(self.prefs.style_sheets['button_priority_rect'])
+        self.generate_schedule_button.setFixedWidth(150)
+        self.generate_schedule_button.clicked.connect(self.get_schedule)
 
         ## Export Schedule Button
         export_schedule_button = QPushButton("Export to Calendar")
@@ -211,14 +211,14 @@ class MainView(general_window_gui.GeneralWindow):
         export_schedule_button.setStyleSheet(self.prefs.style_sheets['button_disabled_rect'])
         export_schedule_button.setFixedWidth(150)
         # connect export
-        export_schedule_button.clicked.connect(self.export_google())
+        export_schedule_button.clicked.connect(self.export_google)
 
         # Top Block Layout
         tbw_layout = QHBoxLayout()
         tbw_layout.addWidget(title)
         tbw_layout.addStretch(1)
         tbw_layout.addWidget(export_schedule_button)
-        tbw_layout.addWidget(generate_schedule_button)
+        tbw_layout.addWidget(self.generate_schedule_button)
         top_block_widget.setLayout(tbw_layout)
 
         self.schedule_label = QLabel()
@@ -706,8 +706,11 @@ class MainView(general_window_gui.GeneralWindow):
         general_window_gui.GeneralWindow.raise_event(self.ls_w, 'reload_tasks')
 
     def get_schedule(self):
-        scheduling_algorithm()
-        self.update_schedule_image()
+        self.schedule_worker = ScheduleWorker()
+        self.generate_schedule_button.clicked.disconnect(self.get_schedule)
+        self.schedule_worker.start()
+        self.schedule_worker.finished.connect(self.update_schedule_image)
+        self.schedule_worker.finished.connect(lambda: self.generate_schedule_button.clicked.connect(self.get_schedule))
 
     # Schedule View Functions
     def update_schedule_image(self):
@@ -755,6 +758,10 @@ class MainView(general_window_gui.GeneralWindow):
     # OnClose
     def closeEvent(self, a0: QtGui.QCloseEvent) -> None:
         sys.exit()
+
+class ScheduleWorker(QThread):
+    def run(self):
+        scheduling_algorithm()
 
 class GoogleWorker(QThread):
     """
