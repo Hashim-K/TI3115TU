@@ -692,7 +692,7 @@ class MainView(general_window_gui.GeneralWindow):
         """Updates the categories dropdown under 'Preferences'"""
         categories = Category.import_category()
         self.categories_dropdown.clear()  # Clear Dropdown
-        print('clear')
+        # print('clear')
         for category in categories:
             # Add To Dropdown
             self.categories_dropdown.addItem(category.title, [category.color, category.category_id])

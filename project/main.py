@@ -30,8 +30,6 @@ google_credentials = None       # Lookup token
 def on_startup():
     # Obtain Google account IF it is there
     day_zero = find_day_zero(0)
-    print(os.path.isfile(os.path.join(dirname, 'data/presets.json')))
-    print(os.path.join(dirname, 'data/presets.json'))
     if not os.path.exists(os.path.join(dirname, 'data/' + day_zero)):
         os.makedirs(os.path.join(dirname, 'data/' + day_zero))
     if not os.path.exists(os.path.join(dirname, 'data/temp/')):
@@ -59,7 +57,6 @@ def on_startup():
 # BODY
 app = QApplication(sys.argv)
 on_startup()                    # Do startup-things
-print('keepo')
 sys.exit(app.exec())    
 
 '''The event loop of the GUI is in the exit argument as that will make close
