@@ -176,8 +176,9 @@ class Prefs():
                     ),
         # Special Home Buttons
         'home_special': (
-                "*{border-radius: 2px;" +
-                "font-size: 14px;"
+                "*{border-radius: 5px;" +
+                "font-size: 14px;" +
+                "background-color: '#42464E';" +
                 "color : 'white';" +
                 "padding: 10px 5px;" +
                 "margin: 0px 0px;}" +
