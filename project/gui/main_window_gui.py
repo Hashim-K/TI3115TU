@@ -375,6 +375,9 @@ class MainView(general_window_gui.GeneralWindow):
 
         gb_layout.addWidget(prompt)
 
+        google_import_sublayout = QHBoxLayout()
+        google_import_sublayout.addStretch()
+
         ### Button
         import_google_button = QPushButton(' Import Google Events')
         icon = QIcon(self.prefs.images['arrow_down'])
@@ -384,7 +387,19 @@ class MainView(general_window_gui.GeneralWindow):
         # connect import
         import_google_button.clicked.connect(self.import_google)
 
-        gb_layout.addWidget(import_google_button, alignment=QtCore.Qt.AlignCenter)
+        google_import_sublayout.addWidget(import_google_button, alignment=QtCore.Qt.AlignCenter)
+
+        ### Delete Google Button
+        del_google_button = QPushButton('Discard Google Events')
+        del_google_button.setFixedWidth(200)
+        del_google_button.setStyleSheet(self.prefs.style_sheets['button_exit_rect'])
+
+        # del_google_button.clicked.connect()
+
+        google_import_sublayout.addWidget(del_google_button, alignment=QtCore.Qt.AlignCenter)
+        google_import_sublayout.addStretch()
+
+        gb_layout.addLayout(google_import_sublayout)
 
         google_box.setLayout(gb_layout)
 
