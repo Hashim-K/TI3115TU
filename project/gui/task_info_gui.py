@@ -92,13 +92,13 @@ class TaskInfo(general_window_gui.GeneralWindow):
         repeatable_prompt.setStyleSheet(self.prefs.style_sheets['text_mute_tight'])
         repeatable = QLabel(f'{self.task.repeatable}')
         repeatable.setStyleSheet(self.prefs.style_sheets['text_tight'])
-        sub_layout.addRow(repeatable_prompt, repeatable)
+        # sub_layout.addRow(repeatable_prompt, repeatable)
 
         plan_on_same_prompt = QLabel('Same Day')
         plan_on_same_prompt.setStyleSheet(self.prefs.style_sheets['text_mute_tight'])
         plan_on_same = QLabel(f'{self.task.plan_on_same}')
         plan_on_same.setStyleSheet(self.prefs.style_sheets['text_tight'])
-        sub_layout.addRow(plan_on_same_prompt, plan_on_same)
+        # sub_layout.addRow(plan_on_same_prompt, plan_on_same)
 
         sub_layout.setContentsMargins(10,10,0,10)
 

@@ -143,19 +143,10 @@ class Schedule:
         return empty_blocks
 
     def delete_event(self, type: str, id : int):
-        """ Delete a task from a JSON file. """
-        presets = Presets()
-        try:
-            with open(presets.schedule_path, 'r') as file:
-                schedule_dict = json.load(file)
-            for i in range(len(schedule_dict)):
-                if schedule_dict[i]['ID'] == id and schedule_dict[i]['Type'] == type:
-                    del schedule_dict[i]
-                    break
-            with open(presets.schedule_path, 'w') as file:
-                json.dump(schedule_dict, file, indent=6)
-        except FileNotFoundError:
-            print('File does not exist')
+        for event in self.events_list:
+            if event.type == type and event.id == id:
+                self.events_list.remove(event)
+        self.export_schedule()
 
     def delete_times(self, type: str, id : int, times):
         schedule = import_schedule()

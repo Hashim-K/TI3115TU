@@ -11,6 +11,7 @@ import os
 from project.BackEnd.Routine import delete_routine, import_routine
 from project.BackEnd.Schedule import import_schedule, generate_image
 from project.BackEnd.Scheduling_Algorithm import scheduling_algorithm
+from project.BackEnd.Task import import_task
 from project.gui.category_creation_gui import CategoryCreationWindow
 
 dirname = os.path.dirname(__file__)
@@ -353,7 +354,7 @@ class MainView(general_window_gui.GeneralWindow):
         connect_google_button.setIcon(icon)
         connect_google_button.setFixedWidth(200)
         connect_google_button.setStyleSheet(self.prefs.style_sheets['button_priority_rect'])
-        connect_google_button.clicked.connect(GoogleAPI.authenticate)
+        connect_google_button.clicked.connect(self.authenticate_google)
 
         gb_layout.addWidget(connect_google_button, alignment=QtCore.Qt.AlignCenter)
 
@@ -591,7 +592,7 @@ class MainView(general_window_gui.GeneralWindow):
         self.context.setLayout(layout)
 
     ## Make Google Thread
-    def add_schedule(self):
+    def authenticate_google(self):
         # This MUST be a class variable as to not get destroyed after being added
         self.google_worker = GoogleWorker()
         self.google_worker.start()
@@ -628,8 +629,13 @@ class MainView(general_window_gui.GeneralWindow):
     def delete_all_tasks(self):
         """Deletes all tasks after prompt"""
         def delete_actual():
-            Task.delete_all_tasks()
-            self.populate_tasklist()    # Reload list
+            task_lists = import_task()
+            schedule = import_schedule()
+            for task in task_lists:
+                Task.delete_task(task.taskID)
+                schedule.delete_event("Task", task.taskID)
+
+            general_window_gui.GeneralWindow.raise_event(self.ls_w, 'reload_tasks')    # Reload list
 
         dialog = dialog_window_gui.CustomDialog('Delete all tasks?', self.prefs, self)
         if dialog.exec():
@@ -734,11 +740,14 @@ class MainView(general_window_gui.GeneralWindow):
         '''Import from google calendar'''
         self.gi = GoogleImport()
         self.gi.start()
+        self.update_schedule_image()
+        self.gi.finished.connect(lambda: self.update_schedule_image())
 
     def export_google(self):
         '''Export to google calendar'''
         self.ge = GoogleExport()
         self.ge.start()
+        self.ge.finished.connect(lambda: self.update_schedule_image())
 
     # Stack Changer
     def display(self, i):
@@ -769,7 +778,6 @@ class GoogleWorker(QThread):
     """
     def run(self):  # Override
         service = GoogleAPI.authenticate()
-        GoogleAPI.create_calendar(service, 'anything')  # Anything is placeholder
 
 class GoogleImport(QThread):
     """
@@ -777,7 +785,7 @@ class GoogleImport(QThread):
     """
     def run(self):  # Override
         service = GoogleAPI.authenticate()
-        GoogleAPI.create_calendar(service, 'anything')  # Anything is placeholder
+        GoogleAPI.import_events(service) # Anything is placeholder
 
 class GoogleExport(QThread):
     """
@@ -785,7 +793,7 @@ class GoogleExport(QThread):
     """
     def run(self):  # Override
         service = GoogleAPI.authenticate()
-        GoogleAPI.create_calendar(service, 'anything')  # Anything is placeholder
+        GoogleAPI.export_events(service)  # Anything is placeholder
 
 class TopBlockWidget(QWidget):  # COULD be TESTED [not done]
     """
