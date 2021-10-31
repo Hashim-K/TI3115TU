@@ -210,6 +210,8 @@ class MainView(general_window_gui.GeneralWindow):
         export_schedule_button.setToolTip('Export currently unavailable')   # TO DELETE
         export_schedule_button.setStyleSheet(self.prefs.style_sheets['button_disabled_rect'])
         export_schedule_button.setFixedWidth(150)
+        # connect export
+        export_schedule_button.clicked.connect(self.export_google())
 
         # Top Block Layout
         tbw_layout = QHBoxLayout()
@@ -346,14 +348,14 @@ class MainView(general_window_gui.GeneralWindow):
         gb_layout.addWidget(prompt)
 
         ### Button
-        button = QPushButton(' Connect Google Account')
+        connect_google_button = QPushButton(' Connect Google Account')
         icon = QIcon(self.prefs.images['placeholder'])
-        button.setIcon(icon)
-        button.setFixedWidth(200)
-        button.setStyleSheet(self.prefs.style_sheets['button_priority_rect'])
-        button.clicked.connect(GoogleAPI.authenticate)
+        connect_google_button.setIcon(icon)
+        connect_google_button.setFixedWidth(200)
+        connect_google_button.setStyleSheet(self.prefs.style_sheets['button_priority_rect'])
+        connect_google_button.clicked.connect(GoogleAPI.authenticate)
 
-        gb_layout.addWidget(button, alignment=QtCore.Qt.AlignCenter)
+        gb_layout.addWidget(connect_google_button, alignment=QtCore.Qt.AlignCenter)
 
         ### Prompt Import
         prompt_import_text = "2) Import Events"
@@ -373,13 +375,15 @@ class MainView(general_window_gui.GeneralWindow):
         gb_layout.addWidget(prompt)
 
         ### Button
-        button = QPushButton(' Import Google Events')
+        import_google_button = QPushButton(' Import Google Events')
         icon = QIcon(self.prefs.images['arrow_down'])
-        button.setIcon(icon)
-        button.setFixedWidth(200)
-        button.setStyleSheet(self.prefs.style_sheets['button_priority_rect'])
+        import_google_button.setIcon(icon)
+        import_google_button.setFixedWidth(200)
+        import_google_button.setStyleSheet(self.prefs.style_sheets['button_priority_rect'])
+        # connect import
+        import_google_button.clicked.connect(self.import_google)
 
-        gb_layout.addWidget(button, alignment=QtCore.Qt.AlignCenter)
+        gb_layout.addWidget(import_google_button, alignment=QtCore.Qt.AlignCenter)
 
         google_box.setLayout(gb_layout)
 
@@ -723,6 +727,16 @@ class MainView(general_window_gui.GeneralWindow):
         Schedule.presets.length_morning_routine = duration
         Schedule.presets.Store()
 
+    def import_google(self):
+        '''Import from google calendar'''
+        self.gi = GoogleImport()
+        self.gi.start()
+
+    def export_google(self):
+        '''Export to google calendar'''
+        self.ge = GoogleExport()
+        self.ge.start()
+
     # Stack Changer
     def display(self, i):
         self.stack.setCurrentIndex(i)
@@ -743,6 +757,22 @@ class MainView(general_window_gui.GeneralWindow):
         sys.exit()
 
 class GoogleWorker(QThread):
+    """
+    Thread that does google calendar creation and authentication (PLACEHOLDER)
+    """
+    def run(self):  # Override
+        service = GoogleAPI.authenticate()
+        GoogleAPI.create_calendar(service, 'anything')  # Anything is placeholder
+
+class GoogleImport(QThread):
+    """
+    Thread that does google calendar creation and authentication (PLACEHOLDER)
+    """
+    def run(self):  # Override
+        service = GoogleAPI.authenticate()
+        GoogleAPI.create_calendar(service, 'anything')  # Anything is placeholder
+
+class GoogleExport(QThread):
     """
     Thread that does google calendar creation and authentication (PLACEHOLDER)
     """
