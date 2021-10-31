@@ -149,3 +149,22 @@ dmypy.json
 # A. Eyong personal
 proj_graphics.afdesign
 graphics_low.pptx
+
+
+*.pickle
+
+project/data/categories.json
+project/data/events.json
+project/data/save_file.json
+project/data/copy_file.json
+project/data/schedule.jpg
+
+project/data/routines.json
+
+project/data/google_events.json
+
+project/data/2021-11-01/
+
+project/data/temp/
+
+project/data/presets.json

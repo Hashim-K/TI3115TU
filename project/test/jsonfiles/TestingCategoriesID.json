@@ -1,0 +1,12 @@
+[
+      {
+            "category_id": 3,
+            "title": "Example",
+            "color": "#87edca"
+      },
+      {
+            "category_id": 4,
+            "title": "Example",
+            "color": "color"
+      }
+]

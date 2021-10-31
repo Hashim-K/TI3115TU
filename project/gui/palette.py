@@ -1,19 +1,33 @@
+import os
+dirname = os.path.dirname(__file__)
+
 class Prefs():
+    # VERSION INFO
+    ver_nr = 'v0.97'
+
     # IMAGES
 
     images = {
-        'img_logo' : 'imagery/logo.png',
-        'img_logo_min' : 'imagery/logo_min.png',
-        'img_g_logo' : 'imagery/google_logo.png',
-        'bar_close' : 'imagery/bar_close.png',
+        'img_logo': os.path.join(dirname, '../media/logo.png'),
+        'img_logo_min': os.path.join(dirname, '../media/logo_min.png'),
+        'img_g_logo': os.path.join(dirname, '../media/google_logo.png'),
+        'icon_task_info': os.path.join(dirname, '../media/icon_task_info.png'),
+        'icon_add': os.path.join(dirname, '../media/add.png'),
+        'icon_info': os.path.join(dirname, '../media/info.png'),
+        'icon_warning': os.path.join(dirname, '../media/warning.png'),
+        'bar_close': os.path.join(dirname, '../media/bar_close.png'),
+        'home_image': os.path.join(dirname, '../media/home_image.png'),
+        'arrow_down': os.path.join(dirname, '../media/arrow_down.png'),
+        'placeholder': os.path.join(dirname, '../media/slice4.png'),
         # FROM flaticon
-        'algo_icon' : 'imagery/algo_icon.png'   # @ Linector
+        'algo_icon': os.path.join(dirname, '../media/algo_icon.png')   # @ Linector
     }
 
     # SAVING DIRECTORIES
 
     directory = {
-        'tasks' : ''
+        'tasks' : os.path.join(dirname, '../data/save_file.json'),
+        'categories' : os.path.join(dirname, '../data/categories.json')
     }
 
     # STYLE SHEET
@@ -29,12 +43,30 @@ class Prefs():
         'text_title' : ("font-size: 16px; color: 'white';" +
                     "border-radius: 10px;" +
                     " padding: 0px 0px;"),
+        'text_title_large': ("font-size: 24px; color: '#A5AAB9';" +
+                       "border-radius: 10px;" +
+                       " padding: 0px 10px;"),
+        'text_title_mute': ("font-size: 16px; color: '#5b606b';" +
+                       "border-radius: 10px;" +
+                       " padding: 0px 0px;"),
         'text_mute' : ("font-size: 13px; color: '#A0A0A0';" +
                     "border-radius: 10px;" +
                     " padding: 10px 10px;"),
+        'text_mute_tight': ("font-size: 13px; color: '#A0A0A0';" +
+                      "border-radius: 10px;" +
+                      " padding: 0px 0px;"),
         'text_bubble' : ("font-size: 13px; color: 'white';" +
                     "background-color: '#363940'; border-radius: 10px;" +
                     " padding: 15px 15px;"),
+        'text_bubble_slim': ("font-size: 13px; color: 'white';" +
+                        "background-color: '#363940'; border-radius: 10px;" +
+                        " padding: 10px 15px;"),
+        'text_bubble_clear' : ("font-size: 13px; color: '#B9BBBE';" +
+                    "border-radius: 10px;" +
+                    " padding: 15px 5px;"),
+        'text_bubble_clear_slim': ("font-size: 13px; color: '#B9BBBE';" +
+                              "border-radius: 10px;" +
+                              " padding: 5px 5px;"),
         'text_bubble_title' : ("font-size: 16px; color: 'white';" +
                     "background-color: '#27282C'; border-radius: 10px;" +
                     " padding: 10px 10px;"),
@@ -61,6 +93,16 @@ class Prefs():
                     "margin: 0px 0px;}" +
                     "*:hover{background: '#4069ED';}"
                     ),
+        'button_disabled_rect': (
+                "*{border: 2px solid '#18191B';" +
+                "border-radius: 5px;" +
+                "background-color: '#18191B';" +
+                "font-size: 13px;"
+                "color : '#575C6B';" +
+                "padding: 5px 0px;" +
+                "margin: 0px 0px;}" +
+                "*:hover{background: '#30333D';}"
+        ),
         'button_priority_rect' : (
                     "*{border: 2px solid '#404EED';" + 
                     "border-radius: 5px;" +
@@ -72,7 +114,7 @@ class Prefs():
                     "*:hover{background: '#4069ED';}"
                     ),
         'button_low_priority_rect' : (
-                    "*{border: 2px solid '#42464E';" + 
+                    "*{border: 2px solid '#42464E';" +
                     "border-radius: 5px;" +
                     "background-color: '#42464E';" + 
                     "font-size: 13px;"
@@ -132,6 +174,22 @@ class Prefs():
                     "margin: 0px 0px;}" +
                     "*:hover{background: '#4069ED';}"
                     ),
-                    
+        # Special Home Buttons
+        'home_special': (
+                "*{border-radius: 5px;" +
+                "font-size: 14px;" +
+                "background-color: '#42464E';" +
+                "color : 'white';" +
+                "padding: 10px 5px;" +
+                "margin: 0px 0px;}" +
+                "*:hover{background: '#363940';" +
+                "border-radius: 5px;" +
+                "border: 2px solid '#42464E';}"
+        ),
+        # GroupBoxes
+        'std_gbox' : (
+            "*:title{color : 'white';}"
+            # "*{border : 2px solid 'black';}"
+        )
     }
 

@@ -1,14 +1,16 @@
 import sys
+import datetime
 
-from PyQt5.QtWidgets import QWidget, QFormLayout, QLineEdit, QDateEdit
-from PyQt5.QtWidgets import QLabel, QSlider, QComboBox, QCheckBox
-from PyQt5.QtWidgets import QPushButton, QApplication, QStyleFactory
+from PyQt5.QtWidgets import QFormLayout, QLineEdit, QDateEdit, QVBoxLayout, QHBoxLayout
+from PyQt5.QtWidgets import QLabel, QSlider, QComboBox, QCheckBox, QPushButton
 from PyQt5.QtCore import QRegExp, Qt, QDate
-from PyQt5.QtGui import QRegExpValidator
+from PyQt5.QtGui import QRegExpValidator, QIcon
 
-from project.BackEnd import Task
+from project.BackEnd import Task, Category, Schedule
+from project.BackEnd.Preset import Presets
 from project.gui.general_window_gui import GeneralWindow
-
+import os
+dirname = os.path.dirname(__file__)
 
 class TaskCreationWindow(GeneralWindow):
 
@@ -17,51 +19,63 @@ class TaskCreationWindow(GeneralWindow):
 
     def init_ui(self):
         # Window Styling
+        presets = Presets()
         self.setWindowTitle("Create new task")
         self.setStyleSheet("color: 'white';" +
                         "font-size: 13px;" +
                         "background-color: #303136;"
                         )
+        icon = QIcon(self.prefs.images['icon_add'])
+        self.setWindowIcon(icon)
 
         # Layout
-        layout = QFormLayout()
-        layout.setSpacing(15)
+        main_layout = QVBoxLayout()
+
+        top_layout = QFormLayout()
+        top_layout.setSpacing(15)
+
+        bottom_layout = QHBoxLayout()
 
         # Title
         self.title_field = QLineEdit(self)
         self.title_field.setStyleSheet(self.prefs.style_sheets['fill_line'])
-        layout.addRow("Title", self.title_field)
+        top_layout.addRow("Title", self.title_field)
         self.title_field.setMaxLength(30)
 
         # Deadline
         self.datepicker = QDateEdit(calendarPopup=True)
         # self.datepicker.setStyleSheet("padding: 5px 10px;") > Breaks UI
-        self.datepicker.setMinimumDate(QDate.currentDate())
-        layout.addRow("Deadline", self.datepicker)
+        date = presets.day_zero.split("-")
+        date = [int(d) for d in date]
+        self.datepicker.setMinimumDate(QDate(date[0], date[1], date[2]))
+        self.datepicker.setMaximumDate(QDate(date[0], date[1], date[2]).addDays(7))
+        self.datepicker.setDate(QDate(date[0], date[1], date[2]).addDays(7))
+        top_layout.addRow("Deadline", self.datepicker)
 
         # Sessions
         self.numsessions_field = QLineEdit(self)
         self.numsessions_field.setStyleSheet(self.prefs.style_sheets['fill_line'])
         self.numsessions_field.setText("1")
-        self.numsessions_field.setValidator(QRegExpValidator(QRegExp(r'[0-9]+')))
-        layout.addRow("Number of sessions", self.numsessions_field)
+        self.numsessions_field.setValidator(QRegExpValidator(QRegExp(r'[1-9]')))
+        top_layout.addRow("Number of sessions", self.numsessions_field)
 
-        self.duration_label = QLabel("5 minutes", self)
+        # Duration
+        self.duration_label = QLabel("15 minutes", self)
 
         self.sessionduration_slider = QSlider(Qt.Horizontal, self)
         self.sessionduration_slider.setMinimum(1)
-        self.sessionduration_slider.setMaximum(48)
+        self.sessionduration_slider.setMaximum(16)
         self.sessionduration_slider.valueChanged.connect(self.update_duration)
 
-        layout.addRow(QLabel("Session duration"), self.duration_label)
-        layout.addRow(self.sessionduration_slider)
+        top_layout.addRow(QLabel("Session duration"), self.duration_label)
+        top_layout.addRow(self.sessionduration_slider)
 
         # Description
         self.description_field = QLineEdit(self)
         self.description_field.setStyleSheet(self.prefs.style_sheets['fill_line'])
         self.description_field.setMaxLength(200)
-        layout.addRow(QLabel("Description"))
-        layout.addRow(self.description_field)
+        top_layout.addRow(QLabel("Description"))
+        top_layout.addRow(self.description_field)
         # self.description_field = QTextEdit(self)
         # layout.addRow(QLabel("Description"))
         # layout.addRow(self.description_field)
@@ -71,48 +85,108 @@ class TaskCreationWindow(GeneralWindow):
         self.priority_dropdown.setStyleSheet("padding: 5px 10px;")
         self.priority_dropdown.addItems([
             "None", "1 (highest)", "2", "3", "4", "5 (lowest)"])
-        layout.addRow("Priority", self.priority_dropdown)
+        top_layout.addRow("Priority", self.priority_dropdown)
 
         # Category
         self.category_dropbox = QComboBox(self)
         self.category_dropbox.setStyleSheet("padding: 5px 10px;")
-        categories = ["category 1", "category 2"]
-        self.category_dropbox.addItems(categories)
-        layout.addRow("Category", self.category_dropbox)
+        self.category_dropbox.addItem("No category", 0)
+        self.update_categories_dropdown()
+        # categories = ["category 1", "category 2"]
+        # self.category_dropbox.addItems(categories)
+        top_layout.addRow("Category", self.category_dropbox)
 
         # Preference
-        self.preference_dropbox = QComboBox(self)
-        self.preference_dropbox.setStyleSheet("padding: 5px 10px;")
-        pref_times = ["None", "Morning (8:00-12:00)",
-                      "Afternoon (12:00-16:00)", "Evening (16:00-20:00)",
-                      "Night (20:00-23:59)", "Ungodly hours (0:00-8:00)"]
-        self.preference_dropbox.addItems(pref_times)
-        layout.addRow("Preferred time", self.preference_dropbox)
+        self.preference_check = QCheckBox(self)
+        self.preference_check.setChecked(True)
+        self.preference_check.clicked.connect(self.preference_on_off)
+        top_layout.addRow("Preferred time", self.preference_check)
 
-        # Plan on same day
-        self.sameday_check = QCheckBox(self)
-        layout.addRow("Allow multiple sessions on the same day?", self.sameday_check)
+        # self.preference_start = QTimeEdit()
+        # self.preference_end = QTimeEdit()
+        # top_layout.addRow("Start time", self.preference_start)
+        # top_layout.addRow("End time", self.preference_end)
 
-        # Repeat weekly
-        self.repeat_check = QCheckBox(self)
-        layout.addRow("Repeat this task weekly?", self.repeat_check)
+        preference_start = QHBoxLayout()
+        self.start_text = QLabel("Start time")
+        preference_start.addWidget(self.start_text)
+        preference_start.addStretch(1)
 
-        # Cancel button
-        self.cancel_button = QPushButton("Cancel")
-        self.cancel_button.setStyleSheet(Stylesheet.grey_button)
-        layout.addRow(self.cancel_button)
-        self.cancel_button.clicked.connect(self.close)
+        self.start_hour = QComboBox(self)
+        self.start_hour.addItems([f'{x}' for x in range(24)])
+        preference_start.addWidget(self.start_hour)
+        preference_start.addWidget(QLabel('h'))
+        self.start_min = QComboBox(self)
+        self.start_min.addItems(['0', '15', '30', '45'])
+        preference_start.addWidget(self.start_min)
+        preference_start.addWidget(QLabel('m'))
+
+        preference_end = QHBoxLayout()
+        self.end_text = QLabel("End time")
+        preference_end.addWidget(self.end_text)
+        preference_end.addStretch(1)
+
+        self.end_hour = QComboBox(self)
+        self.end_hour.addItems([f'{x}' for x in range(24)])
+        preference_end.addWidget(self.end_hour)
+        preference_end.addWidget(QLabel('h'))
+        self.end_min = QComboBox(self)
+        self.end_min.addItems(['0', '15', '30', '45'])
+        preference_end.addWidget(self.end_min)
+        preference_end.addWidget(QLabel('m'))
+
+        top_layout.addRow(preference_start)
+        top_layout.addRow(preference_end)
+
+        # # Plan on same day
+        # self.sameday_check = QCheckBox(self)
+        # top_layout.addRow("Allow multiple sessions on the same day?", self.sameday_check)
+        #
+        # # Repeat weekly
+        # self.repeat_check = QCheckBox(self)
+        # top_layout.addRow("Repeat this task weekly?", self.repeat_check)
 
         # Create button
         self.create_button = QPushButton("Create task")
-        self.create_button.setStyleSheet(Stylesheet.blue_button)
+        self.create_button.setStyleSheet(self.prefs.style_sheets['button_priority_rect'])
         self.create_button.clicked.connect(self.create_task)
-        layout.addRow(self.create_button)
+        # top_layout.addRow(self.create_button)
+        bottom_layout.addWidget(self.create_button)
 
-        self.setLayout(layout)
+        # Cancel button
+        self.cancel_button = QPushButton("Cancel")
+        self.cancel_button.setStyleSheet(self.prefs.style_sheets['button_low_priority_rect'])
+        # top_layout.addRow(self.cancel_button)
+        self.cancel_button.clicked.connect(self.close)
+        bottom_layout.addWidget(self.cancel_button)
+
+        # Layout and Size
+        top_layout.setContentsMargins(0, 5, 0, 15)  # Bottom padding
+        main_layout.addLayout(top_layout)
+        main_layout.addLayout(bottom_layout)
+        self.setLayout(main_layout)
+
+        self.setFixedWidth(480)
 
     def update_duration(self, val):
-        self.duration_label.setText(str(5*val) + " minutes")
+        self.duration_label.setText(str(15*val) + " minutes")
+
+    def update_categories_dropdown(self):
+        """Updates the categories dropdown under 'Preferences'"""
+        categories = Category.import_category()
+        # print('clear')
+        for category in categories:
+            # Add To Dropdown
+            self.category_dropbox.addItem(category.title, category.category_id)
+
+    def preference_on_off(self):
+        if self.preference_check.isChecked():
+            self.start_text.setStyleSheet("color: 'white'")
+            self.end_text.setStyleSheet("color: 'white'")
+        else:
+            self.start_text.setStyleSheet("color: '#A0A0A0'")
+            self.end_text.setStyleSheet("color: '#A0A0A0'")
+        pass
 
     def create_task(self):
         # Creat Task
@@ -123,26 +197,32 @@ class TaskCreationWindow(GeneralWindow):
         num_sessions = self.numsessions_field.text()
         num_sessions = int(num_sessions)
         session_duration = self.sessionduration_slider.value()
-        session_duration = 5*int(session_duration)
+        session_duration = int(session_duration)
         priority = self.priority_dropdown.currentIndex()
-        category = self.category_dropbox.currentText()
-        onsameday = self.sameday_check.isChecked()
-        repeat = self.repeat_check.isChecked()
-        preferredtime = self.preference_dropbox.currentText()
+        category = self.category_dropbox.currentData()
+        # onsameday = self.sameday_check.isChecked()
+        # repeat = self.repeat_check.isChecked()
+        onsameday = False
+        repeat = False
+        preferred_time = self.preference_check.isChecked()
+        if preferred_time:
+            pref_start = str(datetime.time(int(self.start_hour.currentText()), int(self.start_min.currentText())))
+            pref_end = str(datetime.time(int(self.end_hour.currentText()), int(self.end_min.currentText())))
+            preferred_time = (pref_start, pref_end)
 
-        new_task = Task(name, description, session_duration, priority, deadline,
-                        repeat, category, preferredtime, onsameday, num_sessions)
+        new_task = Task.Task(-1, name, description, session_duration, priority, deadline,
+                        repeat, category, preferred_time, onsameday, num_sessions)
         print(new_task)
 
         # Export Task to Save File
-        Task.export_task(new_task, "save_file.json")
+        Task.Task.export_task(new_task)
         GeneralWindow.raise_event(self.ls_w, 'reload_tasks')
 
         # then close task creation GUI
         self.close()
 
 
-# will maybe move stylesheet to other file
+# DEPRECATED STYLESHEET [now uses palette]
 class Stylesheet():
     grey_button = ("*{border: 2px solid '#42464E';" +
                             "border-radius:  15px;" +

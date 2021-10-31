@@ -1,56 +1,72 @@
 import unittest
-from unittest.mock import patch
-from project.BackEnd.Schedule import ImportGoogleEvents, StartAndEnd, AppendEvents, BlockIndex, ResolveOverlap, DeleteEvent
-from project.BackEnd.Schedule import Display_, EmptySlots, AddOccurrence, Event, Display, Routines, Presets, Main
+from project.BackEnd.Schedule import Schedule, import_schedule, Event
+from project.BackEnd.Preset import Presets
+from project.BackEnd.Category import random_color
+from project.BackEnd.TimeList import TimeList
+import numpy as np
 
 class MyTestCase(unittest.TestCase):
 
-    def test_DarkMode(self):
-        display = Display()
-        display.DarkMode()
-        self.assertEqual('white', display.text_color)
-        self.assertEqual('#303136', display.background_color)
-        self.assertEqual('#363940', display.face_color)
+    def test_empty_slots(self):
+        presets = Presets()
+        presets.number_of_days = 3
+        presets.time_interval = 60
+        presets.Store()
+        schedule = Schedule()
+        schedule.number_of_slots = round(24 * 60 / presets.time_interval)
+        schedule.schedule = np.zeros(shape=(presets.number_of_days, round(schedule.number_of_slots)), dtype=object) - 1
+        answer = [[[0, 0], [2, 23]]]
+        self.assertEqual(answer, schedule.empty_slots())
+        for i in range(5):
+            schedule.schedule[1][10 + i] = 'Task'
+        answer = [[[0, 0], [1, 9]], [[1, 15], [2, 23]]]
+        self.assertEqual(answer, schedule.empty_slots())
+        schedule.schedule = np.zeros(shape=(presets.number_of_days, round(schedule.number_of_slots)), dtype=object) - 1
+        schedule.schedule[2][-1] = 'Task'
+        answer = [[[0, 0], [2, 22]]]
+        self.assertEqual(answer, schedule.empty_slots())
+        presets.number_of_days = 7
+        presets.time_interval = 15
+        presets.Store()
 
-@patch('builtins.print')
-def test_PrintPresets(mock_print):
-    answer = ("day_zero = '2021-09-12'\n"
-          "number_of_days = 7\n"
-          "time_interval = 5\n"
-          "alarm_time = '07:30:00'\n"
-          "length_sleep = '08:00:00'\n"
-          "length_morning_routine = '00:40:00'\n"
-          "lunch_time = '12:30:00'\n"
-          "length_lunch = '00:45:00'\n"
-          "dinner_time = '18:30:00'\n"
-          "length_dinner = '01:15:00'\n"
-          "sleep = True\n"
-          "morning_routine = True\n"
-          "lunch = True\n"
-          "dinner = True\n"
-          "import_google = True\n")
-    trial = Presets()
-    trial.PrintPresets()
-    mock_print.assert_called_with(answer)
-    trial = Presets()
-    trial.length_lunch = 'random text'
-    trial.PrintPresets()
-    answer = ("day_zero = '2021-09-12'\n"
-              "number_of_days = 7\n"
-              "time_interval = 5\n"
-              "alarm_time = '07:30:00'\n"
-              "length_sleep = '08:00:00'\n"
-              "length_morning_routine = '00:40:00'\n"
-              "lunch_time = '12:30:00'\n"
-              "length_lunch = 'random text'\n"
-              "dinner_time = '18:30:00'\n"
-              "length_dinner = '01:15:00'\n"
-              "sleep = True\n"
-              "morning_routine = True\n"
-              "lunch = True\n"
-              "dinner = True\n"
-              "import_google = True\n")
-    mock_print.assert_called_with(answer)
+    def test_create_schedule_from_event_list(self):
+        presets = Presets()
+        presets.time_interval = 60
+        presets.number_of_days = 2
+        presets.schedule_path = 'jsonfiles/TestSchedule.json'
+        presets.Store()
+        answer = "Day 1: [GoogleEvent: (3), GoogleEvent: (3), GoogleEvent: (3), GoogleEvent: (3), GoogleEvent: (3),\n" \
+                    "GoogleEvent: (3), GoogleEvent: (3), GoogleEvent: (3), GoogleEvent: (3), GoogleEvent: (3), -1, -1,\n"\
+                    "-1, -1, -1, -1, -1, -1, -1, -1, Routine: (2), Routine: (2), Routine: (2), Routine: (2)]\n"\
+                    "Day 2: [Routine: (2), Task: (1), Task: (1), Task: (1), Task: (1), Task: (1), Task: (1), Task: (1),\n"\
+                    "Task: (1), Task: (1), Task: (1), Task: (1), Task: (1), Task: (1), Task: (1), Task: (1), Task: (1),\n"\
+                    "Task: (1), Task: (1), Task: (1), Task: (1), -1, -1, -1]\n"
+        trial = import_schedule()
+        self.assertEqual(answer, str(trial))
+        presets.time_interval = 15
+        presets.number_of_days = 7
+        presets.update()
+
+    def test_return_event(self):
+        preset = Presets()
+        preset.task_path = 'jsonfiles/FileForTestingOne.json'
+        preset.google_path = 'jsonfiles/FileForTestingGoogleEvents.json'
+        preset.routine_path = 'jsonfiles/FileForTestingRoutines.json'
+        preset.Store()
+        time = TimeList()
+        event = Event("Task", 1, random_color(), time)
+        task = event.return_event()
+        self.assertFalse(task.repeatable)
+        event = Event("GoogleEvent", 1, random_color(), time)
+        google = event.return_event()
+        self.assertEqual("Summary", google.name)
+        event = Event("Routine", 1, random_color(), time)
+        routine = event.return_event()
+        self.assertEqual("Example", routine.name)
+        event = Event("Event", 1, random_color(), time).return_event()
+        self.assertEqual(None, event)
+        preset.update()
+
 
 
 if __name__ == '__main__':

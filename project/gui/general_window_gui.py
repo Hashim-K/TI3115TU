@@ -1,7 +1,5 @@
-import sys
-from PyQt5.QtWidgets import QApplication, QLabel, QPushButton, QVBoxLayout, QWidget, QFileDialog, QGridLayout, QLineEdit
-from PyQt5.QtGui import QIcon, QPixmap, QCursor
-from PyQt5 import QtGui, QtCore
+from PyQt5.QtWidgets import QWidget
+from PyQt5 import QtGui
 
 class GeneralWindow(QWidget):
     '''General window skeleton; initializes window UI and adds it to passed window_list'''
@@ -32,7 +30,8 @@ class GeneralWindow(QWidget):
             if isinstance(window, window_type):
                 return None
         new_window = window_type(window_list, prefs)
-    
+        return new_window
+
     @staticmethod
     def raise_event(window_list, event_name):
         for window in window_list:

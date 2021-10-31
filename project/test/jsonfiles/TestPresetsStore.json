@@ -1,0 +1,14 @@
+{
+      "day_zero": "a day",
+      "number_of_days": 5,
+      "time_interval": 30,
+      "length_morning_routine": "01:45:00",
+      "calendar_id": 3,
+      "data_path": "substitute",
+      "category_path": "substitute",
+      "google_path": "substitute",
+      "routine_path": "substitute",
+      "task_path": "substitute",
+      "schedule_path": "substitute",
+      "schedule_image": "substitute"
+}

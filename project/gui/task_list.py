@@ -1,6 +1,12 @@
 from PyQt5.QtWidgets import QListWidget, QListWidgetItem, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton
 from PyQt5 import QtCore
 
+from project.BackEnd import Task, Category
+from project.BackEnd.Schedule import import_schedule
+
+from project.gui.task_info_gui import TaskInfo
+from project.gui.general_window_gui import GeneralWindow
+
 
 class TaskList(QListWidget):
     def __init__(self, window_list, prefs):
@@ -42,7 +48,14 @@ class TaskListItem(QListWidgetItem):
         task_deadline = self.task.deadline
         task_duration = self.task.duration
         task_sessions = self.task.session
-        task_category = self.task.category
+        category_obj = Category.find_category(self.task.category)
+        # Category check
+        if category_obj is None:    # No category
+            task_category = 'No Category'
+            colour_hex = '#FFFFFF'
+        else:   # Category
+            task_category = category_obj.title
+            colour_hex = category_obj.color
         task_priority = self.task.priority
 
         # WIDGET
@@ -82,7 +95,24 @@ class TaskListItem(QListWidgetItem):
         ### Lower (buttons)
         button_view = QPushButton('View')
         button_view.setStyleSheet(self.prefs.style_sheets['button_priority_rect'])
+        button_view.clicked.connect(self.view_task)
         button_view.setFixedWidth(100)
+
+        # Colour Piece
+        colour_piece = QPushButton(colour_hex)
+        colour_piece_sheet = (
+                "*{border: 2px solid '"+colour_hex+"';" +
+                "border-radius: 5px;" +
+                "background-color: '"+colour_hex+"';" +
+                "font-size: 13px;"
+                "color : rgba(0,0,0,0);" +
+                "padding: 5px 0px;" +
+                "margin: 0px 0px;}" +
+                "*:hover{color: 'black';}"
+        )
+
+        colour_piece.setStyleSheet(colour_piece_sheet)
+        colour_piece.setFixedWidth(75)
 
         button_edit = QPushButton('Edit')
         button_edit.setStyleSheet(self.prefs.style_sheets['button_low_priority_rect'])
@@ -90,12 +120,25 @@ class TaskListItem(QListWidgetItem):
 
         button_delete = QPushButton('Delete')
         button_delete.setStyleSheet(self.prefs.style_sheets['button_exit_rect'])
+        button_delete.clicked.connect(self.delete_task)
         button_delete.setFixedWidth(100)
 
         # layout_sub.addStretch(1)
         layout_sub.addWidget(button_view)
+        layout_sub.addWidget(colour_piece)
         layout_sub.addStretch(1)
         layout_sub.addWidget(button_edit)
         layout_sub.addWidget(button_delete)
 
         return widget
+
+    # Task Buttons
+    def view_task(self):
+        window = GeneralWindow.pre_init(self.ls_w, self.prefs, TaskInfo)
+        window.get_task(self.task.taskID)   # Fetches task using its class
+
+    def delete_task(self):
+        schedule = import_schedule()
+        Task.delete_task(self.task.taskID)
+        schedule.delete_event("Task", self.task.taskID)
+        GeneralWindow.raise_event(self.ls_w, 'reload_tasks')
