@@ -1,5 +1,5 @@
 from project.BackEnd.Google import Create_Service
-from project.BackEnd.GoogleEvent import GoogleEvent
+from project.BackEnd.GoogleEvent import GoogleEvent, import_google_event, delete_google_event
 from project.BackEnd.Schedule import import_schedule, Event
 from project.BackEnd.Preset import Presets
 import os
@@ -87,7 +87,9 @@ def insert_event(service, event):
     for times in event.times.times():
         [[start_day, start_slot], [end_day, end_slot]] = times
         start = TimeObject(dayzero, start_day, start_slot)
-        end = TimeObject(dayzero, end_day, end_slot)
+        end = TimeObject(dayzero, end_day, end_slot+1)
+        print(start_slot)
+        print(end_slot)
         event = {
             'summary': ev.name,
             'description': desc,
@@ -105,8 +107,12 @@ def insert_event(service, event):
 
 
 
-def import_events(service, eventfile, schedulefile):
+def import_events(service):
     schedule = import_schedule()
+    googleevent = import_google_event()
+    for ge in googleevent:
+        schedule.delete_event("GoogleEvent", ge.google_event_id)
+        delete_google_event(ge.google_event_id)
     for event in list_events(service, True):
         if event['status'] == 'confirmed':
             startTime=str_init(event['start']['dateTime'],event['start']['timeZone'])
@@ -115,12 +121,12 @@ def import_events(service, eventfile, schedulefile):
                 desc = event['description']
             else:
                 desc = ""
-            ge = GoogleEvent(-1, event['summary'], desc, startTime, endTime, eventfile)
-            ge.export_google_event(eventfile)
+            ge = GoogleEvent(-1, event['summary'], desc, startTime, endTime)
+            ge.export_google_event()
             vars = ge.create_event()
             event = Event(vars[0], vars[1], vars[2], vars[3])
             schedule.add_event(event)
-    schedule.export_schedule(schedulefile)
+    schedule.export_schedule()
 
 def export_events(service):
     presets = Presets()
