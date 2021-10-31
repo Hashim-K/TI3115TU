@@ -208,8 +208,8 @@ class MainView(general_window_gui.GeneralWindow):
 
         ## Export Schedule Button
         export_schedule_button = QPushButton("Export to Calendar")
-        export_schedule_button.setToolTip('Export currently unavailable')   # TO DELETE
-        export_schedule_button.setStyleSheet(self.prefs.style_sheets['button_disabled_rect'])
+        export_schedule_button.setToolTip('Export to connected calendar')   # TO DELETE
+        export_schedule_button.setStyleSheet(self.prefs.style_sheets['button_low_priority_rect'])
         export_schedule_button.setFixedWidth(150)
         # connect export
         export_schedule_button.clicked.connect(self.export_google)
