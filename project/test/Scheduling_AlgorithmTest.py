@@ -45,6 +45,7 @@ class MyTestCase(unittest.TestCase):
         self.assertFalse(overlap_check([task], empty, event))
         task = Task(-1, "Title", "Description", 3, 0, datetime(2021, 11, 21, 0, 0), False, 1,
                     ["08:00:00", "12:00:00"], True, 2)
+        empty = [[[0, 5], [0, 25]]]
         self.assertTrue(overlap_check([task], empty, event))
         empty = [[[0, 5], [0, 25]], [[0, 40], [0, 45]], [[3, 30], [3, 35]]]
         event = PossibleTime(3, [[0, 5], [0, 14]], 1)
