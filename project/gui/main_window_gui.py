@@ -609,6 +609,8 @@ class MainView(general_window_gui.GeneralWindow):
     ## Make Google Thread
     def authenticate_google(self):
         # This MUST be a class variable as to not get destroyed after being added
+        presets = Presets()
+        os.remove(presets.data_path+'token files/token_calendar_v3.pickle')
         self.google_worker = GoogleWorker()
         self.google_worker.start()
         self.google_worker.finished.connect(lambda:print("Google Thread Finished"))

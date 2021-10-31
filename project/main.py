@@ -32,6 +32,16 @@ def on_startup():
     day_zero = find_day_zero(0)
     if not os.path.exists(os.path.join(dirname, 'data/' + day_zero)):
         os.makedirs(os.path.join(dirname, 'data/' + day_zero))
+        with open(os.path.join(dirname, 'data/' + day_zero +'/categories.json'), 'w') as out_file:
+            json.dump([], out_file, indent=6)
+        with open(os.path.join(dirname, 'data/' + day_zero + '/google_events.json'), 'w') as out_file:
+            json.dump([], out_file, indent=6)
+        with open(os.path.join(dirname, 'data/' + day_zero + '/routines.json'), 'w') as out_file:
+            json.dump([], out_file, indent=6)
+        with open(os.path.join(dirname, 'data/' + day_zero + '/tasks.json'), 'w') as out_file:
+            json.dump([], out_file, indent=6)
+        with open(os.path.join(dirname, 'data/' + day_zero + '/schedule.json'), 'w') as out_file:
+            json.dump([], out_file, indent=6)
     if not os.path.exists(os.path.join(dirname, 'data/temp/')):
         os.makedirs(os.path.join(dirname, 'data/temp/'))
     if not os.path.isfile(os.path.join(dirname, 'data/presets.json')):
