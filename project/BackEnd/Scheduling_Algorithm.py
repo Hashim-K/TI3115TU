@@ -51,17 +51,17 @@ def scheduling_algorithm():
     presets.Store()
     forbidden_slots = []
     timetable = create_timetable(forbidden_slots)
-    print(len(timetable))
+    #print(len(timetable))
     while len(timetable) > 0:
         stc = single_task_check(timetable)
         if stc != -99:
             entry = timetable[stc]
-            print(entry)
-            print("Reason: one timeslot remaining")
+            #print(entry)
+            #print("Reason: one timeslot remaining")
             add_task(entry)
         else:
             entry = best_score_check(timetable)
-            print("Reason: best score")
+            #print("Reason: best score")
             add_task(entry)
             # if overlap_check(Task.import_task(), import_schedule().empty_slots(), entry):
             #     print("Reason: best score")
@@ -70,7 +70,7 @@ def scheduling_algorithm():
             #forbidden_slots.append(entry)
             #print("Not planned: Overlap detected")
         timetable = create_timetable(forbidden_slots)
-        print(len(timetable))
+        #print(len(timetable))
     presets.update()
 
 
