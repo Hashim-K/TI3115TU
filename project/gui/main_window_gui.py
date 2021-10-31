@@ -730,11 +730,12 @@ class MainView(general_window_gui.GeneralWindow):
         self.mr_text.setText(f"Morning routine duration: {duration} minutes")
 
     def save_morning_routine(self):
+        presets = Presets()
         duration = int(self.morning_routine.value())*15
         self.mr_text.setText(f"Morning routine duration: {duration} minutes (Saved)")
         duration = str(datetime.time(duration//60, duration%60, 0))
-        Schedule.presets.length_morning_routine = duration
-        Schedule.presets.Store()
+        presets.length_morning_routine = duration
+        presets.Store()
 
     def import_google(self):
         '''Import from google calendar'''

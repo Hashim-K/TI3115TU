@@ -139,25 +139,22 @@ class AddRoutineWindow(GeneralWindow):
 
         # add event to schedule
         tl = TimeList()
+        tl1 = TimeList()
         for start_day in day_dict[days]:
             start_time = int((start.hour*60+start.minute)/presets.time_interval)
-            end_time = int((end.hour*60+end.minute)/presets.time_interval)
+            end_time = int((end.hour*60+end.minute)/presets.time_interval)-1
             end_day = start_day
             if end_time < start_time:
                 end_day = start_day+1
             tl.add_time(start_day, start_time, end_day, end_time)
+            if name == "Sleep":
+                dur = (datetime.time.fromisoformat(presets.length_morning_routine).minute +\
+                      datetime.time.fromisoformat(presets.length_morning_routine).hour*60)/presets.time_interval
+                tl1.add_duration(end_day, end_time+1, dur)
         routine = Routine(-1, name, tl)
         vars = routine.create_event()
         event = Event(vars[0], vars[1], vars[2], vars[3])
-        # if routine.name == "Sleep":
-        #     tl1 = TimeList()
-        #     tl1.add_duration()
-        #     routine1 = Routine(-1, "Morning Routine", )
-        #     vars1 = routine.create_event()
-        #     event1 = Event(vars[0], vars[1], vars[2], vars[3])
-
         schedule = import_schedule()
-
         # Check overlap
         if schedule.check_overlap(event):
             # display info
@@ -167,8 +164,26 @@ class AddRoutineWindow(GeneralWindow):
             schedule.add_event(event)
             schedule.export_schedule()
             generate_image()
-            GeneralWindow.raise_event(self.ls_w, 'reload_routines')
-            self.close()
+            if routine.name == "Sleep":
+                routine1 = Routine(-1, "Morning Routine", tl1)
+                vars1 = routine1.create_event()
+                event1 = Event(vars1[0], vars1[1], vars1[2], vars1[3])
+                if schedule.check_overlap(event1):
+                    # display info
+                    self.notify_overlap()
+                else:
+                    routine1.export_routine()
+                    schedule.add_event(event1)
+                    schedule.export_schedule()
+                    generate_image()
+                    GeneralWindow.raise_event(self.ls_w, 'reload_routines')
+                    self.close()
+            else:
+                GeneralWindow.raise_event(self.ls_w, 'reload_routines')
+                self.close()
+
+
+
 
     def notify_overlap(self):
         text = "The new routine overlaps with an existing routine."
