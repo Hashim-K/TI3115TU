@@ -85,9 +85,9 @@ def insert_event(service, event):
     if event.type == "Task":
         desc = ev.description
     for times in event.times.times():
-        [[start_day, start_slot], [end_day, end_slot]]=times
-        start=TimeObject(dayzero, start_day, start_slot)
-        end=TimeObject(dayzero, end_day, end_slot)
+        [[start_day, start_slot], [end_day, end_slot]] = times
+        start = TimeObject(dayzero, start_day, start_slot)
+        end = TimeObject(dayzero, end_day, end_slot)
         event = {
             'summary': ev.name,
             'description': desc,
@@ -100,7 +100,7 @@ def insert_event(service, event):
                 'timeZone': end.timeZone,
             },
         }
-        event = service.events().insert(calendarId='primary', body=event).execute()
+        event = service.events().insert(calendarId=presets.calendar_id, body=event).execute()
         print('Event created: %s' % (event.get('htmlLink')))
 
 
@@ -117,28 +117,19 @@ def import_events(service, eventfile, schedulefile):
                 desc = ""
             ge = GoogleEvent(-1, event['summary'], desc, startTime, endTime, eventfile)
             ge.export_google_event(eventfile)
-            event = Event(ge.create_event())
+            vars = ge.create_event()
+            event = Event(vars[0], vars[1], vars[2], vars[3])
             schedule.add_event(event)
     schedule.export_schedule(schedulefile)
 
-def export_events(service, schedule):
+def export_events(service):
     presets = Presets()
-    if presets.calendar_id == -1:
-        calid = create_calendar(service, 'TwentyFive-Eight')
-        presets.calendar_id = calid
-        presets.Store()
-    else:
-        cal = get_calendar(service, presets.calendar_id)
-        print(cal)
-
-def main():
-    service = authenticate()
-    create_calendar(service, 'I hate people')
-    # delete_calendar(service, '3eosiknkb75tu3cta6140ke5dg@group.calendar.google.com')
-    # list_calendars(service)
-    # insert_event(service, Task.find_task())
-    # colorprofiles = service.colors().get().execute()
-    # pprint(colorprofiles)
-
-if __name__ == "__main__":
-    main()
+    if presets.calendar_id != -1:
+        delete_calendar(service, presets.calendar_id)
+    calid = create_calendar(service, 'TwentyFive-Eight')
+    presets.calendar_id = calid
+    presets.Store()
+    schedule = import_schedule()
+    for event in schedule.events_list:
+        if event.type == "Task":
+            insert_event(service, event)
