@@ -4,13 +4,14 @@ from project.BackEnd.Scheduling_Algorithm import calc_score, single_task_check, 
 from project.BackEnd.Task import Task, import_task
 from project.BackEnd.Preset import Presets
 from datetime import datetime
+import json
+import os
 dirname = os.path.dirname(__file__)
 
 class MyTestCase(unittest.TestCase):
 
     def test_calculate_days_till_deadline(self):
         presets = Presets()
-        day_zero = presets.day_zero
         presets.day_zero = "2021-10-19"
         presets.Store()
         task = Task(-1, "Title", "Description", 5, 0, datetime(2021, 10, 20, 0, 0), False, 1, ["08:00:00", "12:00:00"], True,
@@ -23,31 +24,28 @@ class MyTestCase(unittest.TestCase):
                     ["08:00:00", "12:00:00"], True,
                     1)
         self.assertEqual(0, calculate_days_till_deadline(task))
-        presets.day_zero = day_zero
-        presets.Store()
+        presets.update()
 
 
     def test_overlap_check(self):
         presets = Presets()
-        day_zero = presets.day_zero
         presets.day_zero = "2021-10-19"
         presets.Store()
         tasks_list = [Task(1, "Title", "Description", 5, 0, datetime(2021, 11, 8, 0, 0), False, 1, ["08:00:00", "12:00:00"], True, 1)]
         empty = [[[0, 5], [0, 25]]]
         event = PossibleTime(3, [[0, 6], [0, 24]], 1)
-        date_zero = obtain_day_zero()
-        self.assertFalse(overlap_check(tasks_list, empty, event, date_zero, 1))
+        self.assertFalse(overlap_check(tasks_list, empty, event))
         event = PossibleTime(3, [[0, 5], [0, 10]], 1)
-        self.assertTrue(overlap_check(tasks_list, empty, event, date_zero, 1))
+        self.assertTrue(overlap_check(tasks_list, empty, event))
         tasks_list.append(Task(-1, "Title", "Description", 15, 0, datetime(2021, 11, 10, 0, 0), False, 1,
                                ["08:00:00", "12:00:00"], True, 1))
-        self.assertFalse(overlap_check(tasks_list, empty, event, date_zero, 1))
+        self.assertFalse(overlap_check(tasks_list, empty, event))
         task = Task(-1, "Title", "Description", 5, 0, datetime(2021, 11, 20, 0, 0), False, 1,
                                ["08:00:00", "12:00:00"], True, 4)
-        self.assertFalse(overlap_check([task], empty, event, date_zero, 1))
+        self.assertFalse(overlap_check([task], empty, event))
         task = Task(-1, "Title", "Description", 3, 0, datetime(2021, 11, 21, 0, 0), False, 1,
                     ["08:00:00", "12:00:00"], True, 2)
-        self.assertTrue(overlap_check([task], empty, event, date_zero, 1))
+        self.assertTrue(overlap_check([task], empty, event))
         empty = [[[0, 5], [0, 25]], [[0, 40], [0, 45]], [[3, 30], [3, 35]]]
         event = PossibleTime(3, [[0, 5], [0, 14]], 1)
         task1 = Task(1, "Title", "Description", 10, 0, datetime(2021, 11, 21, 0, 0), False, 1,
@@ -58,42 +56,48 @@ class MyTestCase(unittest.TestCase):
                             ["08:00:00", "12:00:00"], True, 1)
         task4 = Task(4, "Title", "Description", 5, 0, datetime(2021, 11, 25, 0, 0), False, 1,
                             ["08:00:00", "12:00:00"], True, 2)
-        self.assertTrue(overlap_check([task1, task2, task3], empty, event, date_zero, 1))
-        self.assertFalse(overlap_check([task1, task2, task3, task4], empty, event, date_zero, 1))
-        self.assertFalse(overlap_check([task1, task2, task4], empty, event, date_zero, 1))
-        self.assertTrue(overlap_check([task3, task2, task1], empty, event, date_zero, 1))
+        self.assertTrue(overlap_check([task1, task2, task3], empty, event))
+        self.assertFalse(overlap_check([task1, task2, task3, task4], empty, event))
+        self.assertFalse(overlap_check([task1, task2, task4], empty, event))
+        self.assertTrue(overlap_check([task3, task2, task1], empty, event))
         event = PossibleTime(3, [[0, 5], [0, 22]], 1)
         empty = [[[0, 5], [0, 25]], [[0, 40], [0, 44]], [[3, 30], [3, 34]], [[4, 20], [4, 60]]]
         task5 = Task('pay att', "Title", "Description", 6, 0, datetime(2021, 10, 19, 0, 0), False, 1,
                      ["08:00:00", "12:00:00"], True, 1)
-        self.assertFalse(overlap_check([task5], empty, event, date_zero, 1))
-        presets.day_zero = day_zero
-        presets.Store()
+        self.assertFalse(overlap_check([task5], empty, event))
+        presets.update()
 
     def test_overlap_check2(self):
-        date_zero = obtain_day_zero(os.path.join(dirname, 'jsonfiles/TestDatesTillDeadline.json'))
+        presets = Presets()
+        presets.date_zero = "2021-10-19"
+        presets.time_interval = 60
+        presets.Store()
         event = PossibleTime(3, [[0, 20], [1, 8]], 2)
         empty = [[[0, 23], [2, 23]]]
         task1 = Task(1, "Title", "Description", 10, 0, datetime(2021, 11, 21, 0, 0), False, 1,
-                     ["08:00:00", "12:00:00"], True, 1, 'nofile')
+                     ["08:00:00", "12:00:00"], True, 1)
         task2 = Task(2, "Title", "Description", 5, 0, datetime(2021, 11, 23, 0, 0), False, 1,
-                     ["08:00:00", "12:00:00"], True, 1, 'nofile')
+                     ["08:00:00", "12:00:00"], True, 1)
         task_list = [task1, task2]
-        self.assertTrue(overlap_check(task_list, empty, event, date_zero, 60))
+        self.assertTrue(overlap_check(task_list, empty, event))
         event = PossibleTime(3, [[0, 5], [2, 20]], 2)
-        self.assertFalse(overlap_check(task_list, empty, event, date_zero, 60))
+        self.assertFalse(overlap_check(task_list, empty, event))
+        presets.update()
 
 
     def test_timeslot_pref(self):
+        presets = Presets()
+        presets.time_interval = 15
         task = Task(-1, "Title", "Description", 2, 0, datetime(2021, 10, 20, 0, 0), False, 1,
-                    ["00:00:00", "08:00:00"], True, 1, 'nofile')
+                    ["00:00:00", "08:00:00"], True, 1)
         timeslot = 4
-        self.assertEqual(1, timeslot_pref(task, timeslot, 60))
-        timeslot = 20
-        self.assertEqual(3, timeslot_pref(task, timeslot, 60))
+        self.assertEqual(1, timeslot_pref(task, timeslot))
+        timeslot = 60
+        self.assertEqual(3, timeslot_pref(task, timeslot))
         task = Task(-1, "Title", "Description", 2, 0, datetime(2021, 10, 20, 0, 0), False, 1,
-                    False, True, 1, 'nofile')
-        self.assertEqual(2, timeslot_pref(task, timeslot, 60))
+                    False, True, 1)
+        self.assertEqual(2, timeslot_pref(task, timeslot))
+        presets.update()
 
     def test_eq(self):
         time1 = PossibleTime(3, [[2, 56], [2, 80]], 2)
@@ -107,22 +111,20 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual("TaskID: 3 | [[2, 56], [2, 80]] | score: 2", str(time))
 
     def test_calculate_score(self):
-        task_list = import_task(os.path.join(dirname, 'jsonfiles/TaskListForTestingAlgo2.json'))
-        day_zero = presets.day_zero
-        time_interval = presets.time_interval
+        presets = Presets()
+        presets.task_path = 'jsonfiles/TaskListForTestingAlgo2.json'
         presets.time_interval = 60
         presets.day_zero = "2021-10-19"
         presets.Store()
         timeslot = 22
+        task_list = import_task()
         self.assertEqual(12, calc_score(task_list[0], timeslot))
         self.assertEqual(21, calc_score(task_list[1], timeslot))
         self.assertEqual(8, calc_score(task_list[2], timeslot))
         timeslot = 15
         self.assertEqual(7, calc_score(task_list[1], timeslot))
         self.assertEqual(6, calc_score(task_list[2], timeslot))
-        presets.day_zero = day_zero
-        presets.time_interval = time_interval
-        presets.Store()
+        presets.update()
 
 
     def test_best_score_and_single_task(self):
@@ -145,35 +147,25 @@ class MyTestCase(unittest.TestCase):
 
 
     def test_algorithm_with_deadlines(self):
-        ClearEvents()
-        time_interval = presets.time_interval
-        number_of_days = presets.number_of_days
-        day_zero = presets.day_zero
+        presets = Presets()
         presets.time_interval = 60
         presets.number_of_days = 2
         presets.day_zero = "2021-10-19"
+        presets.task_path = os.path.join(dirname, 'jsonfiles/TaskListForTestingAlgo.json')
+        presets.schedule_path = os.path.join(dirname, 'jsonfiles/Schedule.json')
         presets.Store()
-        presets.PrintPresets()
-        schedule.number_of_slots = round(24 * 60 / presets.time_interval)
-        schedule.Update()
         # setup for test complete
-        filename = (os.path.join(dirname, 'jsonfiles/TaskListForTestingAlgo.json'))
-        main(filename)
-        for event in events:
-            if event.Label == "Deadline1Test":
-                number1 = event.ID
-            if event.Label == "Deadline2":
-                number2 = event.ID
-            if event.Label == "Long Task":
-                number3 = event.ID
-        self.assertTrue(number1 in schedule.schedule[0])
-        self.assertTrue(number2 in schedule.schedule[0])
-        self.assertTrue(number3 in schedule.schedule[1])
-        # reverse presets to old values
-        presets.time_interval = time_interval
-        presets.number_of_days = number_of_days
-        presets.day_zero = day_zero
-        presets.Store()
+        scheduling_algorithm()
+        with open('jsonfiles/Schedule.json') as file:
+            event_dict = json.load(file)
+        for event in event_dict:
+            if event["ID"] == 3:
+                self.assertEqual(event["Times"][0][0][0], 1)
+            if event["ID"] == 2:
+                self.assertEqual(event["Times"][0][0][0], 0)
+            if event["ID"] == 1:
+                self.assertEqual(event["Times"][0][0][0], 0)
+        presets.update()
 
 
 

@@ -7,7 +7,7 @@ class Presets:
     def __init__(self):
         with open(os.path.join(dirname, '../data/presets.json'), 'r') as openfile:
             preset_dictionary = json.load(openfile)
-            self.day_zero = find_day_zero(0)
+            self.day_zero = preset_dictionary['day_zero']
             self.number_of_days = preset_dictionary['number_of_days']
             self.time_interval = preset_dictionary['time_interval']
             self.length_morning_routine = preset_dictionary['length_morning_routine']
@@ -57,6 +57,9 @@ class Presets:
             json.dump(presets_json, out_file, indent=6)
 
     def update(self):
+        self.day_zero = find_day_zero(0)
+        self.time_interval = 15
+        self.number_of_days = 7
         self.data_path = os.path.join(dirname, '../data/')
         self.category_path = os.path.join(dirname, '../data/' + self.day_zero + '/categories.json')
         self.google_path = os.path.join(dirname, '../data/' + self.day_zero + '/google_events.json')
