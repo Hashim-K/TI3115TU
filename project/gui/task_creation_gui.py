@@ -49,6 +49,7 @@ class TaskCreationWindow(GeneralWindow):
         date = [int(d) for d in date]
         self.datepicker.setMinimumDate(QDate(date[0], date[1], date[2]))
         self.datepicker.setMaximumDate(QDate(date[0], date[1], date[2]).addDays(7))
+        self.datepicker.setDate(QDate(date[0], date[1], date[2]).addDays(7))
         top_layout.addRow("Deadline", self.datepicker)
 
         # Sessions
@@ -98,6 +99,7 @@ class TaskCreationWindow(GeneralWindow):
         # Preference
         self.preference_check = QCheckBox(self)
         self.preference_check.setChecked(True)
+        self.preference_check.clicked.connect(self.preference_on_off)
         top_layout.addRow("Preferred time", self.preference_check)
 
         # self.preference_start = QTimeEdit()
@@ -106,7 +108,8 @@ class TaskCreationWindow(GeneralWindow):
         # top_layout.addRow("End time", self.preference_end)
 
         preference_start = QHBoxLayout()
-        preference_start.addWidget(QLabel("Start time"))
+        self.start_text = QLabel("Start time")
+        preference_start.addWidget(self.start_text)
         preference_start.addStretch(1)
 
         self.start_hour = QComboBox(self)
@@ -119,7 +122,8 @@ class TaskCreationWindow(GeneralWindow):
         preference_start.addWidget(QLabel('m'))
 
         preference_end = QHBoxLayout()
-        preference_end.addWidget(QLabel("End time"))
+        self.end_text = QLabel("End time")
+        preference_end.addWidget(self.end_text)
         preference_end.addStretch(1)
 
         self.end_hour = QComboBox(self)
@@ -134,13 +138,13 @@ class TaskCreationWindow(GeneralWindow):
         top_layout.addRow(preference_start)
         top_layout.addRow(preference_end)
 
-        # Plan on same day
-        self.sameday_check = QCheckBox(self)
-        top_layout.addRow("Allow multiple sessions on the same day?", self.sameday_check)
-
-        # Repeat weekly
-        self.repeat_check = QCheckBox(self)
-        top_layout.addRow("Repeat this task weekly?", self.repeat_check)
+        # # Plan on same day
+        # self.sameday_check = QCheckBox(self)
+        # top_layout.addRow("Allow multiple sessions on the same day?", self.sameday_check)
+        #
+        # # Repeat weekly
+        # self.repeat_check = QCheckBox(self)
+        # top_layout.addRow("Repeat this task weekly?", self.repeat_check)
 
         # Create button
         self.create_button = QPushButton("Create task")
@@ -175,6 +179,15 @@ class TaskCreationWindow(GeneralWindow):
             # Add To Dropdown
             self.category_dropbox.addItem(category.title, category.category_id)
 
+    def preference_on_off(self):
+        if self.preference_check.isChecked():
+            self.start_text.setStyleSheet("color: 'white'")
+            self.end_text.setStyleSheet("color: 'white'")
+        else:
+            self.start_text.setStyleSheet("color: '#A0A0A0'")
+            self.end_text.setStyleSheet("color: '#A0A0A0'")
+        pass
+
     def create_task(self):
         # Creat Task
         name = self.title_field.text()
@@ -187,8 +200,10 @@ class TaskCreationWindow(GeneralWindow):
         session_duration = int(session_duration)
         priority = self.priority_dropdown.currentIndex()
         category = self.category_dropbox.currentData()
-        onsameday = self.sameday_check.isChecked()
-        repeat = self.repeat_check.isChecked()
+        # onsameday = self.sameday_check.isChecked()
+        # repeat = self.repeat_check.isChecked()
+        onsameday = False
+        repeat = False
         preferred_time = self.preference_check.isChecked()
         if preferred_time:
             pref_start = str(datetime.time(int(self.start_hour.currentText()), int(self.start_min.currentText())))

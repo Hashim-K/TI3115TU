@@ -3,6 +3,7 @@ import json
 from datetime import date, datetime, timedelta
 from shutil import copyfile
 import os
+import random
 
 from project.BackEnd.Category import get_color
 from project.BackEnd.Preset import Presets
@@ -50,27 +51,26 @@ def scheduling_algorithm():
     presets.Store()
     forbidden_slots = []
     timetable = create_timetable(forbidden_slots)
-    print(len(timetable))
+    #print(len(timetable))
     while len(timetable) > 0:
         stc = single_task_check(timetable)
         if stc != -99:
             entry = timetable[stc]
-            print(entry)
-            print("Reason: one timeslot remaining")
+            #print(entry)
+            #print("Reason: one timeslot remaining")
             add_task(entry)
         else:
             entry = best_score_check(timetable)
-            #print(entry)
-            # print("Reason: best score")
-            # add_task(entry)
-            if overlap_check(Task.import_task(), import_schedule().empty_slots(), entry):
-                print("Reason: best score")
-                add_task(entry)
-            else:
-                forbidden_slots.append(entry)
-                print("Not planned: Overlap detected")
+            #print("Reason: best score")
+            add_task(entry)
+            # if overlap_check(Task.import_task(), import_schedule().empty_slots(), entry):
+            #     print("Reason: best score")
+            #     add_task(entry)
+            # else:
+            #forbidden_slots.append(entry)
+            #print("Not planned: Overlap detected")
         timetable = create_timetable(forbidden_slots)
-        print(len(timetable))
+        #print(len(timetable))
     presets.update()
 
 
@@ -152,8 +152,10 @@ def overlap_check(tasks_list, empty_slots, event):
     count = 0
     slot_in_one_day = 1440 / presets.time_interval - 1
     passed_deadline = False
+    total_sessions = 0
     for task in tasks_list:
         sessions = task.session
+        total_sessions += sessions
         times = []
         count += 1
         days_between = calculate_days_till_deadline(task)
@@ -187,26 +189,36 @@ def overlap_check(tasks_list, empty_slots, event):
                     or (times[slot][1][0] > taken_slot[0] and ((times[slot][1][0] == taken_slot[1] and
                         times[slot][1][1] <= taken_slot[3]) or times[slot][1][0] < taken_slot[1]))):
                     available = False
+                    not_overlap.append(False)
             if available:
+                not_overlap.append(True)
                 taken_slots.append((times[slot][0][0], times[slot][1][0], times[slot][0][1], times[slot][1][1]))
                 if sessions == 1:
-                    not_overlap.append(True)
                     break
                 else:
                     sessions -= 1
                     slot += task.duration
             slot += 1
-        if len(not_overlap) != count:
-            not_overlap.append(False)
-    if False in not_overlap:
-        return False
-    return True
+        # if len(not_overlap) != count:
+        #     not_overlap.append(False)
+    count = 0
+    for x in not_overlap:
+        if x is True:
+            count += 1
+            if count >= total_sessions:
+                return True
+    return False
 
 
 def best_score_check(timetable):
     """ Retrieving the lowest score from the timetable. """
     timetable = sorted(timetable, key=lambda a: (a.score))
-    return timetable[0]
+    best_scores = []
+    for time in timetable:
+        if time.score == timetable[0].score:
+            best_scores.append(time)
+    x = random.randrange(len(best_scores))
+    return timetable[x]
 
 
 def calc_score(task, timeslot):
@@ -216,7 +228,7 @@ def calc_score(task, timeslot):
     else:
         priority = task.priority
     score = (priority * timeslot_pref(task, timeslot)
-            + (calculate_days_till_deadline(task) - task.session))
+            + (calculate_days_till_deadline(task) - task.session) ** 2)
     return score
 
 

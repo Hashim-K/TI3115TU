@@ -1,4 +1,5 @@
 # Week 2 sprint retrospective
+_by H. Karim_
 
 ## What went well?:
  - clear tasks and goals

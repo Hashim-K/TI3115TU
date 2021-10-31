@@ -1,4 +1,5 @@
 # Week 3 sprint retrospective
+_by A. Eyong_
 
 ## What went well?:
 - A good amount of programming was done.

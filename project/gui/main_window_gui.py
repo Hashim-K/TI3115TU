@@ -8,9 +8,11 @@ from PyQt5.QtGui import QIcon, QPixmap
 from PyQt5 import QtGui, QtCore
 import os
 
+from project.BackEnd.GoogleEvent import import_google_event, delete_google_event
 from project.BackEnd.Routine import delete_routine, import_routine
 from project.BackEnd.Schedule import import_schedule, generate_image
 from project.BackEnd.Scheduling_Algorithm import scheduling_algorithm
+from project.BackEnd.Task import import_task
 from project.gui.category_creation_gui import CategoryCreationWindow
 
 dirname = os.path.dirname(__file__)
@@ -199,24 +201,26 @@ class MainView(general_window_gui.GeneralWindow):
         title.setStyleSheet(self.prefs.style_sheets['text_title'])
 
         # Generate Schedule Button
-        generate_schedule_button = QPushButton("Generate Schedule")
-        generate_schedule_button.setToolTip('Make 25/8 generate a schedule')   # TO DELETE
-        generate_schedule_button.setStyleSheet(self.prefs.style_sheets['button_priority_rect'])
-        generate_schedule_button.setFixedWidth(150)
-        generate_schedule_button.clicked.connect(self.get_schedule)
+        self.generate_schedule_button = QPushButton("Generate Schedule")
+        self.generate_schedule_button.setToolTip('Make 25/8 generate a schedule')   # TO DELETE
+        self.generate_schedule_button.setStyleSheet(self.prefs.style_sheets['button_priority_rect'])
+        self.generate_schedule_button.setFixedWidth(150)
+        self.generate_schedule_button.clicked.connect(self.get_schedule)
 
         ## Export Schedule Button
         export_schedule_button = QPushButton("Export to Calendar")
-        export_schedule_button.setToolTip('Export currently unavailable')   # TO DELETE
-        export_schedule_button.setStyleSheet(self.prefs.style_sheets['button_disabled_rect'])
+        export_schedule_button.setToolTip('Export to connected calendar')   # TO DELETE
+        export_schedule_button.setStyleSheet(self.prefs.style_sheets['button_low_priority_rect'])
         export_schedule_button.setFixedWidth(150)
+        # connect export
+        export_schedule_button.clicked.connect(self.export_google)
 
         # Top Block Layout
         tbw_layout = QHBoxLayout()
         tbw_layout.addWidget(title)
         tbw_layout.addStretch(1)
         tbw_layout.addWidget(export_schedule_button)
-        tbw_layout.addWidget(generate_schedule_button)
+        tbw_layout.addWidget(self.generate_schedule_button)
         top_block_widget.setLayout(tbw_layout)
 
         self.schedule_label = QLabel()
@@ -346,14 +350,14 @@ class MainView(general_window_gui.GeneralWindow):
         gb_layout.addWidget(prompt)
 
         ### Button
-        button = QPushButton(' Connect Google Account')
+        connect_google_button = QPushButton(' Connect Google Account')
         icon = QIcon(self.prefs.images['placeholder'])
-        button.setIcon(icon)
-        button.setFixedWidth(200)
-        button.setStyleSheet(self.prefs.style_sheets['button_priority_rect'])
-        button.clicked.connect(GoogleAPI.authenticate)
+        connect_google_button.setIcon(icon)
+        connect_google_button.setFixedWidth(200)
+        connect_google_button.setStyleSheet(self.prefs.style_sheets['button_priority_rect'])
+        connect_google_button.clicked.connect(self.authenticate_google)
 
-        gb_layout.addWidget(button, alignment=QtCore.Qt.AlignCenter)
+        gb_layout.addWidget(connect_google_button, alignment=QtCore.Qt.AlignCenter)
 
         ### Prompt Import
         prompt_import_text = "2) Import Events"
@@ -372,14 +376,30 @@ class MainView(general_window_gui.GeneralWindow):
 
         gb_layout.addWidget(prompt)
 
-        ### Button
-        button = QPushButton(' Import Google Events')
-        icon = QIcon(self.prefs.images['arrow_down'])
-        button.setIcon(icon)
-        button.setFixedWidth(200)
-        button.setStyleSheet(self.prefs.style_sheets['button_priority_rect'])
+        google_import_sublayout = QHBoxLayout()
+        google_import_sublayout.addStretch()
 
-        gb_layout.addWidget(button, alignment=QtCore.Qt.AlignCenter)
+        ### Button
+        import_google_button = QPushButton(' Import Google Events')
+        icon = QIcon(self.prefs.images['arrow_down'])
+        import_google_button.setIcon(icon)
+        import_google_button.setFixedWidth(200)
+        import_google_button.setStyleSheet(self.prefs.style_sheets['button_priority_rect'])
+        # connect import
+        import_google_button.clicked.connect(self.import_google)
+
+        google_import_sublayout.addWidget(import_google_button, alignment=QtCore.Qt.AlignCenter)
+
+        ### Delete Google Button
+        del_google_button = QPushButton('Discard Google Events')
+        del_google_button.setFixedWidth(200)
+        del_google_button.setStyleSheet(self.prefs.style_sheets['button_exit_rect'])
+        del_google_button.clicked.connect(self.discard_changes)
+
+        google_import_sublayout.addWidget(del_google_button, alignment=QtCore.Qt.AlignCenter)
+        google_import_sublayout.addStretch()
+
+        gb_layout.addLayout(google_import_sublayout)
 
         google_box.setLayout(gb_layout)
 
@@ -587,8 +607,11 @@ class MainView(general_window_gui.GeneralWindow):
         self.context.setLayout(layout)
 
     ## Make Google Thread
-    def add_schedule(self):
+    def authenticate_google(self):
         # This MUST be a class variable as to not get destroyed after being added
+        presets = Presets()
+        if os.path.isfile(presets.data_path+'token files/token_calendar_v3.pickle'):
+            os.remove(presets.data_path+'token files/token_calendar_v3.pickle')
         self.google_worker = GoogleWorker()
         self.google_worker.start()
         self.google_worker.finished.connect(lambda:print("Google Thread Finished"))
@@ -624,14 +647,27 @@ class MainView(general_window_gui.GeneralWindow):
     def delete_all_tasks(self):
         """Deletes all tasks after prompt"""
         def delete_actual():
-            Task.delete_all_tasks()
-            self.populate_tasklist()    # Reload list
+            task_lists = import_task()
+            schedule = import_schedule()
+            for task in task_lists:
+                Task.delete_task(task.taskID)
+                schedule.delete_event("Task", task.taskID)
+
+            general_window_gui.GeneralWindow.raise_event(self.ls_w, 'reload_tasks')    # Reload list
 
         dialog = dialog_window_gui.CustomDialog('Delete all tasks?', self.prefs, self)
         if dialog.exec():
             delete_actual()
         else:
             pass
+
+    def discard_changes(self):
+        schedule = import_schedule()
+        googleevent = import_google_event()
+        for ge in googleevent:
+            schedule.delete_event("GoogleEvent", ge.google_event_id)
+            delete_google_event(ge.google_event_id)
+        self.update_schedule_image()
 
     # Routine View Functions
     def populate_routine_list(self):
@@ -659,7 +695,7 @@ class MainView(general_window_gui.GeneralWindow):
         """Updates the categories dropdown under 'Preferences'"""
         categories = Category.import_category()
         self.categories_dropdown.clear()  # Clear Dropdown
-        print('clear')
+        # print('clear')
         for category in categories:
             # Add To Dropdown
             self.categories_dropdown.addItem(category.title, [category.color, category.category_id])
@@ -702,8 +738,11 @@ class MainView(general_window_gui.GeneralWindow):
         general_window_gui.GeneralWindow.raise_event(self.ls_w, 'reload_tasks')
 
     def get_schedule(self):
-        scheduling_algorithm()
-        self.update_schedule_image()
+        self.schedule_worker = ScheduleWorker()
+        self.generate_schedule_button.clicked.disconnect(self.get_schedule)
+        self.schedule_worker.start()
+        self.schedule_worker.finished.connect(self.update_schedule_image)
+        self.schedule_worker.finished.connect(lambda: self.generate_schedule_button.clicked.connect(self.get_schedule))
 
     # Schedule View Functions
     def update_schedule_image(self):
@@ -717,11 +756,25 @@ class MainView(general_window_gui.GeneralWindow):
         self.mr_text.setText(f"Morning routine duration: {duration} minutes")
 
     def save_morning_routine(self):
+        presets = Presets()
         duration = int(self.morning_routine.value())*15
         self.mr_text.setText(f"Morning routine duration: {duration} minutes (Saved)")
         duration = str(datetime.time(duration//60, duration%60, 0))
-        Schedule.presets.length_morning_routine = duration
-        Schedule.presets.Store()
+        presets.length_morning_routine = duration
+        presets.Store()
+
+    def import_google(self):
+        '''Import from google calendar'''
+        self.gi = GoogleImport()
+        self.gi.start()
+        self.update_schedule_image()
+        self.gi.finished.connect(lambda: self.update_schedule_image())
+
+    def export_google(self):
+        '''Export to google calendar'''
+        self.ge = GoogleExport()
+        self.ge.start()
+        self.ge.finished.connect(lambda: self.update_schedule_image())
 
     # Stack Changer
     def display(self, i):
@@ -742,13 +795,32 @@ class MainView(general_window_gui.GeneralWindow):
     def closeEvent(self, a0: QtGui.QCloseEvent) -> None:
         sys.exit()
 
+class ScheduleWorker(QThread):
+    def run(self):
+        scheduling_algorithm()
+
 class GoogleWorker(QThread):
     """
     Thread that does google calendar creation and authentication (PLACEHOLDER)
     """
     def run(self):  # Override
         service = GoogleAPI.authenticate()
-        GoogleAPI.create_calendar(service, 'anything')  # Anything is placeholder
+
+class GoogleImport(QThread):
+    """
+    Thread that does google calendar creation and authentication (PLACEHOLDER)
+    """
+    def run(self):  # Override
+        service = GoogleAPI.authenticate()
+        GoogleAPI.import_events(service) # Anything is placeholder
+
+class GoogleExport(QThread):
+    """
+    Thread that does google calendar creation and authentication (PLACEHOLDER)
+    """
+    def run(self):  # Override
+        service = GoogleAPI.authenticate()
+        GoogleAPI.export_events(service)  # Anything is placeholder
 
 class TopBlockWidget(QWidget):  # COULD be TESTED [not done]
     """

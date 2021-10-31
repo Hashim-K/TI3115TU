@@ -29,5 +29,6 @@ Make sure that the filename is `Retrospective.md`
 |5|Teus|Robin|
 |6|Robin|Hashim|
 |7|Hashim|Achere|
+|8|Robin|Nina|
 
 
